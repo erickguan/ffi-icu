@@ -4,14 +4,14 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "icu-chardet-ffi"
-    gem.summary = %Q{Tiny FFI wrapper for ICU's UCharsetDetector.}
+    gem.name        = "icu-chardet-ffi"
+    gem.summary     = %Q{Tiny FFI wrapper for ICU's UCharsetDetector.}
     gem.description = %Q{Tiny FFI wrapper for ICU's UCharsetDetector.}
-    gem.email = "jari.bakken@gmail.com"
-    gem.homepage = "http://github.com/jarib/icu-chardet-ffi"
-    gem.authors = ["Jari Bakken"]
+    gem.email       = "jari.bakken@gmail.com"
+    gem.homepage    = "http://github.com/jarib/icu-chardet-ffi"
+    gem.authors     = ["Jari Bakken"]
 
-    gem.add_dependency "ffi", "0.6.3"
+    gem.add_dependency "ffi", ">= 0.6.3"
     gem.add_development_dependency "rspec", ">= 1.3.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

@@ -32,6 +32,11 @@ I've tested this on these platforms:
 - Debian Linux
 - Arch Linux
 
+and these rubies:
+
+- MRI 1.9.1
+- MRI 1.8.7
+
 YMMV.
 
 == Note on Patches/Pull Requests
