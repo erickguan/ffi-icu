@@ -4,13 +4,13 @@ Tiny FFI wrapper for ICU's UCharsetDetector.
 
 = Examples:
 
-  match = ICUCharDet.detect(str)
+  match = ICU::CharDet.detect(str)
   match.name       # => String
   match.confidence # => Integer
 
 or
 
-  detector = ICUCharDet::Detector.new
+  detector = ICU::CharDet::Detector.new
   detector.detect(str) #=> match
   detector.close
 
