@@ -4,14 +4,17 @@ require "ffi"
 module ICUCharDet
   extend FFI::Library
 
-  lib = ffi_lib [ "libicui18n.so.42", # linux
+  lib = ffi_lib([ "libicui18n.so.42",
+                  "libicui18n.so.44",
                   "icucore" # os x
-                ]
+                ]).first
 
-  if lib.first.find_function("ucsdet_open_4_2")
+  # find a better way to do this!
+  suffix = ''
+  if lib.find_function("ucsdet_open_4_2")
     suffix = '_4_2'
-  else
-    suffix = ''
+  elsif lib.find_function("ucsdet_open_44")
+    suffix = '_44'
   end
 
   attach_function "ucsdet_open#{suffix}", [:pointer], :pointer
@@ -23,7 +26,7 @@ module ICUCharDet
   attach_function "u_errorName#{suffix}", [:int], :string
 
   unless suffix.empty?
-    class << self
+    class << self; self end.instance_eval do
       alias_method :ucsdet_open, "ucsdet_open#{suffix}"
       alias_method :ucsdet_close, "ucsdet_close#{suffix}"
       alias_method :ucsdet_setText, "ucsdet_setText#{suffix}"
