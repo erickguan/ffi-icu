@@ -4,9 +4,9 @@ Tiny FFI wrapper for ICU's UCharsetDetector.
 
 = Why not just use rchardet?
 
- - this is faster
- - rchardet does not work well on 1.9
- - none of the rchardet forks claiming to work on 1.9 actually does
+- this is faster
+- rchardet does not work well on 1.9
+- none of the rchardet forks claiming to work on 1.9 actually does
 
 = USAGE:
 
@@ -14,7 +14,7 @@ Tiny FFI wrapper for ICU's UCharsetDetector.
   match.name       # => String
   match.confidence # => Integer
 
-  or
+or
 
   detector = ICUCharDet::Detector.new
   detector.detect(str) #=> match
@@ -27,8 +27,7 @@ Tiny FFI wrapper for ICU's UCharsetDetector.
 * Add tests for it. This is important so I don't break it in a
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
