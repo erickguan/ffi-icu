@@ -2,13 +2,7 @@
 
 Tiny FFI wrapper for ICU's UCharsetDetector.
 
-= Why not just use rchardet?
-
-- this is faster
-- rchardet does not work well on 1.9
-- none of the rchardet forks claiming to work on 1.9 actually does
-
-= USAGE:
+= Examples:
 
   match = ICUCharDet.detect(str)
   match.name       # => String
@@ -19,6 +13,26 @@ or
   detector = ICUCharDet::Detector.new
   detector.detect(str) #=> match
   detector.close
+
+= Dependencies
+
+ICU - you might need to hack the ffi_lib call to make it work. Please send a patch if you do!
+
+= Why not just use rchardet?
+
+- this is faster
+- rchardet does not work well on 1.9
+- none of the rchardet forks claiming to work on 1.9 actually does
+
+= Tested
+
+I've tested this on these platforms:
+
+- OS X 10.6
+- Debian Linux
+- Arch Linux
+
+YMMV.
 
 == Note on Patches/Pull Requests
 
