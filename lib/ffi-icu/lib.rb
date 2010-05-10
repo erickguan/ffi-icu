@@ -3,22 +3,43 @@ module ICU
     extend FFI::Library
 
     # FIXME: this is incredibly ugly, figure out some better way
-    lib = ffi_lib([ "libicui18n.so.42",
-                    "libicui18n.so.44",
-                    "icucore" # os x
-                  ]).first
 
-    suffix = ''
-    if lib.find_function("ucsdet_open_4_2")
-      suffix = '_4_2'
-    elsif lib.find_function("ucsdet_open_44")
-      suffix = '_44'
+    VERSIONS = {
+      "42" => "_4_2",
+      "44" => "_44"
+    }
+
+    # FIXME: this is ugly.
+    def self.find_icu
+      suffix = ''
+      os     = RbConfig::CONFIG["host_os"]
+
+      case os
+      when /darwin/
+        ffi_lib "icucore"
+      when /linux/
+        versions = VERSIONS.keys
+        libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}"},
+                       versions.map { |v| "libicutu.so.#{v}"}
+
+        VERSIONS.find do |so_version, func_version|
+          if libs.first.name =~ /#{so_version}$/
+            suffix = func_version
+          end
+        end
+      else
+        raise "no idea how to load ICU on #{os.inspect}, patches appreciated!"
+      end
+
+      suffix
     end
 
-    attach_function "u_errorName#{suffix}", :u_errorName, [:int], :string
-    attach_function "uenum_count#{suffix}", :uenum_count, [:pointer, :pointer], :int
-    attach_function "uenum_close#{suffix}", :uenum_close, [:pointer], :void
-    attach_function "uenum_next#{suffix}", :uenum_next, [:pointer, :pointer, :pointer], :string
+    suffix = find_icu()
+
+    attach_function :u_errorName, "u_errorName#{suffix}", [:int], :string
+    attach_function :uenum_count, "uenum_count#{suffix}", [:pointer, :pointer], :int
+    attach_function :uenum_close, "uenum_close#{suffix}",  [:pointer], :void
+    attach_function :uenum_next, "uenum_next#{suffix}",  [:pointer, :pointer, :pointer], :string
 
 
     # CharDet
@@ -26,34 +47,34 @@ module ICU
     # http://icu-project.org/apiref/icu4c/ucsdet_8h.html
     #
 
-    attach_function "ucsdet_open#{suffix}", :ucsdet_open, [:pointer], :pointer
-    attach_function "ucsdet_close#{suffix}", :ucsdet_close, [:pointer], :void
-    attach_function "ucsdet_setText#{suffix}", :ucsdet_setText, [:pointer, :string, :int32, :pointer], :void
-    attach_function "ucsdet_setDeclaredEncoding#{suffix}", :ucsdet_setDeclaredEncoding, [:pointer, :string, :int32, :pointer], :void
-    attach_function "ucsdet_detect#{suffix}", :ucsdet_detect, [:pointer, :pointer], :pointer
-    attach_function "ucsdet_detectAll#{suffix}", :ucsdet_detectAll, [:pointer, :pointer, :pointer], :pointer
-    attach_function "ucsdet_getName#{suffix}", :ucsdet_getName, [:pointer, :pointer], :string
-    attach_function "ucsdet_getConfidence#{suffix}", :ucsdet_getConfidence, [:pointer, :pointer], :int32
-    attach_function "ucsdet_getLanguage#{suffix}", :ucsdet_getLanguage, [:pointer, :pointer], :string
-    attach_function "ucsdet_getAllDetectableCharsets#{suffix}", :ucsdet_getAllDetectableCharsets, [:pointer, :pointer], :pointer
-    attach_function "ucsdet_isInputFilterEnabled#{suffix}", :ucsdet_isInputFilterEnabled, [:pointer], :bool
-    attach_function "ucsdet_enableInputFilter#{suffix}", :ucsdet_enableInputFilter, [:pointer, :bool], :bool
+    attach_function :ucsdet_open, "ucsdet_open#{suffix}",  [:pointer], :pointer
+    attach_function :ucsdet_close, "ucsdet_close#{suffix}",  [:pointer], :void
+    attach_function :ucsdet_setText, "ucsdet_setText#{suffix}",  [:pointer, :string, :int32, :pointer], :void
+    attach_function :ucsdet_setDeclaredEncoding, "ucsdet_setDeclaredEncoding#{suffix}",  [:pointer, :string, :int32, :pointer], :void
+    attach_function :ucsdet_detect, "ucsdet_detect#{suffix}",  [:pointer, :pointer], :pointer
+    attach_function :ucsdet_detectAll, "ucsdet_detectAll#{suffix}",  [:pointer, :pointer, :pointer], :pointer
+    attach_function :ucsdet_getName, "ucsdet_getName#{suffix}",  [:pointer, :pointer], :string
+    attach_function :ucsdet_getConfidence, "ucsdet_getConfidence#{suffix}",  [:pointer, :pointer], :int32
+    attach_function :ucsdet_getLanguage, "ucsdet_getLanguage#{suffix}",  [:pointer, :pointer], :string
+    attach_function :ucsdet_getAllDetectableCharsets, "ucsdet_getAllDetectableCharsets#{suffix}",  [:pointer, :pointer], :pointer
+    attach_function :ucsdet_isInputFilterEnabled, "ucsdet_isInputFilterEnabled#{suffix}",  [:pointer], :bool
+    attach_function :ucsdet_enableInputFilter, "ucsdet_enableInputFilter#{suffix}",  [:pointer, :bool], :bool
 
     # Collation
     #
     # http://icu-project.org/apiref/icu4c/ucol_8h.html
     #
 
-    attach_function "ucol_open#{suffix}", :ucol_open, [:string, :pointer], :pointer
-    attach_function "ucol_close#{suffix}", :ucol_close, [:pointer], :void
-    attach_function "ucol_strcoll#{suffix}", :ucol_strcoll, [:pointer, :pointer, :int32, :pointer, :int32], :int
-    attach_function "ucol_strcollIter#{suffix}", :ucol_strcollIter, [:pointer, :pointer, :pointer], :int
-    attach_function "ucol_getKeywords#{suffix}", :ucol_getKeywords, [:pointer], :pointer
-    attach_function "ucol_getKeywordValues#{suffix}", :ucol_getKeywords, [:string, :pointer], :pointer
-    attach_function "ucol_openAvailableLocales#{suffix}", :ucol_openAvailableLocales, [:pointer], :pointer
-    
-    
-    attach_function "uiter_setUTF8#{suffix}", :uiter_setUTF8, [:pointer, :string, :int32], :void
+    attach_function :ucol_open, "ucol_open#{suffix}",  [:string, :pointer], :pointer
+    attach_function :ucol_close, "ucol_close#{suffix}",  [:pointer], :void
+    attach_function :ucol_strcoll, "ucol_strcoll#{suffix}",  [:pointer, :pointer, :int32, :pointer, :int32], :int
+    attach_function :ucol_strcollIter, "ucol_strcollIter#{suffix}",  [:pointer, :pointer, :pointer], :int
+    attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
+    attach_function :ucol_getKeywords, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
+    attach_function :ucol_openAvailableLocales, "ucol_openAvailableLocales#{suffix}",  [:pointer], :pointer
+
+
+    attach_function :uiter_setUTF8, "uiter_setUTF8#{suffix}",  [:pointer, :string, :int32], :void
 
     def self.check_error
       ptr = FFI::MemoryPointer.new(:int)
@@ -76,6 +97,8 @@ module ICU
         Lib.check_error { |st| Lib.uenum_next(enum_ptr, nil, st) }
       end
     end
+
+    private
 
   end # Lib
 end # ICU
