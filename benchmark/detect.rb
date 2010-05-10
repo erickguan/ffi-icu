@@ -2,12 +2,13 @@
 
 require "benchmark"
 
-require "#{File.dirname(__FILE__)}/../lib/icu-chardet-ffi"
+$LOAD_PATH.unshift "lib"
+require "icu-ffi"
 require "rchardet"
 
 TESTS = 1000
 
 Benchmark.bmbm do |results|
   results.report("rchardet:") { TESTS.times { CharDet.detect("æåø") } }
-  results.report("icu-chardet-ffi:") { TESTS.times { ICUCharDet.detect("æåø") } }
+  results.report("icu-ffi:") { TESTS.times { ICU::CharDet.detect("æåø") } }
 end

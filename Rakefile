@@ -4,11 +4,11 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name        = "icu-chardet-ffi"
-    gem.summary     = %Q{Tiny FFI wrapper for ICU's UCharsetDetector.}
-    gem.description = %Q{Tiny FFI wrapper for ICU's UCharsetDetector.}
+    gem.name        = "icu-ffi"
+    gem.summary     = %Q{Simple FFI wrappers for things I need from ICU.}
+    gem.description = %Q{Simple FFI wrappers for things I need from ICU.}
     gem.email       = "jari.bakken@gmail.com"
-    gem.homepage    = "http://github.com/jarib/icu-chardet-ffi"
+    gem.homepage    = "http://github.com/jarib/icu-ffi"
     gem.authors     = ["Jari Bakken"]
 
     gem.add_dependency "ffi", ">= 0.6.3"
@@ -37,12 +37,12 @@ task :spec => :check_dependencies
 
 task :default => :spec
 
-require 'rake/rdoctask'
-Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
-
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "icu-chardet-ffi #{version}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new
+rescue LoadError
+  task :yardoc do
+    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
+  end
 end
+

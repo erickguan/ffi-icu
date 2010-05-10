@@ -2,15 +2,16 @@
 
 require "benchmark"
 
-require "#{File.dirname(__FILE__)}/../lib/icu-chardet-ffi"
+$LOAD_PATH.unshift "lib"
+require "icu-ffi"
 require "rchardet"
 
 TESTS = 1000
 
 $rchardet = CharDet::UniversalDetector.new
-$icu = ICUCharDet::Detector.new
+$icu = ICU::CharDet::Detector.new
 
 Benchmark.bmbm do |results|
   results.report("rchardet instance:") { TESTS.times { $rchardet.reset; $rchardet.feed("æåø"); $rchardet.result } }
-  results.report("icu-chardet-ffi instance:") { TESTS.times { $icu.detect("æåø")  } }
+  results.report("icu-ffi instance:") { TESTS.times { $icu.detect("æåø")  } }
 end

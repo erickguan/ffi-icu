@@ -1,8 +1,16 @@
-= icu-chardet-ffi
+= icu-ffi
 
-Tiny FFI wrapper for ICU's UCharsetDetector.
+Simple FFI wrappers for things I need from ICU.
 
-= Examples:
+= Dependencies
+
+ICU - you might need to hack the ffi_lib call to make it work. Please send a patch if you do!
+
+= Features
+
+== Character Encoding Detection
+
+=== Examples:
 
   match = ICU::CharDet.detect(str)
   match.name       # => String
@@ -14,28 +22,30 @@ or
   detector.detect(str) #=> match
   detector.close
 
-= Dependencies
+== Locale Sensitive Collation
 
-ICU - you might need to hack the ffi_lib call to make it work. Please send a patch if you do!
+Todo.
 
-= Why not just use rchardet?
+=== Why not just use rchardet?
 
-- this is faster
-- rchardet does not work well on 1.9
-- none of the rchardet forks claiming to work on 1.9 actually does
+* this is faster
+* rchardet does not work well on 1.9
+* none of the rchardet forks claiming to work on 1.9 actually does
 
-= Tested
 
-I've tested this on these platforms:
 
-- OS X 10.6
-- Debian Linux
-- Arch Linux
+= Tested on:
 
-and these rubies:
+Platforms:
 
-- MRI 1.9.1
-- MRI 1.8.7
+* OS X 10.6
+* Debian Linux
+* Arch Linux
+
+Rubies:
+
+* MRI 1.9.1
+* MRI 1.8.7
 
 YMMV.
 
