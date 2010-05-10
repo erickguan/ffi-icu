@@ -1,4 +1,7 @@
 module ICU
+  class Error < StandardError
+  end
+
   module Lib
     extend FFI::Library
 
@@ -81,8 +84,10 @@ module ICU
       ret = yield(ptr)
       error_code = ptr.read_int
 
-      if error_code != 0
-        raise "error #{Lib.u_errorName error_code}"
+      if error_code > 0
+        raise Error, "#{Lib.u_errorName error_code}"
+      elsif error_code < 0
+        warn "ffi-icu: #{Lib.u_errorName error_code}"
       end
 
       ret
