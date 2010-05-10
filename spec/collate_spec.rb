@@ -5,7 +5,7 @@ require 'spec_helper'
 module ICU::Collation
   describe Collator do
 
-    before { @d = Collator.new("NO") }
+    before { @d = Collator.new("nb_NO") }
     after { @d.close }
 
     it "should collate an array of strings" do

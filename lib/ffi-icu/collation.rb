@@ -27,7 +27,7 @@ module ICU
     def self.available_locales
       enum_ptr = Lib.check_error { |err| Lib.ucol_openAvailableLocales(err) }
       res = Lib.enum_ptr_to_array(enum_ptr)
-      Lib.enum_close(enum_ptr)
+      Lib.uenum_close(enum_ptr)
 
       res
     end
@@ -39,10 +39,10 @@ module ICU
 
       def collate(array)
         array.sort do |a,b|
-          r = Lib.ucol_strcollIter(
+          r = Lib.ucol_strcoll(
             @c,
-            UCharIteratorPointer.from_string(a), a.bytesize,
-            UCharIteratorPointer.from_string(b), b.bytesize
+            UCharPointer.from_string(a), a.bytesize,
+            UCharPointer.from_string(b), b.bytesize
           )
           p [a,b,r]
           r
