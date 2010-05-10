@@ -34,6 +34,37 @@ module ICU
       suffix
     end
 
+    def self.check_error
+      ptr = FFI::MemoryPointer.new(:int)
+      ret = yield(ptr)
+      error_code = ptr.read_int
+
+      if error_code > 0
+        raise Error, "#{Lib.u_errorName error_code}"
+      elsif error_code < 0
+        warn "ffi-icu: #{Lib.u_errorName error_code}"
+      end
+
+      ret
+    end
+
+    def self.enum_ptr_to_array(enum_ptr)
+      length = Lib.check_error do |status|
+        Lib.uenum_count(enum_ptr, status)
+      end
+
+      (0...length).map do |idx|
+        Lib.check_error { |st| Lib.uenum_next(enum_ptr, nil, st) }
+      end
+    end
+
+    def self.not_available(func_name)
+      self.class.send :define_method, func_name do |*args|
+        raise Error, "#{func_name} not available on platform #{ICU.platform.inspect}"
+      end
+    end
+
+
     suffix = find_icu()
 
     attach_function :u_errorName, "u_errorName#{suffix}", [:int], :string
@@ -72,38 +103,13 @@ module ICU
     attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
     attach_function :ucol_getKeywords, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
 
-    unless ICU.platform == :osx
+    if ICU.platform == :osx
+      not_available :ucol_openAvailableLocales
+    else
       attach_function :ucol_openAvailableLocales, "ucol_openAvailableLocales#{suffix}",  [:pointer], :pointer
     end
 
-
     attach_function :uiter_setUTF8, "uiter_setUTF8#{suffix}",  [:pointer, :string, :int32], :void
-
-    def self.check_error
-      ptr = FFI::MemoryPointer.new(:int)
-      ret = yield(ptr)
-      error_code = ptr.read_int
-
-      if error_code > 0
-        raise Error, "#{Lib.u_errorName error_code}"
-      elsif error_code < 0
-        warn "ffi-icu: #{Lib.u_errorName error_code}"
-      end
-
-      ret
-    end
-
-    def self.enum_ptr_to_array(enum_ptr)
-      length = Lib.check_error do |status|
-        Lib.uenum_count(enum_ptr, status)
-      end
-
-      (0...length).map do |idx|
-        Lib.check_error { |st| Lib.uenum_next(enum_ptr, nil, st) }
-      end
-    end
-
-    private
 
   end # Lib
 end # ICU
