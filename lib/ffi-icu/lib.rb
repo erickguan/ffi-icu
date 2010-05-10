@@ -2,22 +2,19 @@ module ICU
   module Lib
     extend FFI::Library
 
-    # FIXME: this is incredibly ugly, figure out some better way
-
     VERSIONS = {
       "42" => "_4_2",
       "44" => "_44"
     }
 
-    # FIXME: this is ugly.
+    # FIXME: this is incredibly ugly, figure out some better way
     def self.find_icu
       suffix = ''
-      os     = RbConfig::CONFIG["host_os"]
 
-      case os
-      when /darwin/
+      case ICU.platform
+      when :osx
         ffi_lib "icucore"
-      when /linux/
+      when :linux
         versions = VERSIONS.keys
         libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}"},
                        versions.map { |v| "libicutu.so.#{v}"}
@@ -28,7 +25,7 @@ module ICU
           end
         end
       else
-        raise "no idea how to load ICU on #{os.inspect}, patches appreciated!"
+        raise "no idea how to load ICU on #{ICU.platform}, patches appreciated!"
       end
 
       suffix
@@ -71,7 +68,10 @@ module ICU
     attach_function :ucol_strcollIter, "ucol_strcollIter#{suffix}",  [:pointer, :pointer, :pointer], :int
     attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
     attach_function :ucol_getKeywords, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
-    attach_function :ucol_openAvailableLocales, "ucol_openAvailableLocales#{suffix}",  [:pointer], :pointer
+
+    unless ICU.platform == :osx
+      attach_function :ucol_openAvailableLocales, "ucol_openAvailableLocales#{suffix}",  [:pointer], :pointer
+    end
 
 
     attach_function :uiter_setUTF8, "uiter_setUTF8#{suffix}",  [:pointer, :string, :int32], :void
