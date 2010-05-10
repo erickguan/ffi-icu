@@ -105,12 +105,6 @@ module ICU
     attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
     attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
 
-    if ICU.platform == :osx
-      not_available :ucol_openAvailableLocales
-    else
-      attach_function :ucol_openAvailableLocales, "ucol_openAvailableLocales#{suffix}",  [:pointer], :pointer
-    end
-
     attach_function :uiter_setUTF8, "uiter_setUTF8#{suffix}",  [:pointer, :string, :int32], :void
 
   end # Lib

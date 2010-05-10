@@ -25,19 +25,9 @@ module ICU
     end
 
     def self.available_locales
-      enum_ptr = Lib.check_error { |err| Lib.ucol_openAvailableLocales(err) }
-      res = Lib.enum_ptr_to_array(enum_ptr)
-      Lib.uenum_close(enum_ptr)
-
-      res
-    end
-
-    def self.available_at(idx)
-      Lib.ucol_getAvailable(idx)
-    end
-
-    def self.count_available
-      Lib.ucol_countAvailable
+      (0...Lib.ucol_countAvailable).map do |idx|
+        Lib.ucol_getAvailable idx
+      end
     end
 
     class Collator
@@ -58,7 +48,7 @@ module ICU
       end
 
       def close
-        Libu.ucol_close(@c)
+        Lib.ucol_close(@c)
       end
 
 
