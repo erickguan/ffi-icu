@@ -25,6 +25,27 @@ module ICU
         l.should == "nb"
       end
 
+      it "should compare two strings" do
+        @c.compare("blåbærsyltetøy", "blah").should == 1
+        @c.compare("blah", "blah").should == 0
+        @c.compare("baah", "blah").should == -1
+      end
+
+      it "should know if a string is greater than another" do
+        @c.should be_greater("z", "a")
+        @c.should_not be_greater("a", "z")
+      end
+
+      it "should know if a string is greater or equal to another" do
+        @c.should be_greater_or_equal("z", "a")
+        @c.should be_greater_or_equal("z", "z")
+        @c.should_not be_greater_or_equal("a", "z")
+      end
+
+      it "should know if a string is equal to another" do
+        @c.should be_same("a", "a")
+      end
+
     end
   end # Collate
 end # ICU

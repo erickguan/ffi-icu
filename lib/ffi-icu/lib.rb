@@ -104,7 +104,9 @@ module ICU
     attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
     attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
     attach_function :ucol_getLocale, "ucol_getLocale#{suffix}", [:pointer, :int, :pointer], :string
-
+    attach_function :ucol_greater, "ucol_greater#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
+    attach_function :ucol_greaterOrEqual, "ucol_greaterOrEqual#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
+    attach_function :ucol_equal, "ucol_equal#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
 
   end # Lib
 end # ICU

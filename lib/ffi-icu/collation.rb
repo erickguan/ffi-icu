@@ -41,14 +41,32 @@ module ICU
         Lib.check_error { |error| Lib.ucol_getLocale(@c, ULOC_VALID_LOCALE, error) }
       end
 
+      def compare(a, b)
+        Lib.ucol_strcoll(
+          @c,
+          UCharPointer.from_string(a), a.length,
+          UCharPointer.from_string(b), b.length
+        )
+      end
+
+      def greater?(a, b)
+        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.length,
+                             UCharPointer.from_string(b), b.length)
+      end
+
+      def greater_or_equal?(a, b)
+        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.length,
+                                    UCharPointer.from_string(b), b.length)
+      end
+
+      # can't override Object#equal? - suggestions welcome
+      def same?(a, b)
+        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.length,
+                           UCharPointer.from_string(b), b.length)
+      end
+
       def collate(array)
-        array.sort do |a,b|
-          Lib.ucol_strcoll(
-            @c,
-            UCharPointer.from_string(a), a.size,
-            UCharPointer.from_string(b), b.size
-          )
-        end
+        array.sort { |a,b| compare a, b }
       end
 
       def close

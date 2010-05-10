@@ -30,7 +30,16 @@ or
 
 == Locale Sensitive Collation
 
-Todo.
+=== Examples:
+
+  ICU::Collation.collate("nb", %w[å æ ø]) == %w[æ ø å] #=> true
+
+or
+
+  collator = ICU::Collation::Collator.new("nb")
+  collator.compare("a", "b")  #=> -1
+  collator.greater?("z", "a") #=> true
+  collator.collate(%w[å æ ø]) #=> ["æ", "ø", "å"]
 
 = Tested on:
 
