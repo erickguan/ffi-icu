@@ -32,6 +32,14 @@ module ICU
       res
     end
 
+    def self.available_at(idx)
+      Lib.ucol_getAvailable(idx)
+    end
+
+    def self.count_available
+      Lib.ucol_countAvailable
+    end
+
     class Collator
       def initialize(locale)
         @c = Lib.check_error { |error| Lib.ucol_open(locale, error) }

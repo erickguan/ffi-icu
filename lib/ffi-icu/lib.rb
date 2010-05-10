@@ -102,6 +102,8 @@ module ICU
     attach_function :ucol_strcollIter, "ucol_strcollIter#{suffix}",  [:pointer, :pointer, :pointer], :int
     attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
     attach_function :ucol_getKeywords, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
+    attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
+    attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
 
     if ICU.platform == :osx
       not_available :ucol_openAvailableLocales
