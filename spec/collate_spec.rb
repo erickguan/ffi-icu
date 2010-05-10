@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-module ICU::Collate
+module ICU::Collation
   describe Collator do
 
-    before { @d = Collator.new("no") }
+    before { @d = Collator.new("NO") }
     after { @d.close }
 
     it "should collate an array of strings" do

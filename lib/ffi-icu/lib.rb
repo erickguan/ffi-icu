@@ -46,9 +46,14 @@ module ICU
 
     attach_function "ucol_open#{suffix}", :ucol_open, [:string, :pointer], :pointer
     attach_function "ucol_close#{suffix}", :ucol_close, [:pointer], :void
-    attach_function "ucol_strcoll#{suffix}", :ucol_strcoll, [:pointer, :string, :int32, :string, :int32], :int
-    # attach_function "ucol_openAvailableLocales#{suffix}", :ucol_openAvailableLocales, [:pointer], :pointer
-
+    attach_function "ucol_strcoll#{suffix}", :ucol_strcoll, [:pointer, :pointer, :int32, :pointer, :int32], :int
+    attach_function "ucol_strcollIter#{suffix}", :ucol_strcollIter, [:pointer, :pointer, :pointer], :int
+    attach_function "ucol_getKeywords#{suffix}", :ucol_getKeywords, [:pointer], :pointer
+    attach_function "ucol_getKeywordValues#{suffix}", :ucol_getKeywords, [:string, :pointer], :pointer
+    attach_function "ucol_openAvailableLocales#{suffix}", :ucol_openAvailableLocales, [:pointer], :pointer
+    
+    
+    attach_function "uiter_setUTF8#{suffix}", :uiter_setUTF8, [:pointer, :string, :int32], :void
 
     def self.check_error
       ptr = FFI::MemoryPointer.new(:int)
@@ -72,6 +77,5 @@ module ICU
       end
     end
 
-
-  end # Functions
+  end # Lib
 end # ICU
