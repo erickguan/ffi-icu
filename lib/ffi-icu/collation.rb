@@ -2,7 +2,7 @@ module ICU
   module Collation
 
     def self.collate(locale, arr)
-      collator = new(locale)
+      collator = Collator.new(locale)
       res = collator.collate(arr)
       collator.close
 
@@ -37,13 +37,11 @@ module ICU
 
       def collate(array)
         array.sort do |a,b|
-          r = Lib.ucol_strcoll(
+          Lib.ucol_strcoll(
             @c,
             UCharPointer.from_string(a), a.bytesize,
             UCharPointer.from_string(b), b.bytesize
           )
-          p [a,b,r]
-          r
         end
       end
 
