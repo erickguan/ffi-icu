@@ -31,8 +31,14 @@ module ICU
     end
 
     class Collator
+      ULOC_VALID_LOCALE = 1
+
       def initialize(locale)
         @c = Lib.check_error { |error| Lib.ucol_open(locale, error) }
+      end
+
+      def locale
+        Lib.check_error { |error| Lib.ucol_getLocale(@c, ULOC_VALID_LOCALE, error) }
       end
 
       def collate(array)
@@ -48,11 +54,7 @@ module ICU
       def close
         Lib.ucol_close(@c)
       end
-
-
-    end
-
-
+    end # Collator
 
   end # Collate
 end # ICU

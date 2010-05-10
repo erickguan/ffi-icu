@@ -103,6 +103,7 @@ module ICU
     attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
     attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
     attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
+    attach_function :ucol_getLocale, "ucol_getLocale#{suffix}", [:pointer, :int, :pointer], :string
 
 
   end # Lib
