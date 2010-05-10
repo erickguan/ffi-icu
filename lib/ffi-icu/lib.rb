@@ -99,13 +99,11 @@ module ICU
     attach_function :ucol_open, "ucol_open#{suffix}",  [:string, :pointer], :pointer
     attach_function :ucol_close, "ucol_close#{suffix}",  [:pointer], :void
     attach_function :ucol_strcoll, "ucol_strcoll#{suffix}",  [:pointer, :pointer, :int32, :pointer, :int32], :int
-    attach_function :ucol_strcollIter, "ucol_strcollIter#{suffix}",  [:pointer, :pointer, :pointer], :int
     attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
-    attach_function :ucol_getKeywords, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
+    attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
     attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
     attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
 
-    attach_function :uiter_setUTF8, "uiter_setUTF8#{suffix}",  [:pointer, :string, :int32], :void
 
   end # Lib
 end # ICU

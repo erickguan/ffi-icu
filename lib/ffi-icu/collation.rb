@@ -39,8 +39,8 @@ module ICU
         array.sort do |a,b|
           Lib.ucol_strcoll(
             @c,
-            UCharPointer.from_string(a), a.bytesize,
-            UCharPointer.from_string(b), b.bytesize
+            UCharPointer.from_string(a), a.length,
+            UCharPointer.from_string(b), b.length
           )
         end
       end
