@@ -1,4 +1,4 @@
-= icu-ffi
+= ffi-icu
 
 Simple FFI wrappers for things I need from ICU.
 
@@ -13,18 +13,14 @@ ICU - you might need to hack the ffi_lib call to make it work. Please send a pat
 === Examples:
 
   match = ICU::CharDet.detect(str)
-  match.name       # => String
-  match.confidence # => Integer
+  match.name       # => "UTF-8"
+  match.confidence # => 80
 
 or
 
   detector = ICU::CharDet::Detector.new
-  detector.detect(str) #=> match
+  detector.detect(str)
   detector.close
-
-== Locale Sensitive Collation
-
-Todo.
 
 === Why not just use rchardet?
 
@@ -32,7 +28,9 @@ Todo.
 * rchardet does not work well on 1.9
 * none of the rchardet forks claiming to work on 1.9 actually does
 
+== Locale Sensitive Collation
 
+Todo.
 
 = Tested on:
 

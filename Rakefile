@@ -4,11 +4,11 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name        = "icu-ffi"
+    gem.name        = "ffi-icu"
     gem.summary     = %Q{Simple FFI wrappers for things I need from ICU.}
     gem.description = %Q{Simple FFI wrappers for things I need from ICU.}
     gem.email       = "jari.bakken@gmail.com"
-    gem.homepage    = "http://github.com/jarib/icu-ffi"
+    gem.homepage    = "http://github.com/jarib/ffi-icu"
     gem.authors     = ["Jari Bakken"]
 
     gem.add_dependency "ffi", ">= 0.6.3"

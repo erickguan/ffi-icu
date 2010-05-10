@@ -44,7 +44,7 @@ module ICU
       def detect_all(str)
         set_text(str)
 
-        matches_found_ptr = FFI::MemoryPointer.new :int
+        matches_found_ptr = FFI::MemoryPointer.new :int32
         array_ptr = Lib.check_error do |status|
           Lib.ucsdet_detectAll(@detector, matches_found_ptr, status)
         end
