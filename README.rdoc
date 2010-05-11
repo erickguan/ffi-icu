@@ -54,7 +54,13 @@ Rubies:
 * MRI 1.9.1
 * MRI 1.8.7
 
-YMMV.
+= TODO:
+
+* Useful ICU stuff:
+  - transliteration
+  - normalization
+  - number formatting (decimal points, thousand separators, currency)
+  - date formatting
 
 == Note on Patches/Pull Requests
 
