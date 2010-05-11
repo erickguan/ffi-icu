@@ -1,6 +1,6 @@
 = ffi-icu
 
-Simple FFI wrappers for things I need from ICU.
+Simple FFI wrappers for things I need from ICU. For the full thing, check out ICU4R instead.
 
 = Dependencies
 
@@ -61,6 +61,8 @@ Rubies:
   - normalization
   - number formatting (decimal points, thousand separators, currency)
   - date formatting
+* Let user provide ffi_lib through ENV['FFI_ICU_LIB']
+* Windows?!
 
 == Note on Patches/Pull Requests
 
