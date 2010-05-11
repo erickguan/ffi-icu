@@ -6,7 +6,7 @@ module ICU
   module Collation
     describe Collator do
 
-      before { @c = Collator.new("no") }
+      before { @c = Collator.new("nb") }
       after { @c.close }
 
       it "should collate an array of strings" do
