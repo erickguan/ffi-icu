@@ -2,6 +2,12 @@
 
 Simple FFI wrappers for things I need from ICU. For the full thing, check out ICU4R instead.
 
+= Gem
+
+* http://rubygems.org/gems/ffi-icu
+
+  gem install ffi-icu
+
 = Dependencies
 
 ICU - you might need to hack the ffi_lib call to make it work. Please send a patch if you do!
