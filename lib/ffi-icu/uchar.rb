@@ -11,7 +11,5 @@ module ICU
       wstring = read_string(size)
       wstring.unpack("L*").pack("U*")
     end
-  end
-
   end # UCharPointer
 end # ICU
