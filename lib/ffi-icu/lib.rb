@@ -2,6 +2,9 @@ module ICU
   class Error < StandardError
   end
 
+  class BufferOverflowError < StandardError
+  end
+
   module Lib
     extend FFI::Library
 
@@ -40,7 +43,12 @@ module ICU
       error_code = ptr.read_int
 
       if error_code > 0
-        raise Error, "#{Lib.u_errorName error_code}"
+        name = Lib.u_errorName error_code
+        if name == "U_BUFFER_OVERFLOW_ERROR"
+          raise BufferOverflowError
+        else
+          raise Error, name
+        end
       elsif error_code < 0
         warn "ffi-icu: #{Lib.u_errorName error_code}"
       end
@@ -139,5 +147,20 @@ module ICU
     attach_function :utrans_open, "utrans_open#{suffix}", [:string, :trans_direction, :pointer, :int32, :pointer, :pointer], :pointer
     attach_function :utrans_transUChars, "utrans_transUChars#{suffix}", [:pointer, :pointer, :pointer, :int32, :int32, :pointer, :pointer], :void
 
+    # Normalization
+    #
+    # http://icu-project.org/apiref/icu4c/unorm_8h.html
+    #
+
+    enum :normalization_mode, [ :none,    1,
+                                :ndf,     2,
+                                :nfkd,    3,
+                                :nfd,     4,
+                                :default, 4,
+                                :nfkc,    5,
+                                :fcd,     6
+                              ]
+
+    attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32, :normalization_mode, :int32, :pointer, :int32, :pointer], :int32
   end # Lib
 end # ICU

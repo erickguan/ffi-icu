@@ -21,4 +21,5 @@ require "ffi-icu/uchar"
 require "ffi-icu/chardet"
 require "ffi-icu/collation"
 require "ffi-icu/transliteration"
+require "ffi-icu/normalization"
 
