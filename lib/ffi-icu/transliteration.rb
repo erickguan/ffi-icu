@@ -1,7 +1,7 @@
 module ICU
-  module Translit
+  module Transliteration
 
-    def self.transliterate(translit_id, str)
+    def self.translit(translit_id, str)
       t = Transliterator.new translit_id
       res = t.transliterate str
       t.close
@@ -26,8 +26,7 @@ module ICU
         @parse_error = Lib::UParseError.new
         Lib.check_error do |status|
           # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
-          @tr = Lib.utrans_open(id, direction, nil, 0,
-                                      nil, status)
+          @tr = Lib.utrans_open(id, direction, nil, 0, nil, status)
         end
       end
 

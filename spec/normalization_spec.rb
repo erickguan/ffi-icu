@@ -7,6 +7,7 @@ module ICU
     describe "Normalization" do
 
       it "should normalize a string" do
+        # not sure if this expectation is correct
         ICU::Normalization.normalize("æåø").should == "aeao"
       end
 
