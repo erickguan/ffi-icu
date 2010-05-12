@@ -49,12 +49,14 @@ module ICU
     end
 
     def self.enum_ptr_to_array(enum_ptr)
-      length = Lib.check_error do |status|
-        Lib.uenum_count(enum_ptr, status)
+      length = check_error do |status|
+        uenum_count(enum_ptr, status)
       end
 
+      len = FFI::MemoryPointer.new(:int)
+
       (0...length).map do |idx|
-        Lib.check_error { |st| Lib.uenum_next(enum_ptr, nil, st) }
+        check_error { |st| uenum_next(enum_ptr, len, st) }
       end
     end
 
@@ -107,6 +109,35 @@ module ICU
     attach_function :ucol_greater, "ucol_greater#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
     attach_function :ucol_greaterOrEqual, "ucol_greaterOrEqual#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
     attach_function :ucol_equal, "ucol_equal#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
+
+    # Transliteration
+    #
+    # http://icu-project.org/apiref/icu4c/utrans_8h.html
+    #
+
+    class UParseError < FFI::Struct
+      layout :line,         :int32,
+             :offset,       :int32,
+             :pre_context,  :pointer,
+             :post_context, :pointer
+
+
+    end
+
+    class UTransPosition < FFI::Struct
+      layout :context_start, :int32,
+             :context_limit, :int32,
+             :start,         :int32,
+             :end,           :int32
+
+    end
+
+    enum :trans_direction, [:forward, :reverse]
+
+    attach_function :utrans_openIDs, "utrans_openIDs#{suffix}", [:pointer], :pointer
+    attach_function :utrans_openU, "utrans_openU#{suffix}", [:pointer, :int32, :trans_direction, :pointer, :int32, :pointer, :pointer], :pointer
+    attach_function :utrans_open, "utrans_open#{suffix}", [:string, :trans_direction, :pointer, :int32, :pointer, :pointer], :pointer
+    attach_function :utrans_transUChars, "utrans_transUChars#{suffix}", [:pointer, :pointer, :pointer, :int32, :int32, :pointer, :pointer], :void
 
   end # Lib
 end # ICU

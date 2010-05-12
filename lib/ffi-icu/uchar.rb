@@ -6,6 +6,11 @@ module ICU
       str = str.encode("UTF-8") if str.respond_to? :encode
       super str.unpack("U*").pack("L*")
     end
+
+    def string
+      wstring = read_string(size)
+      wstring.unpack("L*").pack("U*")
+    end
   end
 
 end
