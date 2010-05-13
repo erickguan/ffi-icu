@@ -59,8 +59,15 @@ module ICU
                                     UCharPointer.from_string(b), b.length)
       end
 
-      # can't override Object#equal? - suggestions welcome
-      def same?(a, b)
+      def equal?(*args)
+        return super() if args.empty?
+
+        if args.size != 2
+          raise ArgumentError, "wrong number of arguments (#{args.size} for 2)"
+        end
+
+        a, b = args
+
         Lib.ucol_equal(@c, UCharPointer.from_string(a), a.length,
                            UCharPointer.from_string(b), b.length)
       end

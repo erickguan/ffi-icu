@@ -43,7 +43,8 @@ module ICU
       end
 
       it "should know if a string is equal to another" do
-        @c.should be_same("a", "a")
+        @c.should be_equal("a", "a")
+        @c.should_not be_equal("a", "b")
       end
 
     end
