@@ -14,6 +14,10 @@ module ICU
       os
     end
   end
+
+  def self.ruby19?
+    RUBY_VERSION >= '1.9'
+  end
 end
 
 require "ffi-icu/lib"
@@ -23,3 +27,7 @@ require "ffi-icu/collation"
 require "ffi-icu/transliteration"
 require "ffi-icu/normalization"
 
+unless ICU.ruby19?
+  require 'jcode'
+  $KCODE = 'u'
+end

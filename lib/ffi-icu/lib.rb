@@ -81,7 +81,8 @@ module ICU
     attach_function :uenum_count, "uenum_count#{suffix}", [:pointer, :pointer], :int
     attach_function :uenum_close, "uenum_close#{suffix}",  [:pointer], :void
     attach_function :uenum_next, "uenum_next#{suffix}",  [:pointer, :pointer, :pointer], :string
-
+    attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string, :pointer, :int32], :void
+    attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer, :string, :int32], :void
 
     # CharDet
     #
@@ -153,9 +154,9 @@ module ICU
     #
 
     enum :normalization_mode, [ :none,    1,
-                                :ndf,     2,
+                                :nfd,     2,
                                 :nfkd,    3,
-                                :nfd,     4,
+                                :nfc,     4,
                                 :default, 4,
                                 :nfkc,    5,
                                 :fcd,     6
