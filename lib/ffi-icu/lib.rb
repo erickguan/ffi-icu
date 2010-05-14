@@ -17,6 +17,7 @@ module ICU
     def self.find_icu
       suffix = ''
 
+      # let the user tell us where the lib is
       if ENV['FFI_ICU_LIB']
         libs = ENV['FFI_ICU_LIB'].split(",")
         ffi_lib *libs
@@ -25,9 +26,12 @@ module ICU
           return ENV['FFI_ICU_VERSION_SUFFIX']
         elsif num = libs.first[/\d+$/]
           return num.split(//).join("_")
+        else
+          return suffix
         end
       end
 
+      # ok, try to find it
       case ICU.platform
       when :osx
         ffi_lib "icucore"
