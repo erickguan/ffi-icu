@@ -11,9 +11,9 @@ Simple FFI wrappers for things I need from ICU. For the full thing, check out IC
 = Dependencies
 
 ICU. If you get messages that the library or functions are not found, you can
-set some environment varibles to tell ffi-icu where to find it:
+set some environment varibles to tell ffi-icu where to find it, i.e.:
 
-FFI_ICU_LIB="icui18n.so" FFI_ICU_VERSION_SUFFIX="_3_8" ruby -r ffi-icu
+  FFI_ICU_LIB="icui18n.so" FFI_ICU_VERSION_SUFFIX="_3_8" ruby -r ffi-icu
 
 = Features
 
