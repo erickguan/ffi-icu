@@ -31,21 +31,40 @@ module ICU
       end
 
       def transliterate(from)
+        unicode_size = from.unpack("U*").size
         capacity = from.bytesize + 1
         buf = UCharPointer.from_string(from)
 
         limit = FFI::MemoryPointer.new :int32
         text_length = FFI::MemoryPointer.new :int32
 
+
         [limit, text_length].each do |ptr|
-          ptr.put_int32(0, from.unpack("U*").size)
+          ptr.put_int32(0, unicode_size)
         end
 
-        Lib.check_error do |error|
-          Lib.utrans_transUChars(@tr, buf, text_length, capacity, 0, limit, error)
+        retried = false
+
+        begin
+          Lib.check_error do |error|
+            Lib.utrans_transUChars(@tr, buf, text_length, capacity, 0, limit, error)
+          end
+        rescue BufferOverflowError
+          new_size = text_length.get_int32(0)
+          raise BufferOverflowError, "needed: #{new_size}" if retried
+
+          buf = buf.resized_to(new_size)
+          limit.put_int32(0, new_size)
+          capacity = new_size
+
+          # reset to original size
+          text_length.put_int32 0, unicode_size
+
+          retried = true
+          retry
         end
 
-        buf.string(text_length.get_int32(0))
+        buf.string text_length.get_int32(0)
       end
 
       def close

@@ -13,6 +13,14 @@ module ICU
       ptr
     end
 
+    def resized_to(new_size)
+      raise "new_size must be larger than current size" if new_size < size
+      resized = self.class.new UCHAR_TYPE, new_size
+      resized.put_bytes(0, get_bytes(0, size))
+
+      resized
+    end
+
     def string(length = nil)
       length ||= size / FFI.type_size(UCHAR_TYPE)
 

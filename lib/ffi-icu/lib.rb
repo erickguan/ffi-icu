@@ -146,6 +146,7 @@ module ICU
     attach_function :utrans_openIDs, "utrans_openIDs#{suffix}", [:pointer], :pointer
     attach_function :utrans_openU, "utrans_openU#{suffix}", [:pointer, :int32_t, :trans_direction, :pointer, :int32_t, :pointer, :pointer], :pointer
     attach_function :utrans_open, "utrans_open#{suffix}", [:string, :trans_direction, :pointer, :int32_t, :pointer, :pointer], :pointer
+    attach_function :utrans_close, "utrans_close#{suffix}", [:pointer], :void
     attach_function :utrans_transUChars, "utrans_transUChars#{suffix}", [:pointer, :pointer, :pointer, :int32_t, :int32_t, :pointer, :pointer], :void
 
     # Normalization
