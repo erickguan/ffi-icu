@@ -8,7 +8,7 @@
 
 void print_uchars(UChar *str) {
   UFILE *out = u_finit(stdout, NULL, NULL);
-  u_fprintf(out, "uchars: %S", str);
+  u_fprintf(out, "uchars: %S\n", str);
   u_fclose(out);
 }
 
@@ -21,27 +21,32 @@ int main (int argc, char const *argv[])
 
   UTransliterator* trans = NULL;
   UErrorCode status = U_ZERO_ERROR;
-  
-  trans = utrans_open("Lower", UTRANS_FORWARD, NULL, 0, NULL, &status);
-  
-  UChar from[256];
-  UChar to[256];
-  UChar buf[256];
-  
-  u_uastrcpy(from, "ABC");
-  u_uastrcpy(to, "abc");
 
+  trans = utrans_open("Lower", UTRANS_FORWARD, NULL, 0, NULL, &status);
+
+  UChar from[256];
+  UChar buf[256];
+
+  int32_t text_length, limit;
+
+  u_uastrcpy(from, "ABC");
   u_strcpy(buf, from);
-  int32_t limit = u_strlen(buf);
-  
-  utrans_transUChars(trans, buf, NULL, 256, 0, &limit, &status);
-  
+
+  limit = text_length = u_strlen(buf);
+  printf("limit: %d\n", limit);
+  printf("text_length: %d\n", limit);
+
+  utrans_transUChars(trans, buf, &text_length, 4, 0, &limit, &status);
+
+  printf("uchar ptr length after: %d\n", u_strlen(buf));
+  printf("text_length after: %d\n", text_length);
+
   if(U_FAILURE(status)) {
     print_error(status);
     exit(1);
   }
-  
+
   print_uchars(buf);
-  
+
   return 0;
 }

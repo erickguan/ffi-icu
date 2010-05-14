@@ -26,24 +26,25 @@ module ICU
         @parse_error = Lib::UParseError.new
         Lib.check_error do |status|
           # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
-          @tr = Lib.utrans_open(id, direction, nil, -1, @parse_error, status)
+          @tr = Lib.utrans_open(id, direction, nil, 0, @parse_error, status)
         end
       end
 
       def transliterate(from)
         capacity = from.bytesize + 1
-        limit    = FFI::MemoryPointer.new :int32_t
-
-        text_length = FFI::MemoryPointer.new :int32_t
-        text_length.put_int32(0, from.length)
-
         buf = UCharPointer.from_string(from)
+
+        limit = FFI::MemoryPointer.new :int32
+        text_length = FFI::MemoryPointer.new :int32
+
+        [limit, text_length].each do |ptr|
+          ptr.put_int32(0, from.unpack("U*").size)
+        end
 
         Lib.check_error do |error|
           Lib.utrans_transUChars(@tr, buf, text_length, capacity, 0, limit, error)
         end
 
-        # TODO: clean up UCharPointer
         buf.string
       end
 
