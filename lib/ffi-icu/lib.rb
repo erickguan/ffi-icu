@@ -81,8 +81,8 @@ module ICU
     attach_function :uenum_count, "uenum_count#{suffix}", [:pointer, :pointer], :int
     attach_function :uenum_close, "uenum_close#{suffix}",  [:pointer], :void
     attach_function :uenum_next, "uenum_next#{suffix}",  [:pointer, :pointer, :pointer], :string
-    attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string, :pointer, :int32], :void
-    attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer, :string, :int32], :void
+    attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string, :pointer, :int32_t], :void
+    attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer, :string, :int32_t], :void
 
     # CharDet
     #
@@ -91,12 +91,12 @@ module ICU
 
     attach_function :ucsdet_open, "ucsdet_open#{suffix}",  [:pointer], :pointer
     attach_function :ucsdet_close, "ucsdet_close#{suffix}",  [:pointer], :void
-    attach_function :ucsdet_setText, "ucsdet_setText#{suffix}",  [:pointer, :string, :int32, :pointer], :void
-    attach_function :ucsdet_setDeclaredEncoding, "ucsdet_setDeclaredEncoding#{suffix}",  [:pointer, :string, :int32, :pointer], :void
+    attach_function :ucsdet_setText, "ucsdet_setText#{suffix}",  [:pointer, :string, :int32_t, :pointer], :void
+    attach_function :ucsdet_setDeclaredEncoding, "ucsdet_setDeclaredEncoding#{suffix}",  [:pointer, :string, :int32_t, :pointer], :void
     attach_function :ucsdet_detect, "ucsdet_detect#{suffix}",  [:pointer, :pointer], :pointer
     attach_function :ucsdet_detectAll, "ucsdet_detectAll#{suffix}",  [:pointer, :pointer, :pointer], :pointer
     attach_function :ucsdet_getName, "ucsdet_getName#{suffix}",  [:pointer, :pointer], :string
-    attach_function :ucsdet_getConfidence, "ucsdet_getConfidence#{suffix}",  [:pointer, :pointer], :int32
+    attach_function :ucsdet_getConfidence, "ucsdet_getConfidence#{suffix}",  [:pointer, :pointer], :int32_t
     attach_function :ucsdet_getLanguage, "ucsdet_getLanguage#{suffix}",  [:pointer, :pointer], :string
     attach_function :ucsdet_getAllDetectableCharsets, "ucsdet_getAllDetectableCharsets#{suffix}",  [:pointer, :pointer], :pointer
     attach_function :ucsdet_isInputFilterEnabled, "ucsdet_isInputFilterEnabled#{suffix}",  [:pointer], :bool
@@ -109,15 +109,15 @@ module ICU
 
     attach_function :ucol_open, "ucol_open#{suffix}",  [:string, :pointer], :pointer
     attach_function :ucol_close, "ucol_close#{suffix}",  [:pointer], :void
-    attach_function :ucol_strcoll, "ucol_strcoll#{suffix}",  [:pointer, :pointer, :int32, :pointer, :int32], :int
+    attach_function :ucol_strcoll, "ucol_strcoll#{suffix}",  [:pointer, :pointer, :int32_t, :pointer, :int32_t], :int
     attach_function :ucol_getKeywords, "ucol_getKeywords#{suffix}",  [:pointer], :pointer
     attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}",  [:string, :pointer], :pointer
-    attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32], :string
-    attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32
+    attach_function :ucol_getAvailable, "ucol_getAvailable#{suffix}", [:int32_t], :string
+    attach_function :ucol_countAvailable, "ucol_countAvailable#{suffix}", [], :int32_t
     attach_function :ucol_getLocale, "ucol_getLocale#{suffix}", [:pointer, :int, :pointer], :string
-    attach_function :ucol_greater, "ucol_greater#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
-    attach_function :ucol_greaterOrEqual, "ucol_greaterOrEqual#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
-    attach_function :ucol_equal, "ucol_equal#{suffix}", [:pointer, :pointer, :int32, :pointer, :int32], :bool
+    attach_function :ucol_greater, "ucol_greater#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t], :bool
+    attach_function :ucol_greaterOrEqual, "ucol_greaterOrEqual#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t], :bool
+    attach_function :ucol_equal, "ucol_equal#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t], :bool
 
     # Transliteration
     #
@@ -125,8 +125,8 @@ module ICU
     #
 
     class UParseError < FFI::Struct
-      layout :line,         :int32,
-             :offset,       :int32,
+      layout :line,         :int32_t,
+             :offset,       :int32_t,
              :pre_context,  :pointer,
              :post_context, :pointer
 
@@ -134,19 +134,19 @@ module ICU
     end
 
     class UTransPosition < FFI::Struct
-      layout :context_start, :int32,
-             :context_limit, :int32,
-             :start,         :int32,
-             :end,           :int32
+      layout :context_start, :int32_t,
+             :context_limit, :int32_t,
+             :start,         :int32_t,
+             :end,           :int32_t
 
     end
 
     enum :trans_direction, [:forward, :reverse]
 
     attach_function :utrans_openIDs, "utrans_openIDs#{suffix}", [:pointer], :pointer
-    attach_function :utrans_openU, "utrans_openU#{suffix}", [:pointer, :int32, :trans_direction, :pointer, :int32, :pointer, :pointer], :pointer
-    attach_function :utrans_open, "utrans_open#{suffix}", [:string, :trans_direction, :pointer, :int32, :pointer, :pointer], :pointer
-    attach_function :utrans_transUChars, "utrans_transUChars#{suffix}", [:pointer, :pointer, :pointer, :int32, :int32, :pointer, :pointer], :void
+    attach_function :utrans_openU, "utrans_openU#{suffix}", [:pointer, :int32_t, :trans_direction, :pointer, :int32_t, :pointer, :pointer], :pointer
+    attach_function :utrans_open, "utrans_open#{suffix}", [:string, :trans_direction, :pointer, :int32_t, :pointer, :pointer], :pointer
+    attach_function :utrans_transUChars, "utrans_transUChars#{suffix}", [:pointer, :pointer, :pointer, :int32_t, :int32_t, :pointer, :pointer], :void
 
     # Normalization
     #
@@ -162,6 +162,6 @@ module ICU
                                 :fcd,     6
                               ]
 
-    attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32, :normalization_mode, :int32, :pointer, :int32, :pointer], :int32
+    attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32_t, :normalization_mode, :int32_t, :pointer, :int32_t, :pointer], :int32_t
   end # Lib
 end # ICU

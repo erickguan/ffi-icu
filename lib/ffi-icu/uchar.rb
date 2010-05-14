@@ -13,8 +13,10 @@ module ICU
       ptr
     end
 
-    def string
-      wstring = get_array_of_uint16(0, size / FFI.type_size(UCHAR_TYPE))
+    def string(length = nil)
+      length ||= size / FFI.type_size(UCHAR_TYPE)
+
+      wstring = get_array_of_uint16(0, length)
       wstring.pack("U*")
     end
 

@@ -5,11 +5,17 @@ module ICU
 
     describe Transliterator do
 
-      before { @t = Transliterator.new("Greek-Latin", :reverse) }
-      after { @t.close }
+      def transliterator(*args)
+        @t = Transliterator.new(*args)
+      end
+      after { @t.close if @t }
 
-      it "should transliterate a string" do
-        @t.transliterate("Hello World").should == "Χελλο Ωορλδ"
+      it "should transliterate Greek-Latin" do
+        transliterator("Greek-Latin").transliterate("Hello World").should == "Χελλο Ωορλδ"
+      end
+
+      it "should transliterate Lower" do
+        transliterator("Lower").transliterate("ABC").should == "abc"
       end
 
     end
