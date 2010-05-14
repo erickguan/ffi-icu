@@ -16,6 +16,8 @@ module ICU
         ICU::Normalization.normalize("Å", :nfc).unpack("U*").should == [197]
       end
 
+      # TODO: add more normalization tests
+
 
     end
   end # Normalization

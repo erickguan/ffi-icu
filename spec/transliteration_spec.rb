@@ -13,8 +13,8 @@ module ICU
 
 #      after { @t.close if @t }
 
-      it "should transliterate Greek-Latin" do
-        transliterator("Greek-Latin").transliterate("Χελλο Ωορλδ").should == "Hello World"
+      it "should transliterate Latin-Greek" do
+        transliterator("Latin-Greek").transliterate("Hello World").should == "Χελλο Ωορλδ"
       end
 
       it "should transliterate Lower" do

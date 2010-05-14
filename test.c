@@ -22,14 +22,14 @@ int main (int argc, char const *argv[])
   UTransliterator* trans = NULL;
   UErrorCode status = U_ZERO_ERROR;
 
-  trans = utrans_open("Lower", UTRANS_FORWARD, NULL, 0, NULL, &status);
+  trans = utrans_open("Latin-Greek", UTRANS_FORWARD, NULL, 0, NULL, &status);
 
   UChar from[256];
   UChar buf[256];
 
   int32_t text_length, limit;
 
-  u_uastrcpy(from, "ABC");
+  u_uastrcpy(from, "Hello World");
   u_strcpy(buf, from);
 
   limit = text_length = u_strlen(buf);
