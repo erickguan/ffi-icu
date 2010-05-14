@@ -45,7 +45,7 @@ module ICU
           Lib.utrans_transUChars(@tr, buf, text_length, capacity, 0, limit, error)
         end
 
-        buf.string
+        buf.string(text_length.get_int32(0))
       end
 
       def close
