@@ -17,6 +17,17 @@ module ICU
     def self.find_icu
       suffix = ''
 
+      if ENV['FFI_ICU_LIB']
+        libs = ENV['FFI_ICU_LIB'].split(",")
+        ffi_lib *libs
+
+        if ENV['FFI_ICU_VERSION_SUFFIX']
+          return ENV['FFI_ICU_VERSION_SUFFIX']
+        elsif num = libs.first[/\d+$/]
+          return num.split(//).join("_")
+        end
+      end
+
       case ICU.platform
       when :osx
         ffi_lib "icucore"
