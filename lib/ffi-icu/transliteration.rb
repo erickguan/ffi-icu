@@ -54,7 +54,6 @@ module ICU
           raise BufferOverflowError, "needed: #{new_size}" if retried
 
           buf = buf.resized_to(new_size)
-          limit.put_int32(0, new_size)
           capacity = new_size
 
           # reset to original size

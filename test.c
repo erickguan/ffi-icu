@@ -22,7 +22,7 @@ int main (int argc, char const *argv[])
   UTransliterator* trans = NULL;
   UErrorCode status = U_ZERO_ERROR;
 
-  trans = utrans_open("Latin-Greek", UTRANS_FORWARD, NULL, 0, NULL, &status);
+  trans = utrans_open("Any-Hex", UTRANS_FORWARD, NULL, 0, NULL, &status);
   if(U_FAILURE(status)) {
     print_error(status);
     exit(1);
@@ -40,7 +40,7 @@ int main (int argc, char const *argv[])
   printf("limit: %d\n", limit);
   printf("text_length: %d\n", limit);
 
-  utrans_transUChars(trans, buf, &text_length, 12, 0, &limit, &status);
+  utrans_transUChars(trans, buf, &text_length, 256, 0, &limit, &status);
 
   printf("uchar ptr length after: %d\n", u_strlen(buf));
   printf("text_length after: %d\n", text_length);
