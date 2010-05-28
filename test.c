@@ -29,11 +29,11 @@ int main (int argc, char const *argv[])
   }
 
   UChar from[256];
-  UChar buf[256];
+  UChar buf[6];
 
   int32_t text_length, limit;
 
-  u_uastrcpy(from, "Hello World");
+  u_uastrcpy(from, "abcde");
   u_strcpy(buf, from);
 
   limit = text_length = u_strlen(buf);

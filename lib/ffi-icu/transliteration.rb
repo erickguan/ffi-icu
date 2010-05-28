@@ -39,25 +39,23 @@ module ICU
         text_length = FFI::MemoryPointer.new :int32
 
 
-        [limit, text_length].each do |ptr|
-          ptr.put_int32(0, unicode_size)
-        end
-
         retried = false
 
         begin
+          # resets to original size on retry
+          [limit, text_length].each do |ptr|
+            ptr.put_int32(0, unicode_size)
+          end
+
           Lib.check_error do |error|
             Lib.utrans_transUChars(@tr, buf, text_length, capacity, 0, limit, error)
           end
         rescue BufferOverflowError
           new_size = text_length.get_int32(0)
-          raise BufferOverflowError, "needed: #{new_size}" if retried
+          raise BufferOverflowError, "needed #{new_size}" if retried
 
           buf = buf.resized_to(new_size)
-          capacity = new_size
-
-          # reset to original size
-          text_length.put_int32 0, unicode_size
+          capacity = new_size + 1
 
           retried = true
           retry
