@@ -1,23 +1,26 @@
 module ICU
   module Transliteration
 
-    def self.translit(translit_id, str)
-      t = Transliterator.new translit_id
-      res = t.transliterate str
-      t.close
+    class << self
+      def transliterate(translit_id, str)
+        t = Transliterator.new translit_id
+        res = t.transliterate str
+        t.close
 
-      res
-    end
-
-    def self.available_ids
-      enum_ptr = Lib.check_error do |error|
-        Lib.utrans_openIDs(error)
+        res
       end
+      alias_method :translit, :transliterate
 
-      result = Lib.enum_ptr_to_array(enum_ptr)
-      Lib.uenum_close(enum_ptr)
+      def available_ids
+        enum_ptr = Lib.check_error do |error|
+          Lib.utrans_openIDs(error)
+        end
 
-      result
+        result = Lib.enum_ptr_to_array(enum_ptr)
+        Lib.uenum_close(enum_ptr)
+
+        result
+      end
     end
 
     class Transliterator
@@ -31,13 +34,13 @@ module ICU
       end
 
       def transliterate(from)
+        # this is a bit unpleasant
+
         unicode_size = from.unpack("U*").size
-        capacity = from.bytesize + 1
-        buf = UCharPointer.from_string(from)
-
-        limit = FFI::MemoryPointer.new :int32
-        text_length = FFI::MemoryPointer.new :int32
-
+        capacity     = from.bytesize + 1
+        buf          = UCharPointer.from_string(from)
+        limit        = FFI::MemoryPointer.new :int32
+        text_length  = FFI::MemoryPointer.new :int32
 
         retried = false
 
@@ -52,12 +55,14 @@ module ICU
           end
         rescue BufferOverflowError
           new_size = text_length.get_int32(0)
+          $stderr.puts "BufferOverflowError, needs: #{new_size}" if $DEBUG
+
           raise BufferOverflowError, "needed #{new_size}" if retried
 
-          buf = buf.resized_to(new_size)
           capacity = new_size + 1
+          buf      = buf.resized_to capacity
+          retried  = true
 
-          retried = true
           retry
         end
 
@@ -67,8 +72,8 @@ module ICU
       def close
         Lib.utrans_close @tr
       end
-    end # Transliterator
 
+    end # Transliterator
   end # Translit
 end # ICU
 

@@ -66,11 +66,8 @@ Rubies:
 = TODO:
 
 * Useful ICU stuff:
-  - transliteration
-  - normalization
   - number formatting (decimal points, thousand separators, currency)
   - date formatting
-* Let user provide ffi_lib through ENV['FFI_ICU_LIB']
 * Windows?!
 
 == Note on Patches/Pull Requests
