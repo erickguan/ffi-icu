@@ -16,6 +16,10 @@ module ICU
         ICU::Normalization.normalize("Å", :nfc).unpack("U*").should == [197]
       end
 
+      it "should normalize accents" do
+        ICU::Normalization.normalize("âêîôû", :nfc).should == "aeiou"
+      end
+
       # TODO: add more normalization tests
 
 
