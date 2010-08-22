@@ -6,7 +6,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name        = "ffi-icu"
     gem.summary     = %Q{Simple FFI wrappers for things I need from ICU.}
-    gem.description = %Q{Provides charset detection, locale sensitive collation and more.}
+    gem.description = %Q{Provides charset detection, locale sensitive collation and more. Depends on libicu.}
     gem.email       = "jari.bakken@gmail.com"
     gem.homepage    = "http://github.com/jarib/ffi-icu"
     gem.authors     = ["Jari Bakken"]

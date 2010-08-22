@@ -29,5 +29,10 @@ module ICU
       ids.should be_kind_of(Array)
       ids.should_not be_empty
     end
+
+#    it "should transliterate custom rules" do
+#      ICU::Transliteration.translit("Accents-Any", "âêîôû", "NFD; [:Nonspacing Mark:] Remove; NFC").should == "aeiou"
+    #    end
+
   end # Transliteration
 end # ICU

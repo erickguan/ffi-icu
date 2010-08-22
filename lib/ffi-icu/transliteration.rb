@@ -2,8 +2,8 @@ module ICU
   module Transliteration
 
     class << self
-      def transliterate(translit_id, str)
-        t = Transliterator.new translit_id
+      def transliterate(translit_id, str, rules = nil)
+        t = Transliterator.new translit_id, rules
         res = t.transliterate str
         t.close
 
@@ -25,11 +25,22 @@ module ICU
 
     class Transliterator
 
-      def initialize(id, direction = :forward)
-        @parse_error = Lib::UParseError.new
-        Lib.check_error do |status|
-          # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
-          @tr = Lib.utrans_open(id, direction, nil, 0, @parse_error, status)
+      def initialize(id, rules = nil, direction = :forward)
+        if rules
+          rules_length = rules.length + 1
+          rules = UCharPointer.from_string(rules)
+        else
+          rules_length = 0
+        end
+
+        parse_error = Lib::UParseError.new
+        begin
+          Lib.check_error do |status|
+            # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
+            @tr = Lib.utrans_open(id, direction, rules, rules_length, @parse_error, status)
+          end
+        rescue ICU::Error => ex
+          raise ex, "#{ex.message} (#{parse_error})"
         end
       end
 

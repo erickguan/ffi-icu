@@ -145,7 +145,9 @@ module ICU
              :pre_context,  :pointer,
              :post_context, :pointer
 
-
+      def to_s
+        "#<%s:%x line: %d offset: %d" % [self.class, hash*2, self[:line], self[:offset]]
+      end
     end
 
     class UTransPosition < FFI::Struct
