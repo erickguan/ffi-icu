@@ -20,6 +20,7 @@ module ICU
   end
 end
 
+require "ffi-icu/core_ext/string"
 require "ffi-icu/lib"
 require "ffi-icu/uchar"
 require "ffi-icu/chardet"
