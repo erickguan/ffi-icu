@@ -10,7 +10,9 @@ module ICU
 
     VERSIONS = {
       "42" => "_4_2",
-      "44" => "_44"
+      "44" => "_44",
+      "45" => "_45",
+      "46" => "_46"
     }
 
     # FIXME: this is incredibly ugly, figure out some better way
