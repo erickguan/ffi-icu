@@ -24,5 +24,26 @@ module ICU
       iterator.to_a.should == [0, 20, 65]
     end
 
+    it "can navigate back and forward" do
+      iterator = BreakIterator.new :word, "en_US"
+      iterator.text = "Lorem ipsum dolor sit amet."
+
+      iterator.first.should == 0
+      iterator.next
+      iterator.current.should == 5
+      iterator.last.should == 27
+    end
+
+    it "fetches info about given offset" do
+      iterator = BreakIterator.new :word, "en_US"
+      iterator.text = "Lorem ipsum dolor sit amet."
+
+      iterator.following(3).should == 5
+      iterator.preceding(6).should == 5
+
+      iterator.should be_boundary(5)
+      iterator.should_not be_boundary(10)
+    end
+
   end # BreakIterator
 end # ICU

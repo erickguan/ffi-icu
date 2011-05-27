@@ -47,20 +47,20 @@ module ICU
       Lib.ubrk_last @iterator
     end
 
-    def preceding
-      Lib.ubrk_preceding @iterator
+    def preceding(offset)
+      Lib.ubrk_preceding @iterator, Integer(offset)
     end
 
-    def following
-      Lib.ubrk_following @iterator
+    def following(offset)
+      Lib.ubrk_following @iterator, Integer(offset)
     end
 
     def current
       Lib.ubrk_current @iterator
     end
 
-    def boundary?(index)
-      Lib.ubrk_isBoundary(@iterator, Integer(index)) != 0
+    def boundary?(offset)
+      Lib.ubrk_isBoundary(@iterator, Integer(offset)) != 0
     end
 
   end # BreakIterator

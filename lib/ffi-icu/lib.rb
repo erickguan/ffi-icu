@@ -210,5 +210,10 @@ module ICU
     attach_function :ubrk_previous, "ubrk_previous#{suffix}", [:pointer], :int32_t
     attach_function :ubrk_first, "ubrk_first#{suffix}", [:pointer], :int32_t
     attach_function :ubrk_last, "ubrk_last#{suffix}", [:pointer], :int32_t
+
+    attach_function :ubrk_preceding, "ubrk_preceding#{suffix}", [:pointer, :int32_t], :int32_t
+    attach_function :ubrk_following, "ubrk_following#{suffix}", [:pointer, :int32_t], :int32_t
+    attach_function :ubrk_isBoundary, "ubrk_isBoundary#{suffix}", [:pointer, :int32_t], :int32_t
+
   end # Lib
 end # ICU
