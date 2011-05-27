@@ -53,7 +53,7 @@ module ICU
 
       suffix
     rescue LoadError => ex
-      raise "no idea how to load ICU on #{ICU.platform}, patches appreciated! (#{ex.message})"
+      raise LoadError, "no idea how to load ICU on #{ICU.platform}, patches appreciated! (#{ex.message})"
     end
 
     def self.check_error
