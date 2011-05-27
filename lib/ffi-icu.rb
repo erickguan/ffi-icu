@@ -27,6 +27,7 @@ require "ffi-icu/chardet"
 require "ffi-icu/collation"
 require "ffi-icu/transliteration"
 require "ffi-icu/normalization"
+require "ffi-icu/break_iterator"
 
 unless ICU.ruby19?
   require 'jcode'

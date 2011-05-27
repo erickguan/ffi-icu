@@ -20,7 +20,7 @@ module ICU
       # let the user tell us where the lib is
       if ENV['FFI_ICU_LIB']
         libs = ENV['FFI_ICU_LIB'].split(",")
-        ffi_lib *libs
+        ffi_lib(*libs)
 
         if ENV['FFI_ICU_VERSION_SUFFIX']
           return ENV['FFI_ICU_VERSION_SUFFIX']
@@ -181,5 +181,34 @@ module ICU
                               ]
 
     attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32_t, :normalization_mode, :int32_t, :pointer, :int32_t, :pointer], :int32_t
+
+    #
+    # Text Boundary Analysis
+    #
+
+    enum :iterator_type, [ :character, :word, :line, :sentence, :title]
+    enum :word_break, [ :none,         0,
+                        :none_limit,   100,
+                        :number,       100,
+                        :number_limit, 200,
+                        :letter,       200,
+                        :letter_limit, 300,
+                        :kana,         300,
+                        :kana_limit,   400,
+                        :ideo,         400,
+                        :ideo_limit,   400
+                      ]
+
+    attach_function :ubrk_countAvailable, "ubrk_countAvailable#{suffix}", [], :int32_t
+    attach_function :ubrk_getAvailable, "ubrk_getAvailable#{suffix}", [:int32_t], :string
+
+    attach_function :ubrk_open, "ubrk_open#{suffix}", [:iterator_type, :string, :pointer, :int32_t, :pointer], :pointer
+    attach_function :ubrk_close, "ubrk_close#{suffix}", [:pointer], :void
+    attach_function :ubrk_setText, "ubrk_setText#{suffix}", [:pointer, :pointer, :int32_t, :pointer], :void
+    attach_function :ubrk_current, "ubrk_current#{suffix}", [:pointer], :int32_t
+    attach_function :ubrk_next, "ubrk_next#{suffix}", [:pointer], :int32_t
+    attach_function :ubrk_previous, "ubrk_previous#{suffix}", [:pointer], :int32_t
+    attach_function :ubrk_first, "ubrk_first#{suffix}", [:pointer], :int32_t
+    attach_function :ubrk_last, "ubrk_last#{suffix}", [:pointer], :int32_t
   end # Lib
 end # ICU

@@ -17,6 +17,7 @@ module ICU
         locales = ICU::Collation.available_locales
         locales.should be_kind_of(Array)
         locales.should_not be_empty
+        locales.should include("nb")
       end
 
       it "should return the locale of the collator" do
