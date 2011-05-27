@@ -30,9 +30,9 @@ module ICU
       ids.should_not be_empty
     end
 
-#    it "should transliterate custom rules" do
-#      ICU::Transliteration.translit("Accents-Any", "âêîôû", "NFD; [:Nonspacing Mark:] Remove; NFC").should == "aeiou"
-    #    end
+   it "should transliterate custom rules" do
+     ICU::Transliteration.translit("NFD; [:Nonspacing Mark:] Remove; NFC", "âêîôû").should == "aeiou"
+   end
 
   end # Transliteration
 end # ICU

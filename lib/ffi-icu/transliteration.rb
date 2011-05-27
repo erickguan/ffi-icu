@@ -26,18 +26,18 @@ module ICU
     class Transliterator
 
       def initialize(id, rules = nil, direction = :forward)
+        rules_length = 0
+
         if rules
           rules_length = rules.length + 1
           rules = UCharPointer.from_string(rules)
-        else
-          rules_length = 0
         end
 
         parse_error = Lib::UParseError.new
         begin
           Lib.check_error do |status|
             # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
-            @tr = Lib.utrans_open(id, direction, rules, rules_length, @parse_error, status)
+            @tr = Lib.utrans_openU(UCharPointer.from_string(id), id.length, direction, rules, rules_length, @parse_error, status)
           end
         rescue ICU::Error => ex
           raise ex, "#{ex.message} (#{parse_error})"
