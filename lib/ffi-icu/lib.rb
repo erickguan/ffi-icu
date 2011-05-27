@@ -39,8 +39,8 @@ module ICU
         ffi_lib "icucore"
       when :linux
         versions = VERSIONS.keys
-        libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}"},
-                       versions.map { |v| "libicutu.so.#{v}"}
+        libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}" },
+                       versions.map { |v| "libicutu.so.#{v}"   }
 
         VERSIONS.find do |so_version, func_version|
           if libs.first.name =~ /#{so_version}$/
@@ -48,10 +48,12 @@ module ICU
           end
         end
       else
-        raise "no idea how to load ICU on #{ICU.platform}, patches appreciated!"
+        raise LoadError
       end
 
       suffix
+    rescue LoadError => ex
+      raise "no idea how to load ICU on #{ICU.platform}, patches appreciated! (#{ex.message})"
     end
 
     def self.check_error
