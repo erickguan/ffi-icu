@@ -45,5 +45,10 @@ module ICU
       iterator.should_not be_boundary(10)
     end
 
+    it "returns an Enumerator if no block was given" do
+      iterator = BreakIterator.new :word, "nb"
+      iterator.each.should be_kind_of(Enumerator)
+    end
+
   end # BreakIterator
 end # ICU

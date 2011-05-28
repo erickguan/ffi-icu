@@ -23,6 +23,8 @@ module ICU
     end
 
     def each(&blk)
+      return to_enum(:each) unless block_given?
+
       int = first
 
       while int != UBRK_DONE
