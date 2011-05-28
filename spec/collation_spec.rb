@@ -47,6 +47,10 @@ module ICU
         @c.should_not be_equal("a", "b")
       end
 
+      it "has a simple way of collating" do
+        Collation.collate("nb", %w[æ å ø]).should == %w[æ ø å]
+      end
+
     end
   end # Collate
 end # ICU

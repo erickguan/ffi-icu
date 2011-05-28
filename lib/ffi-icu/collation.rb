@@ -2,11 +2,7 @@ module ICU
   module Collation
 
     def self.collate(locale, arr)
-      collator = Collator.new(locale)
-      res = collator.collate(arr)
-      collator.close
-
-      res
+      Collator.new(locale).collate(arr)
     end
 
     def self.keywords
