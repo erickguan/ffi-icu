@@ -4,12 +4,22 @@ require 'spec_helper'
 
 module ICU
   module Collation
+    describe "Collation" do
+      it "should collate an array of strings" do
+        Collation.collate("nb", %w[æ å ø]).should == %w[æ ø å]
+      end
+    end
+
     describe Collator do
 
       before { @c = Collator.new("nb") }
 
       it "should collate an array of strings" do
         @c.collate(%w[å ø æ]).should == %w[æ ø å]
+      end
+
+      it "raises an error if argument does not respond to :sort" do
+        lambda { @c.collate(1) }.should raise_error(ArgumentError)
       end
 
       it "should return available locales" do
@@ -45,10 +55,6 @@ module ICU
       it "should know if a string is equal to another" do
         @c.should be_equal("a", "a")
         @c.should_not be_equal("a", "b")
-      end
-
-      it "has a simple way of collating" do
-        Collation.collate("nb", %w[æ å ø]).should == %w[æ ø å]
       end
 
     end

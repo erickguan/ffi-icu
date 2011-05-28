@@ -69,8 +69,12 @@ module ICU
                            UCharPointer.from_string(b), b.length)
       end
 
-      def collate(array)
-        array.sort { |a,b| compare a, b }
+      def collate(sortable)
+        unless sortable.respond_to?(:sort)
+          raise ArgumentError, "argument must respond to :sort with arity of 2"
+        end
+
+        sortable.sort { |a, b| compare a, b }
       end
     end # Collator
 
