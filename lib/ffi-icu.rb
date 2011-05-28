@@ -10,6 +10,8 @@ module ICU
       :osx
     when /linux/
       :linux
+    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      :windows
     else
       os
     end
