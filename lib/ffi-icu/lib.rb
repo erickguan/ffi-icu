@@ -106,8 +106,8 @@ module ICU
 
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int],      :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
-    attach_function :uenum_close,     "uenum_close#{suffix}",      [:pointer], :void
-    attach_function :uenum_next,      "uenum_next#{suffix}",       [:pointer,  :pointer,  :pointer], :string
+    attach_function :uenum_close,     "uenum_close#{suffix}",     [:pointer], :void
+    attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer,  :pointer,  :pointer], :string
     attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string,    :pointer,  :int32_t], :void
     attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer,   :string,   :int32_t], :void
 
@@ -134,11 +134,11 @@ module ICU
     # http://icu-project.org/apiref/icu4c/ucol_8h.html
     #
 
-    attach_function :ucol_open,             "ucol_open#{suffix}",              [:string,   :pointer], :pointer
-    attach_function :ucol_close,            "ucol_close#{suffix}",             [:pointer], :void
-    attach_function :ucol_strcoll,          "ucol_strcoll#{suffix}",           [:pointer,  :pointer,  :int32_t,  :pointer, :int32_t], :int
-    attach_function :ucol_getKeywords,      "ucol_getKeywords#{suffix}",       [:pointer], :pointer
-    attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}",  [:string,   :pointer], :pointer
+    attach_function :ucol_open,             "ucol_open#{suffix}",             [:string,    :pointer], :pointer
+    attach_function :ucol_close,            "ucol_close#{suffix}",            [:pointer],  :void
+    attach_function :ucol_strcoll,          "ucol_strcoll#{suffix}",          [:pointer,   :pointer,  :int32_t,  :pointer, :int32_t], :int
+    attach_function :ucol_getKeywords,      "ucol_getKeywords#{suffix}",      [:pointer],  :pointer
+    attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}", [:string,    :pointer], :pointer
     attach_function :ucol_getAvailable,     "ucol_getAvailable#{suffix}",     [:int32_t],  :string
     attach_function :ucol_countAvailable,   "ucol_countAvailable#{suffix}",   [],          :int32_t
     attach_function :ucol_getLocale,        "ucol_getLocale#{suffix}",        [:pointer,   :int,      :pointer], :string

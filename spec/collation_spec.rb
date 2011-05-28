@@ -31,7 +31,6 @@ module ICU
 
       it "should return the locale of the collator" do
         l = @c.locale
-        l.should be_kind_of(String)
         l.should == "nb"
       end
 
