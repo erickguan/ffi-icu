@@ -4,10 +4,7 @@ module ICU
     class << self
       def transliterate(translit_id, str, rules = nil)
         t = Transliterator.new translit_id, rules
-        res = t.transliterate str
-        t.close
-
-        res
+        t.transliterate str
       end
       alias_method :translit, :transliterate
 
@@ -37,7 +34,8 @@ module ICU
         begin
           Lib.check_error do |status|
             # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
-            @tr = Lib.utrans_openU(UCharPointer.from_string(id), id.length, direction, rules, rules_length, @parse_error, status)
+            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.length, direction, rules, rules_length, @parse_error, status)
+            @tr = FFI::AutoPointer.new(ptr, Lib.method(:utrans_close))
           end
         rescue ICU::Error => ex
           raise ex, "#{ex.message} (#{parse_error})"
@@ -78,10 +76,6 @@ module ICU
         end
 
         buf.string text_length.get_int32(0)
-      end
-
-      def close
-        Lib.utrans_close @tr
       end
 
     end # Transliterator

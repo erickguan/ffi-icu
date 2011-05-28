@@ -5,7 +5,6 @@ require 'spec_helper'
 describe ICU::CharDet::Detector do
 
   before { @d = ICU::CharDet::Detector.new }
-  after { @d.close }
 
   it "should recognize UTF-8" do
     m = @d.detect("æåø")

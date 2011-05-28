@@ -7,7 +7,6 @@ module ICU
     describe Collator do
 
       before { @c = Collator.new("nb") }
-      after { @c.close }
 
       it "should collate an array of strings" do
         @c.collate(%w[å ø æ]).should == %w[æ ø å]

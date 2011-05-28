@@ -2,18 +2,15 @@ module ICU
   module CharDet
 
     def self.detect(string)
-      detector = Detector.new
-      res = detector.detect string
-      detector.close
-
-      res
+      Detector.new.detect string
     end
 
     class Detector
       Match = Struct.new(:name, :confidence, :language)
 
       def initialize
-        @detector = Lib.check_error { |ptr| Lib.ucsdet_open(ptr) }
+        ptr = Lib.check_error { |err| Lib.ucsdet_open err }
+        @detector = FFI::AutoPointer.new(ptr, Lib.method(:ucsdet_close))
       end
 
       def input_filter_enabled?
@@ -28,10 +25,6 @@ module ICU
         Lib.check_error do |ptr|
           Lib.ucsdet_setDeclaredEncoding(@detector, str, str.bytesize, ptr)
         end
-      end
-
-      def close
-        Lib.ucsdet_close @detector
       end
 
       def detect(str)

@@ -34,7 +34,8 @@ module ICU
       ULOC_VALID_LOCALE = 1
 
       def initialize(locale)
-        @c = Lib.check_error { |error| Lib.ucol_open(locale, error) }
+        ptr = Lib.check_error { |error| Lib.ucol_open(locale, error) }
+        @c = FFI::AutoPointer.new(ptr, Lib.method(:ucol_close))
       end
 
       def locale
@@ -74,10 +75,6 @@ module ICU
 
       def collate(array)
         array.sort { |a,b| compare a, b }
-      end
-
-      def close
-        Lib.ucol_close(@c)
       end
     end # Collator
 

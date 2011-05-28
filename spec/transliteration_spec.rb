@@ -9,8 +9,6 @@ module ICU
       @t = Transliteration::Transliterator.new(*args)
     end
 
-    after { @t.close if @t }
-
     [
      { :id => "Any-Hex",     :input => "abcde",  :output => "\\u0061\\u0062\\u0063\\u0064\\u0065"  },
      { :id => "Lower",       :input => "ABC",    :output => "abc"                                  },
