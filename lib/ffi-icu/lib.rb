@@ -9,10 +9,11 @@ module ICU
     extend FFI::Library
 
     VERSIONS = {
-      "42" => "_4_2",
-      "44" => "_44",
+      "48" => "_48",
+      "46" => "_46",
       "45" => "_45",
-      "46" => "_46"
+      "44" => "_44",
+      "42" => "_4_2",
     }
 
     # FIXME: this is incredibly ugly, figure out some better way
