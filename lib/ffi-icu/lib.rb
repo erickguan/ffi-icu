@@ -34,27 +34,34 @@ module ICU
         end
       end
 
+      libs = nil
+      versions = VERSIONS.keys
+
       # ok, try to find it
       case ICU.platform
       when :osx
         ffi_lib "icucore"
       when :linux
-        versions = VERSIONS.keys
         libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}" },
                        versions.map { |v| "libicutu.so.#{v}"   }
 
-        VERSIONS.find do |so_version, func_version|
-          if libs.first.name =~ /#{so_version}$/
-            suffix = func_version
-          end
-        end
+      when :windows
+        libs = ffi_lib versions.map { |v| "icuin#{v}.dll" }
       else
         raise LoadError
       end
 
+      if libs
+        lib_name = libs.first.name
+        version  = VERSIONS.find { |object, func| lib_name =~ /#{object}(\.dll)?$/ }
+
+        version or raise "unable to find suffix in #{lib_name}"
+        suffix = version.last
+      end
+
       suffix
     rescue LoadError => ex
-      raise LoadError, "no idea how to load ICU on #{ICU.platform}, patches appreciated! (#{ex.message})"
+      raise LoadError, "no idea how to load ICU on #{ICU.platform.inspect}, patches appreciated! (#{ex.message})"
     end
 
     def self.check_error
