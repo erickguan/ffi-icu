@@ -30,14 +30,19 @@ Character Encoding Detection
 
 Examples:
 
+```ruby
+
     match = ICU::CharDet.detect(str)
     match.name       # => "UTF-8"
     match.confidence # => 80
+```
 
 or
 
+```ruby
     detector = ICU::CharDet::Detector.new
     detector.detect(str) => #<struct ICU::CharDet::Detector::Match ...>
+```      
 
 Why not just use rchardet?
 
@@ -49,23 +54,29 @@ Locale Sensitive Collation
 
 Examples:
 
+```ruby
     ICU::Collation.collate("nb", %w[å æ ø]) == %w[æ ø å] #=> true
+```
 
 or
 
+```ruby
     collator = ICU::Collation::Collator.new("nb")
     collator.compare("a", "b")  #=> -1
     collator.greater?("z", "a") #=> true
     collator.collate(%w[å æ ø]) #=> ["æ", "ø", "å"]
+```
   
 Text Boundary Analysis
 ----------------------
 
 Examples:
 
+```ruby
     iterator = ICU::BreakIterator.new(:word, "en_US")
     iterator.text = "This is a sentence."
     iterator.to_a  #=> [0, 4, 5, 7, 8, 9, 10, 18, 19]
+```
 
 Tested on:
 ==========
