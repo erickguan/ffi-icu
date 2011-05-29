@@ -22,6 +22,11 @@ module ICU
   end
 end
 
+unless ICU.ruby19?
+  require 'jcode'
+  $KCODE = 'u'
+end
+
 require "ffi-icu/core_ext/string"
 require "ffi-icu/lib"
 require "ffi-icu/uchar"
@@ -31,7 +36,3 @@ require "ffi-icu/transliteration"
 require "ffi-icu/normalization"
 require "ffi-icu/break_iterator"
 
-unless ICU.ruby19?
-  require 'jcode'
-  $KCODE = 'u'
-end

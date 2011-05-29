@@ -18,6 +18,12 @@ module ICU
       iterator.to_a.should == [0, 5, 6, 11, 12, 17, 18, 21, 22, 26, 27, 28, 39, 40, 51, 52, 56, 57, 58, 61, 62, 64, 65, 72, 73, 79, 80, 90, 91, 93, 94, 100, 101, 103, 104, 110, 111, 116, 117, 123, 124]
     end
 
+    it "finds all word boundaries in a Thai string" do
+      iterator = BreakIterator.new :word, "th_TH"
+      iterator.text = "การทดลอง"
+      iterator.to_a.should == [0, 3, 8]
+    end
+
     it "finds all sentence boundaries in an English string" do
       iterator = BreakIterator.new :sentence, "en_US"
       iterator.text = "This is a sentence. This is another sentence, with a comma in it."
