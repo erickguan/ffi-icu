@@ -53,7 +53,9 @@ module ICU
 
     it "returns an Enumerator if no block was given" do
       iterator = BreakIterator.new :word, "nb"
-      iterator.each.should be_kind_of(Enumerator)
+      expected = ICU.ruby19? ? Enumerator : Enumerable::Enumerator
+
+      iterator.each.should be_kind_of(expected)
     end
 
   end # BreakIterator
