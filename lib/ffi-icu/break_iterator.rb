@@ -41,6 +41,7 @@ module ICU
     def each_substring(&blk)
       return to_enum(:each_substring) unless block_given?
 
+      # each_char needed for 1.8, where String#[] works on bytes, not characters
       chars = text.each_char.to_a
       low   = first
 
