@@ -1,12 +1,12 @@
 ffi-icu
 =======
 
-Simple FFI wrappers for things I need from ICU. For the full thing, check out ICU4R instead.
+Simple FFI wrappers for things I need from ICU. For the full thing, check out [ICU4R](http://icu4r.rubyforge.org/) instead.
 
 Gem
 ---
 
-http://rubygems.org/gems/ffi-icu
+[Rubygem](http://rubygems.org/gems/ffi-icu "ffi-icu")
 
     gem install ffi-icu
 
@@ -42,8 +42,7 @@ or
 Why not just use rchardet?
 
 * speed
-* rchardet does not work well on 1.9
-* none of the rchardet forks claiming to work on 1.9 actually does
+* 1.9 support
 
 Locale Sensitive Collation
 --------------------------
