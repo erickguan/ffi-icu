@@ -197,6 +197,8 @@ module ICU
     #
     # Text Boundary Analysis
     #
+    # http://icu-project.org/apiref/icu4c/ubrk_8h.html
+    #
 
     enum :iterator_type, [ :character, :word, :line, :sentence, :title]
     enum :word_break, [ :none,         0,
