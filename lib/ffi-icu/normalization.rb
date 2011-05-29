@@ -2,7 +2,7 @@ module ICU
   module Normalization
 
     def self.normalize(input, mode = :default)
-      input_length  = input.unpack("U*").size
+      input_length  = input.jlength
       needed_length = out_length = options = 0
       in_ptr        = UCharPointer.from_string(input)
       out_ptr       = UCharPointer.new(out_length)

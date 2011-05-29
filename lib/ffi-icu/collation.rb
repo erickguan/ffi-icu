@@ -41,19 +41,19 @@ module ICU
       def compare(a, b)
         Lib.ucol_strcoll(
           @c,
-          UCharPointer.from_string(a), a.length,
-          UCharPointer.from_string(b), b.length
+          UCharPointer.from_string(a), a.jlength,
+          UCharPointer.from_string(b), b.jlength
         )
       end
 
       def greater?(a, b)
-        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.length,
-                             UCharPointer.from_string(b), b.length)
+        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.jlength,
+                             UCharPointer.from_string(b), b.jlength)
       end
 
       def greater_or_equal?(a, b)
-        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.length,
-                                    UCharPointer.from_string(b), b.length)
+        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.jlength,
+                                    UCharPointer.from_string(b), b.jlength)
       end
 
       def equal?(*args)
@@ -65,8 +65,8 @@ module ICU
 
         a, b = args
 
-        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.length,
-                           UCharPointer.from_string(b), b.length)
+        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.jlength,
+                           UCharPointer.from_string(b), b.jlength)
       end
 
       def collate(sortable)
