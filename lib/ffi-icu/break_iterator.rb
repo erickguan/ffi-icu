@@ -2,7 +2,9 @@ module ICU
   class BreakIterator
     include Enumerable
 
-    UBRK_DONE = -1
+    attr_reader :text
+
+    DONE = -1
 
     def self.available_locales
       (0...Lib.ubrk_countAvailable).map do |idx|
@@ -17,6 +19,8 @@ module ICU
     end
 
     def text=(str)
+      @text = str
+
       Lib.check_error { |err|
         Lib.ubrk_setText @iterator, UCharPointer.from_string(str), str.jlength, err
       }
@@ -27,10 +31,30 @@ module ICU
 
       int = first
 
-      while int != UBRK_DONE
+      while int != DONE
         yield int
         int = self.next
       end
+
+      self
+    end
+
+    def each_substring(&blk)
+      return to_enum(:each_substring) unless block_given?
+
+      chars = text.each_char.to_a
+      low   = first
+
+      while (high = self.next) != DONE
+        yield chars[low...high].join
+        low = high
+      end
+
+      self
+    end
+
+    def substrings
+      each_substring.to_a
     end
 
     def next
