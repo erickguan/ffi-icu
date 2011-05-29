@@ -77,7 +77,7 @@ module ICU
           raise Error, name
         end
       elsif error_code < 0
-        warn "ffi-icu: #{Lib.u_errorName error_code}"
+        $stderr.puts "ffi-icu: #{Lib.u_errorName error_code}" if $DEBUG || $VERBOSE
       end
 
       ret

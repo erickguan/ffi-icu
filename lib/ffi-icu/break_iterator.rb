@@ -14,7 +14,6 @@ module ICU
 
     def initialize(type, locale)
       ptr = Lib.check_error { |err| Lib.ubrk_open(type, locale, nil, 0, err) }
-
       @iterator = FFI::AutoPointer.new(ptr, Lib.method(:ubrk_close))
     end
 
