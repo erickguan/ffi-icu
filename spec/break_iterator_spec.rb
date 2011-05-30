@@ -27,9 +27,9 @@ module ICU
 
     it "returns the substrings of a non-ASCII string" do
       iterator = BreakIterator.new :word, "th_TH"
-      iterator.text = "การทดลอง"
+      iterator.text = "รู้อะไรไม่สู้รู้วิชา รู้รักษาตัวรอดเป็นยอดดี"
 
-      iterator.substrings.should == ["การ", "ทดลอง"]
+      iterator.substrings.should ==  ["รู้", "อะไร", "ไม่สู้", "รู้", "วิชา", " ", "รู้", "รักษา", "ตัว", "รอด", "เป็น", "ยอดดี"]
     end
 
     it "finds all word boundaries in a non-ASCII string" do
