@@ -11,15 +11,14 @@ module ICU
     end
 
     describe Collator do
-
-      before { @c = Collator.new("nb") }
+      let(:collator) { Collator.new("nb") }
 
       it "should collate an array of strings" do
-        @c.collate(%w[å ø æ]).should == %w[æ ø å]
+        collator.collate(%w[å ø æ]).should == %w[æ ø å]
       end
 
       it "raises an error if argument does not respond to :sort" do
-        lambda { @c.collate(1) }.should raise_error(ArgumentError)
+        lambda { collator.collate(1) }.should raise_error(ArgumentError)
       end
 
       it "should return available locales" do
@@ -30,30 +29,30 @@ module ICU
       end
 
       it "should return the locale of the collator" do
-        l = @c.locale
+        l = collator.locale
         l.should == "nb"
       end
 
       it "should compare two strings" do
-        @c.compare("blåbærsyltetøy", "blah").should == 1
-        @c.compare("blah", "blah").should == 0
-        @c.compare("baah", "blah").should == -1
+        collator.compare("blåbærsyltetøy", "blah").should == 1
+        collator.compare("blah", "blah").should == 0
+        collator.compare("baah", "blah").should == -1
       end
 
       it "should know if a string is greater than another" do
-        @c.should be_greater("z", "a")
-        @c.should_not be_greater("a", "z")
+        collator.should be_greater("z", "a")
+        collator.should_not be_greater("a", "z")
       end
 
       it "should know if a string is greater or equal to another" do
-        @c.should be_greater_or_equal("z", "a")
-        @c.should be_greater_or_equal("z", "z")
-        @c.should_not be_greater_or_equal("a", "z")
+        collator.should be_greater_or_equal("z", "a")
+        collator.should be_greater_or_equal("z", "z")
+        collator.should_not be_greater_or_equal("a", "z")
       end
 
       it "should know if a string is equal to another" do
-        @c.should be_equal("a", "a")
-        @c.should_not be_equal("a", "b")
+        collator.should be_equal("a", "a")
+        collator.should_not be_equal("a", "b")
       end
 
     end

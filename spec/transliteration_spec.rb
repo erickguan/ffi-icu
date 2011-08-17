@@ -5,17 +5,17 @@ require "spec_helper"
 module ICU
   describe Transliteration::Transliterator do
 
-    def transliterator(*args)
-      @t = Transliteration::Transliterator.new(*args)
+    def transliterator_for(*args)
+      Transliteration::Transliterator.new(*args)
     end
 
     [
-     { :id => "Any-Hex",     :input => "abcde",  :output => "\\u0061\\u0062\\u0063\\u0064\\u0065"  },
-     { :id => "Lower",       :input => "ABC",    :output => "abc"                                  },
-    ].each do |test|
-
-      it "should transliterate #{test[:id]}" do
-        transliterator(test[:id]).transliterate(test[:input]).should == test[:output]
+      ["Any-Hex", "abcde", "\\u0061\\u0062\\u0063\\u0064\\u0065"],
+      ["Lower", "ABC", "abc"]
+    ].each do |id, input, output|
+      it "should transliterate #{id}" do
+        tl = transliterator_for(id)
+        tl.transliterate(input).should == output
       end
 
     end
