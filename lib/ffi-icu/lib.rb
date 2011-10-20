@@ -41,7 +41,7 @@ module ICU
       case ICU.platform
       when :osx
         ffi_lib "icucore"
-      when :linux
+      when :linux, :bsd
         libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}" },
                        versions.map { |v| "libicutu.so.#{v}"   }
 
