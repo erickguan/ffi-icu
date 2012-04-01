@@ -8,60 +8,69 @@ module ICU
   module Lib
     extend FFI::Library
 
-    VERSIONS = {
-      "48" => "_48",
-      "46" => "_46",
-      "45" => "_45",
-      "44" => "_44",
-      "42" => "_4_2",
-    }
-
-    # FIXME: this is incredibly ugly, figure out some better way
-    def self.find_icu
-      suffix = ''
-
-      # let the user tell us where the lib is
-      if ENV['FFI_ICU_LIB']
-        libs = ENV['FFI_ICU_LIB'].split(",")
-        ffi_lib(*libs)
-
-        if ENV['FFI_ICU_VERSION_SUFFIX']
-          return ENV['FFI_ICU_VERSION_SUFFIX']
-        elsif num = libs.first[/\d+$/]
-          return num.split(//).join("_")
+    def self.search_paths
+      @search_paths ||= begin
+        if ENV['FFI_ICU_LIB']
+          [ ENV['FFI_ICU_LIB'] ]
+        elsif FFI::Platform::IS_WINDOWS
+          ENV['PATH'].split(File::PATH_SEPARATOR)
         else
-          return suffix
+          [ '/usr/local/{lib64,lib}', '/opt/local/{lib64,lib}', '/usr/{lib64,lib}' ]
+        end
+      end
+    end
+
+    def self.find_lib(lib)
+      Dir.glob(search_paths.map { |path|
+        File.expand_path(File.join(path, lib))
+      }).first
+    end
+
+    def self.load_icu
+      # First find the library
+      lib_names = case ICU.platform
+                  when :osx
+                    [find_lib("libicucore.#{FFI::Platform::LIBSUFFIX}")]
+                  when :linux
+                    [find_lib("libicui18n.#{FFI::Platform::LIBSUFFIX}.??"),
+                     find_lib("libicutu.#{FFI::Platform::LIBSUFFIX}.??")]
+                  when :windows
+                    [find_lib("icuuc??.#{FFI::Platform::LIBSUFFIX}"),
+                     find_lib("icuin??.#{FFI::Platform::LIBSUFFIX}")]
+                  end
+
+      lib_names.compact! if lib_names
+
+      if not lib_names or lib_names.length == 0
+        raise LoadError, "Could not find ICU on #{ICU.platform.inspect}, patches appreciated!"
+      end
+
+      # And now try to load the library
+      begin
+        libs = ffi_lib(*lib_names)
+      rescue LoadError => ex
+        raise LoadError, "no idea how to load ICU on #{ICU.platform.inspect}, patches appreciated! (#{ex.message})"
+      end
+
+      # And last figure out the version we just loaded
+      icu_version(libs)
+    end
+
+    def self.icu_version(libs)
+      version = nil
+
+      libs.find do |lib|
+        # Get the version - sure would be nice if libicu exported this in a function
+        # we could just call cause this is super fugly!
+        match = lib.name.match(/(\d\d)\.#{FFI::Platform::LIBSUFFIX}/) ||
+                lib.name.match(/#{FFI::Platform::LIBSUFFIX}\.(\d\d)/)
+        if match
+          version = match[1]
         end
       end
 
-      libs = nil
-      versions = VERSIONS.keys
-
-      # ok, try to find it
-      case ICU.platform
-      when :osx
-        ffi_lib "icucore"
-      when :linux, :bsd
-        libs = ffi_lib versions.map { |v| "libicui18n.so.#{v}" },
-                       versions.map { |v| "libicutu.so.#{v}"   }
-
-      when :windows
-        libs = ffi_lib versions.map { |v| "icuin#{v}.dll" }
-      else
-        raise LoadError
-      end
-
-      if libs
-        lib_name = libs.first.name
-        version  = VERSIONS.find { |object, func| lib_name =~ /#{object}(\.dll)?$/ }
-
-        version or raise "unable to find suffix in #{lib_name}"
-        suffix = version.last
-      end
-
-      suffix
-    rescue LoadError => ex
-      raise LoadError, "no idea how to load ICU on #{ICU.platform.inspect}, patches appreciated! (#{ex.message})"
+      # Note this may return nil, like on OSX
+      version
     end
 
     def self.check_error
@@ -101,8 +110,8 @@ module ICU
       end
     end
 
-
-    suffix = find_icu()
+    version = load_icu
+    suffix = version ? "_#{version}" : ""
 
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int],      :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
@@ -190,7 +199,7 @@ module ICU
                                 :default, 4,
                                 :nfkc,    5,
                                 :fcd,     6
-                              ]
+    ]
 
     attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32_t, :normalization_mode, :int32_t, :pointer, :int32_t, :pointer], :int32_t
 
@@ -211,7 +220,7 @@ module ICU
                         :kana_limit,   400,
                         :ideo,         400,
                         :ideo_limit,   400
-                      ]
+    ]
 
     attach_function :ubrk_countAvailable, "ubrk_countAvailable#{suffix}", [],              :int32_t
     attach_function :ubrk_getAvailable,   "ubrk_getAvailable#{suffix}",   [:int32_t],      :string
