@@ -52,7 +52,6 @@ module ICU
         raise LoadError, "no idea how to load ICU on #{ICU.platform.inspect}, patches appreciated! (#{ex.message})"
       end
 
-      # And last figure out the version we just loaded
       icu_version(libs)
     end
 
@@ -71,6 +70,46 @@ module ICU
 
       # Note this may return nil, like on OSX
       version
+    end
+
+    def self.figure_suffix(version)
+      # For some reason libicu prepends its exported functions with version information,
+      # which of course differs across all platforms.  Some examples:
+      #
+      # OSX:
+      #   u_errorName
+      #
+      # CentOS 5
+      #   u_errorName_3_6
+      #
+      # Fedora 14
+      #   u_errorName_44
+      #
+      # Windows (compiled with mingw)
+      #
+      #   u_errorName_44
+      #
+      # So let's figure out which one it is.
+
+      # Here are the possible suffixes
+      suffixes = [""]
+      if version
+        suffixes << "_#{version}" << "_#{version[0]}_#{version[1]}"
+      end
+
+      # Loop over each suffix
+      suffixes.find do |suffix|
+        # Get the function name
+        function_name = "u_errorName#{suffix}"
+        # Map this to possible function names depending on platform and calling convention
+        function = function_names(function_name, nil).find do |fname|
+          # Now loop over each library
+          ffi_libraries.find do |lib|
+            # And does the function exist?
+            function = lib.find_function(fname)
+          end
+        end
+      end
     end
 
     def self.check_error
@@ -111,7 +150,7 @@ module ICU
     end
 
     version = load_icu
-    suffix = version ? "_#{version}" : ""
+    suffix = figure_suffix(version)
 
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int],      :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
