@@ -90,7 +90,7 @@ module ICU
       # Here are the possible suffixes
       suffixes = [""]
       if version
-        suffixes << "_#{version}" << "_#{version[0]}_#{version[1]}"
+        suffixes << "_#{version}" << "_#{version[0].chr}_#{version[1].chr}"
       end
 
       # Try to find the u_errorName function using the possible suffixes
