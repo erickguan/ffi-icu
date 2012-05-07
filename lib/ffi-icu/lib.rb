@@ -74,7 +74,7 @@ module ICU
 
     def self.figure_suffix(version)
       # For some reason libicu prepends its exported functions with version information,
-      # which of course differs across all platforms.  Some examples:
+      # which differs across all platforms.  Some examples:
       #
       # OSX:
       #   u_errorName
@@ -82,14 +82,10 @@ module ICU
       # CentOS 5
       #   u_errorName_3_6
       #
-      # Fedora 14
+      # Fedora 14 and Windows (using mingw)
       #   u_errorName_44
       #
-      # Windows (compiled with mingw)
-      #
-      #   u_errorName_44
-      #
-      # So let's figure out which one it is.
+      # So we need to figure out which one it is.
 
       # Here are the possible suffixes
       suffixes = [""]
@@ -97,16 +93,12 @@ module ICU
         suffixes << "_#{version}" << "_#{version[0]}_#{version[1]}"
       end
 
-      # Loop over each suffix
+      # Try to find the u_errorName function using the possible suffixes
       suffixes.find do |suffix|
-        # Get the function name
         function_name = "u_errorName#{suffix}"
-        # Map this to possible function names depending on platform and calling convention
-        function = function_names(function_name, nil).find do |fname|
-          # Now loop over each library
+        function_names(function_name, nil).find do |fname|
           ffi_libraries.find do |lib|
-            # And does the function exist?
-            function = lib.find_function(fname)
+            lib.find_function(fname)
           end
         end
       end
