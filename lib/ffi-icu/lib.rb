@@ -15,8 +15,13 @@ module ICU
         elsif FFI::Platform::IS_WINDOWS
           ENV['PATH'].split(File::PATH_SEPARATOR)
         else
-          [ '/usr/local/{lib64,lib}', '/opt/local/{lib64,lib}',
-            '/usr/{lib64,lib}', '/usr/lib/x86_64-linux-gnu' ]
+          [
+            '/usr/local/{lib64,lib}',
+            '/opt/local/{lib64,lib}',
+            '/usr/{lib64,lib}',
+            '/usr/lib/x86_64-linux-gnu', # for Debian Multiarch http://wiki.debian.org/Multiarch
+            '/usr/lib/i386-linux-gnu',   # for Debian Multiarch
+          ]
         end
       end
     end
@@ -43,7 +48,7 @@ module ICU
       lib_names.compact! if lib_names
 
       if not lib_names or lib_names.length == 0
-        raise LoadError, "Could not find ICU on #{ICU.platform.inspect}, patches appreciated!"
+        raise LoadError, "Could not find ICU on #{ICU.platform.inspect}. Patches welcome, or you can add the containing directory yourself: #{self}.search_paths << '/path/to/lib'"
       end
 
       # And now try to load the library
