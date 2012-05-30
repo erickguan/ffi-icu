@@ -29,10 +29,6 @@ unless ICU.ruby19?
   $KCODE = 'u'
 end
 
-p $LOADED_FEATURES
-file = $LOADED_FEATURES.find { |e| File.basename(e) == "ffi.rb" }
-puts File.read(file) if file
-
 require "ffi-icu/core_ext/string"
 require "ffi-icu/lib"
 require "ffi-icu/uchar"
