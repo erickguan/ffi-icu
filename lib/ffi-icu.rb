@@ -29,6 +29,8 @@ unless ICU.ruby19?
   $KCODE = 'u'
 end
 
+p $LOADED_FEATURES
+
 require "ffi-icu/core_ext/string"
 require "ffi-icu/lib"
 require "ffi-icu/uchar"
