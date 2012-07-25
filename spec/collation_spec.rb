@@ -36,7 +36,7 @@ module ICU
       it "should compare two strings" do
         collator.compare("blåbærsyltetøy", "blah").should == 1
         collator.compare("blah", "blah").should == 0
-        collator.compare("baah", "blah").should == -1
+        collator.compare("ba", "bl").should == -1
       end
 
       it "should know if a string is greater than another" do
