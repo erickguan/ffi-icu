@@ -9,7 +9,7 @@ module ICU
       bytes = str.unpack("U*")
 
       ptr = new bytes.size
-      ptr.put_array_of_uint16 0, bytes
+      ptr.write_array_of_uint16 bytes
 
       ptr
     end
@@ -29,7 +29,7 @@ module ICU
     def string(length = nil)
       length ||= size / TYPE_SIZE
 
-      wstring = get_array_of_uint16(0, length)
+      wstring = read_array_of_uint16(length)
       wstring.pack("U*")
     end
 
