@@ -129,6 +129,14 @@ module ICU
       ret
     end
 
+    def self.cldr_version
+      result = FFI::MemoryPointer.new(:char, 64)
+      version_info = FFI::MemoryPointer.new(:uint8, 4)
+      check_error { |status| ulocdata_getCLDRVersion(version_info, status) }
+      u_versionToString(version_info, result)
+      result.read_string_to_null
+    end
+
     def self.enum_ptr_to_array(enum_ptr)
       length = check_error do |status|
         uenum_count(enum_ptr, status)
@@ -156,6 +164,7 @@ module ICU
     attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer,  :pointer,  :pointer], :string
     attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string,    :pointer,  :int32_t], :void
     attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer,   :string,   :int32_t], :void
+    attach_function :u_versionToString, "u_versionToString#{suffix}", [:pointer, :pointer], :void
 
     #
     # Locale
@@ -200,6 +209,8 @@ module ICU
     attach_function :uloc_getDisplayScript,         "uloc_getDisplayScript#{suffix}",         [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getDisplayVariant,        "uloc_getDisplayVariant#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getLineOrientation,       "uloc_getLineOrientation#{suffix}",       [:string, :pointer], :layout_type
+
+    attach_function :ulocdata_getCLDRVersion, "ulocdata_getCLDRVersion#{suffix}", [:pointer, :pointer], :void
 
     # CharDet
     #
