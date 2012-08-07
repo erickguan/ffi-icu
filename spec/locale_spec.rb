@@ -34,7 +34,7 @@ module ICU
       let(:locale) do
         locales = Locale.available
         locales.delete(Locale.default)
-        locales.sample
+        locales.respond_to?(:sample) ? locales.sample : locales.choice
       end
 
       it { should be_a Locale }
