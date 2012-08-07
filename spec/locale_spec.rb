@@ -66,9 +66,15 @@ module ICU
       end
 
       it 'returns a language tag for a locale' do
-        Locale.new('en_US').to_language_tag.should == 'en-US'
-        Locale.new('zh_TW').to_language_tag.should == 'zh-TW'
-        Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-Hans-CH-u-co-pinyin'
+        if Gem::Version.new(Lib.cldr_version) < Gem::Version.new('1.8')
+          Locale.new('en_US').to_language_tag.should == 'en-us'
+          Locale.new('zh_TW').to_language_tag.should == 'zh-tw'
+          Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-hans-ch-u-co-pinyin'
+        else
+          Locale.new('en_US').to_language_tag.should == 'en-US'
+          Locale.new('zh_TW').to_language_tag.should == 'zh-TW'
+          Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-Hans-CH-u-co-pinyin'
+        end
       end
     end
 
@@ -102,13 +108,16 @@ module ICU
         end
 
         it 'returns the script' do
-          Locale.new('zh_Hans_CH').display_script('en').should == 'Simplified Han'
-          Locale.new('zh_Hans_CH').display_script('fr').should == 'chinois simplifié'
+          Locale.new('ja_Hira_JP').display_script('en').should == 'Hiragana'
+          Locale.new('ja_Hira_JP').display_script('ru').should == 'Хирагана'
         end
 
         it 'returns the variant' do
           Locale.new('zh_Hans_CH_PINYIN').display_variant('en').should == 'Pinyin Romanization'
-          Locale.new('zh_Hans_CH_PINYIN').display_variant('es').should == 'Romanización pinyin'
+
+          if Gem::Version.new(Lib.cldr_version) > Gem::Version.new('1.8')
+            Locale.new('zh_Hans_CH_PINYIN').display_variant('es').should == 'Romanización pinyin'
+          end
         end
       end
 
