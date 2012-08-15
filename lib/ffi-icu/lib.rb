@@ -129,6 +129,14 @@ module ICU
       ret
     end
 
+    def self.cldr_version
+      result = FFI::MemoryPointer.new(:char, 64)
+      version_info = FFI::MemoryPointer.new(:uint8, 4)
+      check_error { |status| ulocdata_getCLDRVersion(version_info, status) }
+      u_versionToString(version_info, result)
+      result.read_string_to_null
+    end
+
     def self.enum_ptr_to_array(enum_ptr)
       length = check_error do |status|
         uenum_count(enum_ptr, status)
@@ -156,6 +164,53 @@ module ICU
     attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer,  :pointer,  :pointer], :string
     attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string,    :pointer,  :int32_t], :void
     attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer,   :string,   :int32_t], :void
+    attach_function :u_versionToString, "u_versionToString#{suffix}", [:pointer, :pointer], :void
+
+    #
+    # Locale
+    #
+    # http://icu-project.org/apiref/icu4c/uloc_8h.html
+    #
+
+    enum :layout_type, [:ltr, :rtl, :ttb, :btt, :unknown]
+
+    attach_function :uloc_addLikelySubtags, "uloc_addLikelySubtags#{suffix}", [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_canonicalize,     "uloc_canonicalize#{suffix}",     [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_countAvailable,   "uloc_countAvailable#{suffix}",   [], :int32_t
+    attach_function :uloc_forLanguageTag,   "uloc_forLanguageTag#{suffix}",   [:string, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :uloc_getAvailable,     "uloc_getAvailable#{suffix}",     [:int32_t], :string
+    attach_function :uloc_getBaseName,      "uloc_getBaseName#{suffix}",      [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getCountry,       "uloc_getCountry#{suffix}",       [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDefault,       "uloc_getDefault#{suffix}",       [], :string
+    attach_function :uloc_getISO3Country,   "uloc_getISO3Country#{suffix}",   [:string], :string
+    attach_function :uloc_getISO3Language,  "uloc_getISO3Language#{suffix}",  [:string], :string
+    attach_function :uloc_getISOCountries,  "uloc_getISOCountries#{suffix}",  [], :pointer
+    attach_function :uloc_getISOLanguages,  "uloc_getISOLanguages#{suffix}",  [], :pointer
+    attach_function :uloc_getKeywordValue,  "uloc_getKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getLanguage,      "uloc_getLanguage#{suffix}",      [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getLocaleForLCID, "uloc_getLocaleForLCID#{suffix}", [:uint32, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getLCID,          "uloc_getLCID#{suffix}",          [:string], :uint32
+    attach_function :uloc_getName,          "uloc_getName#{suffix}",          [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getParent,        "uloc_getParent#{suffix}",        [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getScript,        "uloc_getScript#{suffix}",        [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getVariant,       "uloc_getVariant#{suffix}",       [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_minimizeSubtags,  "uloc_minimizeSubtags#{suffix}",  [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_openKeywords,     "uloc_openKeywords#{suffix}",     [:string, :pointer], :pointer
+    attach_function :uloc_setDefault,       "uloc_setDefault#{suffix}",       [:string, :pointer], :void
+    attach_function :uloc_setKeywordValue,  "uloc_setKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_toLanguageTag,    "uloc_toLanguageTag#{suffix}",    [:string, :pointer, :int32_t, :int8_t, :pointer], :int32_t
+
+    attach_function :uloc_getCharacterOrientation,  "uloc_getCharacterOrientation#{suffix}",  [:string, :pointer], :layout_type
+    attach_function :uloc_getDisplayCountry,        "uloc_getDisplayCountry#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayKeyword,        "uloc_getDisplayKeyword#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayKeywordValue,   "uloc_getDisplayKeywordValue#{suffix}",   [:string, :string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayLanguage,       "uloc_getDisplayLanguage#{suffix}",       [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayName,           "uloc_getDisplayName#{suffix}",           [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayScript,         "uloc_getDisplayScript#{suffix}",         [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getDisplayVariant,        "uloc_getDisplayVariant#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uloc_getLineOrientation,       "uloc_getLineOrientation#{suffix}",       [:string, :pointer], :layout_type
+
+    attach_function :ulocdata_getCLDRVersion, "ulocdata_getCLDRVersion#{suffix}", [:pointer, :pointer], :void
 
     # CharDet
     #
