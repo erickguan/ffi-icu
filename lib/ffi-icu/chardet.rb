@@ -49,14 +49,9 @@ module ICU
       end
 
       def detectable_charsets
-        enum_ptr = Lib.check_error do |ptr|
-          Lib.ucsdet_getAllDetectableCharsets(@detector, ptr)
+        Lib.check_error do |status|
+          Lib.ucsdet_getAllDetectableCharsets(@detector, status).to_a
         end
-
-        result = Lib.enum_ptr_to_array(enum_ptr)
-        Lib.uenum_close(enum_ptr)
-
-        result
       end
 
       private
