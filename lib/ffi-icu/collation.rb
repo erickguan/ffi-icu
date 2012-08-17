@@ -6,15 +6,13 @@ module ICU
     end
 
     def self.keywords
-      enum_ptr = Lib.check_error { |error| Lib.ucol_getKeywords(error) }
-      keywords = Lib.enum_ptr_to_array(enum_ptr)
-      Lib.uenum_close enum_ptr
+      keywords = Lib.check_error { |error| Lib.ucol_getKeywords(error).to_a }
 
       hash = {}
       keywords.each do |keyword|
-        enum_ptr = Lib.check_error { |error| Lib.ucol_getKeywordValues(keyword, error) }
-        hash[keyword] = Lib.enum_ptr_to_array(enum_ptr)
-        Lib.uenum_close(enum_ptr)
+        hash[keyword] = Lib.check_error do |error|
+          Lib.ucol_getKeywordValues(keyword, error).to_a
+        end
       end
 
       hash

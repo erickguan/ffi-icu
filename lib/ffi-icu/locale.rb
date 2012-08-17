@@ -127,13 +127,7 @@ module ICU
     end
 
     def keywords
-      enum_ptr = Lib.check_error { |status| Lib.uloc_openKeywords(@id, status) }
-
-      begin
-        Lib.enum_ptr_to_array(enum_ptr)
-      ensure
-        Lib.uenum_close(enum_ptr)
-      end
+      Lib.check_error { |status| Lib.uloc_openKeywords(@id, status).to_a }
     end
 
     def language

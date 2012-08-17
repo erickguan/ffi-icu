@@ -9,14 +9,7 @@ module ICU
       alias_method :translit, :transliterate
 
       def available_ids
-        enum_ptr = Lib.check_error do |error|
-          Lib.utrans_openIDs(error)
-        end
-
-        result = Lib.enum_ptr_to_array(enum_ptr)
-        Lib.uenum_close(enum_ptr)
-
-        result
+        Lib.check_error { |error| Lib.utrans_openIDs(error).to_a }
       end
     end
 

@@ -137,15 +137,23 @@ module ICU
       result.read_string_to_null
     end
 
-    def self.enum_ptr_to_array(enum_ptr)
-      length = check_error do |status|
-        uenum_count(enum_ptr, status)
+    class EnumPointer < FFI::AutoPointer
+      def self.release(pointer)
+        Lib.uenum_close(pointer)
       end
 
-      len = FFI::MemoryPointer.new(:int)
+      def count
+        Lib.check_error { |status| Lib.uenum_count(self, status) }
+      end
 
-      (0...length).map do |idx|
-        check_error { |st| uenum_next(enum_ptr, len, st) }
+      def to_a
+        # utrans_openIDs can't live without this
+        # http://bugs.icu-project.org/trac/ticket/9481
+        length = FFI::MemoryPointer.new(:int)
+
+        (1..count).map do
+          Lib.check_error { |status| Lib.uenum_next(self, length, status) }
+        end
       end
     end
 
@@ -157,6 +165,8 @@ module ICU
 
     version = load_icu
     suffix = figure_suffix(version)
+
+    typedef Lib::EnumPointer, :enum_pointer
 
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int],      :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
@@ -195,7 +205,7 @@ module ICU
     attach_function :uloc_getScript,        "uloc_getScript#{suffix}",        [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getVariant,       "uloc_getVariant#{suffix}",       [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_minimizeSubtags,  "uloc_minimizeSubtags#{suffix}",  [:string, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :uloc_openKeywords,     "uloc_openKeywords#{suffix}",     [:string, :pointer], :pointer
+    attach_function :uloc_openKeywords,     "uloc_openKeywords#{suffix}",     [:string, :pointer], :enum_pointer
     attach_function :uloc_setDefault,       "uloc_setDefault#{suffix}",       [:string, :pointer], :void
     attach_function :uloc_setKeywordValue,  "uloc_setKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_toLanguageTag,    "uloc_toLanguageTag#{suffix}",    [:string, :pointer, :int32_t, :int8_t, :pointer], :int32_t
@@ -226,7 +236,7 @@ module ICU
     attach_function :ucsdet_getName,                  "ucsdet_getName#{suffix}",                   [:pointer,  :pointer], :string
     attach_function :ucsdet_getConfidence,            "ucsdet_getConfidence#{suffix}",             [:pointer,  :pointer], :int32_t
     attach_function :ucsdet_getLanguage,              "ucsdet_getLanguage#{suffix}",               [:pointer,  :pointer], :string
-    attach_function :ucsdet_getAllDetectableCharsets, "ucsdet_getAllDetectableCharsets#{suffix}",  [:pointer,  :pointer], :pointer
+    attach_function :ucsdet_getAllDetectableCharsets, "ucsdet_getAllDetectableCharsets#{suffix}",  [:pointer,  :pointer], :enum_pointer
     attach_function :ucsdet_isInputFilterEnabled,     "ucsdet_isInputFilterEnabled#{suffix}",      [:pointer], :bool
     attach_function :ucsdet_enableInputFilter,        "ucsdet_enableInputFilter#{suffix}",         [:pointer,  :bool],    :bool
 
@@ -238,8 +248,8 @@ module ICU
     attach_function :ucol_open,             "ucol_open#{suffix}",             [:string,    :pointer], :pointer
     attach_function :ucol_close,            "ucol_close#{suffix}",            [:pointer],  :void
     attach_function :ucol_strcoll,          "ucol_strcoll#{suffix}",          [:pointer,   :pointer,  :int32_t,  :pointer, :int32_t], :int
-    attach_function :ucol_getKeywords,      "ucol_getKeywords#{suffix}",      [:pointer],  :pointer
-    attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}", [:string,    :pointer], :pointer
+    attach_function :ucol_getKeywords,      "ucol_getKeywords#{suffix}",      [:pointer],  :enum_pointer
+    attach_function :ucol_getKeywordValues, "ucol_getKeywordValues#{suffix}", [:string,    :pointer], :enum_pointer
     attach_function :ucol_getAvailable,     "ucol_getAvailable#{suffix}",     [:int32_t],  :string
     attach_function :ucol_countAvailable,   "ucol_countAvailable#{suffix}",   [],          :int32_t
     attach_function :ucol_getLocale,        "ucol_getLocale#{suffix}",        [:pointer,   :int,      :pointer], :string
@@ -273,7 +283,7 @@ module ICU
 
     enum :trans_direction, [:forward, :reverse]
 
-    attach_function :utrans_openIDs,     "utrans_openIDs#{suffix}",     [:pointer], :pointer
+    attach_function :utrans_openIDs,     "utrans_openIDs#{suffix}",     [:pointer], :enum_pointer
     attach_function :utrans_openU,       "utrans_openU#{suffix}",       [:pointer,  :int32_t,         :trans_direction, :pointer, :int32_t, :pointer,  :pointer], :pointer
     attach_function :utrans_open,        "utrans_open#{suffix}",        [:string,   :trans_direction, :pointer,         :int32_t, :pointer, :pointer], :pointer
     attach_function :utrans_close,       "utrans_close#{suffix}",       [:pointer], :void
