@@ -43,5 +43,19 @@ module ICU
         end
       end
     end
+
+    describe 'CLDR version' do
+      subject { Lib.cldr_version }
+
+      it { should be_a Lib::VersionInfo }
+      it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+    end
+
+    describe 'ICU version' do
+      subject { Lib.version }
+
+      it { should be_a Lib::VersionInfo }
+      it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+    end
   end
 end
