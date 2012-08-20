@@ -5,7 +5,7 @@ module ICU
         offset = 0
         result = []
 
-        while (ptr = pointer.get_pointer(offset)) != FFI::Pointer::NULL do
+        until (ptr = pointer.get_pointer(offset)).null?
           result << ptr.read_string
           offset += FFI::Pointer.size
         end
