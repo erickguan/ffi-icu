@@ -59,21 +59,23 @@ module ICU
       end
     end
 
-    describe 'BCP 47 language tags' do
-      it 'converts a language tag to a locale' do
-        Locale.for_language_tag('en-us').should == Locale.new('en_US')
-        Locale.for_language_tag('nan-Hant-tw').should == Locale.new('nan_Hant_TW')
-      end
+    if Gem::Version.new('4.2') <= Gem::Version.new(Lib.version)
+      describe 'BCP 47 language tags' do
+        it 'converts a language tag to a locale' do
+          Locale.for_language_tag('en-us').should == Locale.new('en_US')
+          Locale.for_language_tag('nan-Hant-tw').should == Locale.new('nan_Hant_TW')
+        end
 
-      it 'returns a language tag for a locale' do
-        if Gem::Version.new(Lib.cldr_version) < Gem::Version.new('1.8')
-          Locale.new('en_US').to_language_tag.should == 'en-us'
-          Locale.new('zh_TW').to_language_tag.should == 'zh-tw'
-          Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-hans-ch-u-co-pinyin'
-        else
-          Locale.new('en_US').to_language_tag.should == 'en-US'
-          Locale.new('zh_TW').to_language_tag.should == 'zh-TW'
-          Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-Hans-CH-u-co-pinyin'
+        it 'returns a language tag for a locale' do
+          if Gem::Version.new('4.4') <= Gem::Version.new(Lib.version)
+            Locale.new('en_US').to_language_tag.should == 'en-US'
+            Locale.new('zh_TW').to_language_tag.should == 'zh-TW'
+            Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-Hans-CH-u-co-pinyin'
+          else
+            Locale.new('en_US').to_language_tag.should == 'en-us'
+            Locale.new('zh_TW').to_language_tag.should == 'zh-tw'
+            Locale.new('zh_Hans_CH_PINYIN').to_language_tag.should == 'zh-hans-ch-u-co-pinyin'
+          end
         end
       end
     end
@@ -113,11 +115,8 @@ module ICU
         end
 
         it 'returns the variant' do
-          Locale.new('zh_Hans_CH_PINYIN').display_variant('en').should == 'Pinyin Romanization'
-
-          if Gem::Version.new(Lib.cldr_version) > Gem::Version.new('1.8')
-            Locale.new('zh_Hans_CH_PINYIN').display_variant('es').should == 'Romanización pinyin'
-          end
+          Locale.new('be_BY_TARASK').display_variant('de').should == 'Taraskievica-Orthographie'
+          Locale.new('zh_CH_POSIX').display_variant('en').should == 'Computer'
         end
       end
 

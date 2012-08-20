@@ -129,14 +129,6 @@ module ICU
       ret
     end
 
-    def self.cldr_version
-      result = FFI::MemoryPointer.new(:char, 64)
-      version_info = FFI::MemoryPointer.new(:uint8, 4)
-      check_error { |status| ulocdata_getCLDRVersion(version_info, status) }
-      u_versionToString(version_info, result)
-      result.read_string_to_null
-    end
-
     def self.enum_ptr_to_array(enum_ptr)
       length = check_error do |status|
         uenum_count(enum_ptr, status)
@@ -155,8 +147,45 @@ module ICU
       end
     end
 
+    class VersionInfo < FFI::MemoryPointer
+      extend FFI::DataConverter
+
+      MaxLength = 4
+      MaxStringLength = 20
+
+      def self.native_type
+        FFI::Type::POINTER
+      end
+
+      def initialize
+        super :uint8, MaxLength
+      end
+
+      def to_a
+        read_array_of_uint8(MaxLength)
+      end
+
+      def to_s
+        buffer = FFI::MemoryPointer.new(:char, MaxStringLength)
+        Lib.u_versionToString(self, buffer)
+        buffer.read_string_to_null
+      end
+    end
+
+    def self.cldr_version
+      @cldr_version ||= VersionInfo.new.tap do |version|
+        check_error { |status| ulocdata_getCLDRVersion(version, status) }
+      end
+    end
+
+    def self.version
+      @version ||= VersionInfo.new.tap { |version| u_getVersion(version) }
+    end
+
     version = load_icu
     suffix = figure_suffix(version)
+
+    typedef VersionInfo, :version
 
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int],      :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
@@ -164,7 +193,9 @@ module ICU
     attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer,  :pointer,  :pointer], :string
     attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string,    :pointer,  :int32_t], :void
     attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer,   :string,   :int32_t], :void
-    attach_function :u_versionToString, "u_versionToString#{suffix}", [:pointer, :pointer], :void
+
+    attach_function :u_getVersion,      "u_getVersion#{suffix}",      [:version], :void
+    attach_function :u_versionToString, "u_versionToString#{suffix}", [:version, :pointer], :void
 
     #
     # Locale
@@ -177,7 +208,6 @@ module ICU
     attach_function :uloc_addLikelySubtags, "uloc_addLikelySubtags#{suffix}", [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_canonicalize,     "uloc_canonicalize#{suffix}",     [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_countAvailable,   "uloc_countAvailable#{suffix}",   [], :int32_t
-    attach_function :uloc_forLanguageTag,   "uloc_forLanguageTag#{suffix}",   [:string, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :uloc_getAvailable,     "uloc_getAvailable#{suffix}",     [:int32_t], :string
     attach_function :uloc_getBaseName,      "uloc_getBaseName#{suffix}",      [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getCountry,       "uloc_getCountry#{suffix}",       [:string, :pointer, :int32_t, :pointer], :int32_t
@@ -198,7 +228,6 @@ module ICU
     attach_function :uloc_openKeywords,     "uloc_openKeywords#{suffix}",     [:string, :pointer], :pointer
     attach_function :uloc_setDefault,       "uloc_setDefault#{suffix}",       [:string, :pointer], :void
     attach_function :uloc_setKeywordValue,  "uloc_setKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :uloc_toLanguageTag,    "uloc_toLanguageTag#{suffix}",    [:string, :pointer, :int32_t, :int8_t, :pointer], :int32_t
 
     attach_function :uloc_getCharacterOrientation,  "uloc_getCharacterOrientation#{suffix}",  [:string, :pointer], :layout_type
     attach_function :uloc_getDisplayCountry,        "uloc_getDisplayCountry#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
@@ -210,7 +239,12 @@ module ICU
     attach_function :uloc_getDisplayVariant,        "uloc_getDisplayVariant#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getLineOrientation,       "uloc_getLineOrientation#{suffix}",       [:string, :pointer], :layout_type
 
-    attach_function :ulocdata_getCLDRVersion, "ulocdata_getCLDRVersion#{suffix}", [:pointer, :pointer], :void
+    if Gem::Version.new('4.2') <= Gem::Version.new(self.version)
+      attach_function :uloc_forLanguageTag, "uloc_forLanguageTag#{suffix}", [:string, :pointer, :int32_t, :pointer, :pointer], :int32_t
+      attach_function :uloc_toLanguageTag,  "uloc_toLanguageTag#{suffix}",  [:string, :pointer, :int32_t, :int8_t, :pointer], :int32_t
+
+      attach_function :ulocdata_getCLDRVersion, "ulocdata_getCLDRVersion#{suffix}", [:version, :pointer], :void
+    end
 
     # CharDet
     #
