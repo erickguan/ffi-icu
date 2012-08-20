@@ -44,11 +44,13 @@ module ICU
       end
     end
 
-    describe 'CLDR version' do
-      subject { Lib.cldr_version }
+    if Gem::Version.new('4.2') <= Gem::Version.new(Lib.version)
+      describe 'CLDR version' do
+        subject { Lib.cldr_version }
 
-      it { should be_a Lib::VersionInfo }
-      it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+        it { should be_a Lib::VersionInfo }
+        it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+      end
     end
 
     describe 'ICU version' do
