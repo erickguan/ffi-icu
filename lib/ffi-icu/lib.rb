@@ -205,7 +205,6 @@ module ICU
 
     enum :layout_type, [:ltr, :rtl, :ttb, :btt, :unknown]
 
-    attach_function :uloc_addLikelySubtags, "uloc_addLikelySubtags#{suffix}", [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_canonicalize,     "uloc_canonicalize#{suffix}",     [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_countAvailable,   "uloc_countAvailable#{suffix}",   [], :int32_t
     attach_function :uloc_getAvailable,     "uloc_getAvailable#{suffix}",     [:int32_t], :string
@@ -218,18 +217,15 @@ module ICU
     attach_function :uloc_getISOLanguages,  "uloc_getISOLanguages#{suffix}",  [], :pointer
     attach_function :uloc_getKeywordValue,  "uloc_getKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getLanguage,      "uloc_getLanguage#{suffix}",      [:string, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :uloc_getLocaleForLCID, "uloc_getLocaleForLCID#{suffix}", [:uint32, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getLCID,          "uloc_getLCID#{suffix}",          [:string], :uint32
     attach_function :uloc_getName,          "uloc_getName#{suffix}",          [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getParent,        "uloc_getParent#{suffix}",        [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getScript,        "uloc_getScript#{suffix}",        [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getVariant,       "uloc_getVariant#{suffix}",       [:string, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :uloc_minimizeSubtags,  "uloc_minimizeSubtags#{suffix}",  [:string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_openKeywords,     "uloc_openKeywords#{suffix}",     [:string, :pointer], :pointer
     attach_function :uloc_setDefault,       "uloc_setDefault#{suffix}",       [:string, :pointer], :void
     attach_function :uloc_setKeywordValue,  "uloc_setKeywordValue#{suffix}",  [:string, :string, :pointer, :int32_t, :pointer], :int32_t
 
-    attach_function :uloc_getCharacterOrientation,  "uloc_getCharacterOrientation#{suffix}",  [:string, :pointer], :layout_type
     attach_function :uloc_getDisplayCountry,        "uloc_getDisplayCountry#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getDisplayKeyword,        "uloc_getDisplayKeyword#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getDisplayKeywordValue,   "uloc_getDisplayKeywordValue#{suffix}",   [:string, :string, :string, :pointer, :int32_t, :pointer], :int32_t
@@ -237,7 +233,17 @@ module ICU
     attach_function :uloc_getDisplayName,           "uloc_getDisplayName#{suffix}",           [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getDisplayScript,         "uloc_getDisplayScript#{suffix}",         [:string, :string, :pointer, :int32_t, :pointer], :int32_t
     attach_function :uloc_getDisplayVariant,        "uloc_getDisplayVariant#{suffix}",        [:string, :string, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :uloc_getLineOrientation,       "uloc_getLineOrientation#{suffix}",       [:string, :pointer], :layout_type
+
+    if Gem::Version.new('3.8') <= Gem::Version.new(self.version)
+      attach_function :uloc_getLocaleForLCID, "uloc_getLocaleForLCID#{suffix}", [:uint32, :pointer, :int32_t, :pointer], :int32_t
+    end
+
+    if Gem::Version.new('4.0') <= Gem::Version.new(self.version)
+      attach_function :uloc_addLikelySubtags, "uloc_addLikelySubtags#{suffix}", [:string, :pointer, :int32_t, :pointer], :int32_t
+      attach_function :uloc_minimizeSubtags,  "uloc_minimizeSubtags#{suffix}",  [:string, :pointer, :int32_t, :pointer], :int32_t
+      attach_function :uloc_getCharacterOrientation,  "uloc_getCharacterOrientation#{suffix}",  [:string, :pointer], :layout_type
+      attach_function :uloc_getLineOrientation,       "uloc_getLineOrientation#{suffix}",       [:string, :pointer], :layout_type
+    end
 
     if Gem::Version.new('4.2') <= Gem::Version.new(self.version)
       attach_function :uloc_forLanguageTag, "uloc_forLanguageTag#{suffix}", [:string, :pointer, :int32_t, :pointer, :pointer], :int32_t
