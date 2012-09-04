@@ -238,7 +238,7 @@ module ICU
       attach_function :uloc_getLocaleForLCID, "uloc_getLocaleForLCID#{suffix}", [:uint32, :pointer, :int32_t, :pointer], :int32_t
     end
 
-    if Gem::Version.new('4.2') <= Gem::Version.new(self.version)
+    if Gem::Version.new('4.0') <= Gem::Version.new(self.version)
       attach_function :uloc_addLikelySubtags, "uloc_addLikelySubtags#{suffix}", [:string, :pointer, :int32_t, :pointer], :int32_t
       attach_function :uloc_minimizeSubtags,  "uloc_minimizeSubtags#{suffix}",  [:string, :pointer, :int32_t, :pointer], :int32_t
       attach_function :uloc_getCharacterOrientation,  "uloc_getCharacterOrientation#{suffix}",  [:string, :pointer], :layout_type
