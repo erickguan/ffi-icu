@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.rdoc_options              = ["--charset=UTF-8"]
   s.summary                   = %q{Simple Ruby FFI wrappers for things I need from ICU.}
 
-  s.add_runtime_dependency "ffi", ["~> 1.0.9"]
+  s.add_runtime_dependency "ffi", "~> 1.0", ">= 1.0.9"
   s.add_development_dependency "rspec", ["~> 2.5.0"]
   s.add_development_dependency "rake", ["~> 0.9.2"]
 end
