@@ -15,13 +15,13 @@ Gem
 Dependencies
 ------------
 
-ICU. 
+ICU.
 
 If you get messages that the library or functions are not found, you can
 set some environment varibles to tell ffi-icu where to find it, e.g.:
-  
+
     $ export FFI_ICU_LIB="icui18n.so"
-    $ export FFI_ICU_VERSION_SUFFIX="_3_8" 
+    $ export FFI_ICU_VERSION_SUFFIX="_3_8"
     $ ruby -r ffi-icu program.rb
 
 Features
@@ -44,7 +44,7 @@ or
 ```ruby
     detector = ICU::CharDet::Detector.new
     detector.detect(str) => #<struct ICU::CharDet::Detector::Match ...>
-```      
+```
 
 Why not just use rchardet?
 
@@ -68,7 +68,7 @@ or
     collator.greater?("z", "a") #=> true
     collator.collate(%w[å æ ø]) #=> ["æ", "ø", "å"]
 ```
-  
+
 Text Boundary Analysis
 ----------------------
 
@@ -115,4 +115,4 @@ Note on Patches/Pull Requests
 Copyright
 =========
 
-Copyright (c) 2010-2013 Jari Bakken. See LICENSE for details.
+Copyright (c) 2010-2014 Jari Bakken. See LICENSE for details.
