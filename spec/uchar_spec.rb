@@ -15,6 +15,11 @@ module ICU
       ptr.read_array_of_uint16(3).should == [0x61, 0x62, 0x63]
     end
 
+    it 'takes an optional capacity' do
+      ptr = UCharPointer.from_string('abc', 5)
+      ptr.size.should == 20
+    end
+
     describe 'converting to string' do
       let(:ptr) { UCharPointer.new(3).write_array_of_uint16 [0x78, 0x0, 0x79] }
 

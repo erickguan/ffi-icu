@@ -33,7 +33,6 @@ module ICU
         parse_error = Lib::UParseError.new
         begin
           Lib.check_error do |status|
-            # couldn't get utrans_openU to work properly, so using deprecated utrans_open for now
             ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.jlength, direction, rules, rules_length, @parse_error, status)
             @tr = FFI::AutoPointer.new(ptr, Lib.method(:utrans_close))
           end
@@ -69,9 +68,13 @@ module ICU
           raise BufferOverflowError, "needed #{new_size}" if retried
 
           capacity = new_size + 1
-          buf      = buf.resized_to capacity
-          retried  = true
 
+          # create a new buffer with more capacity instead of resizing,
+          # since the old buffer now has result data
+          buf.free
+          buf = UCharPointer.from_string(from, capacity)
+
+          retried = true
           retry
         end
 
@@ -81,4 +84,3 @@ module ICU
     end # Transliterator
   end # Translit
 end # ICU
-

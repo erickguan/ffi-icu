@@ -4,11 +4,21 @@ module ICU
     UCHAR_TYPE = :uint16 # not sure how platform-dependent this is..
     TYPE_SIZE  = FFI.type_size(UCHAR_TYPE)
 
-    def self.from_string(str)
+    def self.from_string(str, capacity = nil)
       str   = str.encode("UTF-8") if str.respond_to? :encode
       bytes = str.unpack("U*")
 
-      ptr = new bytes.size
+      if capacity
+        capacity *= TYPE_SIZE
+        if capacity < bytes.size
+          raise ArgumentError, "capacity is too small for string of #{bytes.size} bytes"
+        end
+
+        ptr = new capacity
+      else
+        ptr = new bytes.size
+      end
+
       ptr.write_array_of_uint16 bytes
 
       ptr
@@ -20,6 +30,7 @@ module ICU
 
     def resized_to(new_size)
       raise "new_size must be larger than current size" if new_size < size
+
       resized = self.class.new new_size
       resized.put_bytes(0, get_bytes(0, size))
 
