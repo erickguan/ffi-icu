@@ -76,6 +76,14 @@ module ICU
 
         sortable.sort { |a, b| compare a, b }
       end
+
+      def rules
+        @rules ||= begin
+          length = FFI::MemoryPointer.new(:int)
+          ptr = ICU::Lib.ucol_getRules(@c, length)
+          ptr.read_array_of_uint16(length.read_int).pack("U*")
+        end
+      end
     end # Collator
 
   end # Collate

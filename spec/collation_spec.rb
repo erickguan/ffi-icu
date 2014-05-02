@@ -55,6 +55,12 @@ module ICU
         collator.should_not be_equal("a", "b")
       end
 
+      it "should return rules" do
+        collator.rules.should_not be_empty
+        # ö sorts before Ö
+        collator.rules.include?('ö<<<Ö').should be_true
+      end
+
     end
   end # Collate
 end # ICU
