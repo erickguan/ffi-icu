@@ -3,6 +3,15 @@ require 'bigdecimal'
 module ICU
   module NumberFormatting
     @default_options = {}
+    
+    def self.create(locale, type = :decimal, options = {})
+      case type
+      when :currency
+        CurrencyFormatter.new(locale).set_attributes(@default_options.merge(options))
+      else
+        NumberFormatter.new(locale, type).set_attributes(@default_options.merge(options))
+      end
+    end
 
     def self.clear_default_options
       @default_options.clear
@@ -13,11 +22,19 @@ module ICU
     end
 
     def self.format_number(locale, number, options = {})
-      NumberFormatter.new(locale).set_attributes((@default_options || {}).merge(options)).format(number)
+      create(locale, :decimal, options).format(number)
     end
 
-    def self.format_currency(locale, number, currency = nil, options = {})
-      CurrencyFormatter.new(locale).set_attributes((@default_options || {}).merge(options)).format(number, currency)
+    def self.format_percent(locale, number, options = {})
+      create(locale, :percent, options).format(number)
+    end
+
+    def self.format_currency(locale, number, currency, options = {})
+      create(locale, :currency, options).format(number, currency)
+    end
+
+    def self.spell(locale, number, options = {})
+      create(locale, :spellout, options).format(number)
     end
 
     class BaseFormatter
@@ -29,15 +46,15 @@ module ICU
 
       private
 
-      def open_formatter(type, locale)
+      def make_formatter(type, locale)
         ptr = Lib.check_error { | error| Lib.unum_open(type, FFI::MemoryPointer.new(4), 0, locale, FFI::MemoryPointer.new(4), error) }
         FFI::AutoPointer.new(ptr, Lib.method(:unum_close))
       end
     end
 
     class NumberFormatter < BaseFormatter
-      def initialize(locale)
-        @f = open_formatter(:decimal, locale)
+      def initialize(locale, type = :decimal)
+        @f = make_formatter(type, locale)
       end
 
       def format(number)
@@ -72,7 +89,7 @@ module ICU
 
     class CurrencyFormatter < BaseFormatter
       def initialize(locale)
-        @f = open_formatter(:currency, locale)
+        @f = make_formatter(:currency, locale)
       end
 
       def format(number, currency)
