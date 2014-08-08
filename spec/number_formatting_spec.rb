@@ -34,8 +34,6 @@ module ICU
         NumberFormatting.format_currency("en", 123.45, 'USD').should == "$123.45"
         NumberFormatting.format_currency("en", 123_123.45, 'USD').should == "$123,123.45"
         NumberFormatting.format_currency("en-IN", 123_456.78, 'USD').should == "$\u{A0}1,23,456.78"
-        NumberFormatting.format_currency("es", 123_123.45, 'USD').should == "123.123,45\u{A0}US$"
-        NumberFormatting.format_currency("es-mx", 123_123.45, 'USD').should == "US$123,123.45"
         NumberFormatting.format_currency("ja", 123_123.45, 'USD').should == "$123,123.45"
         NumberFormatting.format_currency("ja", 123_123.45, 'JPY').should == "￥123,123"
         NumberFormatting.format_currency("sv", 123_123.45, 'SEK').should == "123\u{A0}123,45\u{A0}kr"

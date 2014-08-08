@@ -400,7 +400,10 @@ module ICU
     attach_function :unum_format_int32, "unum_format#{suffix}", [:pointer, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_format_int64, "unum_formatInt64#{suffix}", [:pointer, :int64_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_format_double, "unum_formatDouble#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
-    attach_function :unum_format_decimal, "unum_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    begin
+      attach_function :unum_format_decimal, "unum_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    rescue FFI::NotFoundError
+    end
     attach_function :unum_format_currency, "unum_formatDoubleCurrency#{suffix}", [:pointer, :double, :pointer, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_set_attribute, "unum_setAttribute#{suffix}", [:pointer, :number_format_attribute, :int32_t], :void
 

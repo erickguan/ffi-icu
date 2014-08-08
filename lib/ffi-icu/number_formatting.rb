@@ -72,7 +72,11 @@ module ICU
               needed_length = Lib.unum_format_int32(@f, number, out_ptr, needed_length, nil, error)
             when BigDecimal
               string_version = number.to_s('F')
-              needed_length = Lib.unum_format_decimal(@f, string_version, string_version.bytesize, out_ptr, needed_length, nil, error)
+              if Lib.respond_to? :unum_format_decimal
+                needed_length = Lib.unum_format_decimal(@f, string_version, string_version.bytesize, out_ptr, needed_length, nil, error)
+              else
+                needed_length = Lib.unum_format_double(@f, number.to_f, out_ptr, needed_length, nil, error)
+              end
             when Bignum
               needed_length = Lib.unum_format_int64(@f, number, out_ptr, needed_length, nil, error)
             end
