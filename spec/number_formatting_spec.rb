@@ -9,6 +9,7 @@ module ICU
         NumberFormatting.format_number("en", 1).should == "1"
         NumberFormatting.format_number("en", 1_000).should == "1,000"
         NumberFormatting.format_number("en", 1_000_000).should == "1,000,000"
+        NumberFormatting.format_number("de-DE", 1_000_000).should == "1.000.000"
         NumberFormatting.format_number("de-CH", 1_000_000).should == "1'000'000"
         NumberFormatting.format_number("en-IN", 1_000_000).should == "10,00,000"
         NumberFormatting.format_number("en_GB", 1_000_000).should == "1,000,000"
@@ -53,16 +54,16 @@ module ICU
         NumberFormatting.spell("th-TH", 123.456).should == "หนึ่ง\u{200b}ร้อย\u{200b}ยี่\u{200b}สิบ\u{200b}สาม\u{200b}จุด\u{200b}สี่ห้าหก"
       end
 
-			it 'should be able to re-use number formatter objects' do
-				numf = NumberFormatting.create('fr-CA') 
-				numf.format(1_000).should == "1\u{A0}000"
-				numf.format(1_000.123).should == "1\u{A0}000,123"
-			end
+      it 'should be able to re-use number formatter objects' do
+        numf = NumberFormatting.create('fr-CA') 
+        numf.format(1_000).should == "1\u{A0}000"
+        numf.format(1_000.123).should == "1\u{A0}000,123"
+      end
 
-			it 'should be able to re-use currency formatter objects' do
-				curf = NumberFormatting.create('fr-CA', :currency)
-				curf.format(1_000.12, 'USD').should == "1\u{A0}000,12\u{A0}$US"
-			end
+      it 'should be able to re-use currency formatter objects' do
+        curf = NumberFormatting.create('fr-CA', :currency)
+        curf.format(1_000.12, 'USD').should == "1\u{A0}000,12\u{A0}$US"
+      end
     end
   end # NumberFormatting
 end # ICU
