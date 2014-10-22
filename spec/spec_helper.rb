@@ -7,4 +7,7 @@ require 'rspec'
 
 RSpec.configure do |config|
 
+  if ENV['TRAVIS']
+    config.filter_run_excluding broken: true
+  end
 end

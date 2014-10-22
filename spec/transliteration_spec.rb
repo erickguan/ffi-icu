@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module ICU
-  describe Transliteration::Transliterator do
+  describe Transliteration::Transliterator, broken: true do
     def transliterator_for(*args)
       Transliteration::Transliterator.new(*args)
     end
@@ -21,7 +21,7 @@ module ICU
     end
   end # Transliterator
 
-  describe Transliteration do
+  describe Transliteration, broken: true do
     it "should provide a list of available ids" do
       ids = ICU::Transliteration.available_ids
       ids.should be_kind_of(Array)

@@ -23,6 +23,8 @@ module ICU
     class Transliterator
 
       def initialize(id, rules = nil, direction = :forward)
+        warn 'the ffi-icu transliteration support is broken, see https://github.com/jarib/ffi-icu/issues/15'
+
         rules_length = 0
 
         if rules
