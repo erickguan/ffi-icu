@@ -383,7 +383,7 @@ module ICU
       :numbering_system,
       :pattern_rule_based,
       :currency_iso,
-      :currency_accounting,
+      :currency_plural,
       :format_style_count,
       :default,
       :ignore

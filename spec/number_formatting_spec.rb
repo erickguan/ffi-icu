@@ -57,7 +57,7 @@ module ICU
         if ICU::Lib.version.to_a.first >= 53
           curf = NumberFormatting.create('en-US', :currency, style: :iso)
           curf.format(1_000.12, 'USD').should == "USD1,000.12"
-          curf = NumberFormatting.create('en-US', :currency, style: :accounting)
+          curf = NumberFormatting.create('en-US', :currency, style: :plural)
           curf.format(1_000.12, 'USD').should == "1,000.12 US dollars"
           expect { NumberFormatting.create('en-US', :currency, style: :fake) }.to raise_error(StandardError)
         else
