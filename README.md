@@ -80,6 +80,27 @@ Examples:
     iterator.to_a  #=> [0, 4, 5, 7, 8, 9, 10, 18, 19]
 ```
 
+Number/Currency Formatting
+--------------------------
+
+Examples:
+
+```ruby
+    # class method interface
+    NumberFormatting.format_number("en", 1_000) #=> "1,000"
+    NumberFormatting.format_number("de-DE", 1234.56) #=> "1.234,56"
+    NumberFormatting.format_currency("en", 123.45, 'USD') #=> "$123.45"
+    NumberFormatting.format_percent("en", 0.53, 'USD') #=> "53%"
+    NumberFormatting.spell("en_US", 1_000) #=> "one thousand"
+
+    # reusable formatting objects
+    numf = NumberFormatting.create('fr-CA')
+    numf.format(1000) #=> "1 000"
+
+    curf = NumberFormatting.create('en-US', :currency)
+    curf.format(1234.56, 'USD') #=> "$1,234.56"
+```
+
 Tested on:
 ==========
 

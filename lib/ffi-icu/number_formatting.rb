@@ -7,7 +7,7 @@ module ICU
     def self.create(locale, type = :decimal, options = {})
       case type
       when :currency
-        CurrencyFormatter.new(locale).set_attributes(@default_options.merge(options))
+        CurrencyFormatter.new(locale, options.delete(:style)).set_attributes(@default_options.merge(options))
       else
         NumberFormatter.new(locale, type).set_attributes(@default_options.merge(options))
       end
@@ -92,8 +92,19 @@ module ICU
     end # NumberFormatter
 
     class CurrencyFormatter < BaseFormatter
-      def initialize(locale)
-        @f = make_formatter(:currency, locale)
+      def initialize(locale, style = :default)
+        if %w(iso accounting).include?((style || '').to_s)
+          if Lib.version.to_a.first >= 53
+            style = "currency_#{style}".to_sym
+          else
+            fail "Your version of ICU (#{Lib.version.to_a.join('.')}) does not support #{style} currency formatting (supported only in version >= 53)"
+          end
+        elsif style && style.to_sym != :default
+          fail "The ffi-icu ruby gem does not support :#{default} currency formatting (only :default, :iso, and :accounting)"
+        else
+          style = :currency
+        end
+        @f = make_formatter(style, locale)
       end
 
       def format(number, currency)
