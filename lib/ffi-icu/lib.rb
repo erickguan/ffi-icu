@@ -371,5 +371,41 @@ module ICU
     attach_function :ubrk_following,      "ubrk_following#{suffix}",      [:pointer,       :int32_t], :int32_t
     attach_function :ubrk_isBoundary,     "ubrk_isBoundary#{suffix}",     [:pointer,       :int32_t], :int32_t
 
+    enum :number_format_style, [
+      :pattern_decimal,
+      :decimal,
+      :currency,
+      :percent,
+      :scientific,
+      :spellout,
+      :ordinal,
+      :duration,
+      :numbering_system,
+      :pattern_rule_based,
+      :currency_iso,
+      :currency_plural,
+      :format_style_count,
+      :default,
+      :ignore
+    ]
+    enum :number_format_attribute, [
+       :parse_int_only, :grouping_used, :decimal_always_show, :max_integer_digits, 
+       :min_integer_digits, :integer_digits, :max_fraction_digits, :min_fraction_digits, 
+       :fraction_digits, :multiplier, :grouping_size, :rounding_mode, 
+       :rounding_increment, :format_width, :padding_position, :secondary_grouping_size, 
+       :significant_digits_used, :min_significant_digits, :max_significant_digits, :lenient_parse
+    ]
+    attach_function :unum_open, "unum_open#{suffix}", [:number_format_style, :pointer, :int32_t, :string, :pointer, :pointer ], :pointer
+    attach_function :unum_close, "unum_close#{suffix}", [:pointer], :void
+    attach_function :unum_format_int32, "unum_format#{suffix}", [:pointer, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :unum_format_int64, "unum_formatInt64#{suffix}", [:pointer, :int64_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :unum_format_double, "unum_formatDouble#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    begin
+      attach_function :unum_format_decimal, "unum_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    rescue FFI::NotFoundError
+    end
+    attach_function :unum_format_currency, "unum_formatDoubleCurrency#{suffix}", [:pointer, :double, :pointer, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :unum_set_attribute, "unum_setAttribute#{suffix}", [:pointer, :number_format_attribute, :int32_t], :void
+
   end # Lib
 end # ICU
