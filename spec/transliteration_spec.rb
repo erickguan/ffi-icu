@@ -3,7 +3,7 @@
 require "spec_helper"
 
 module ICU
-  describe Transliteration::Transliterator, broken: true do
+  describe Transliteration::Transliterator do
     def transliterator_for(*args)
       Transliteration::Transliterator.new(*args)
     end
@@ -11,7 +11,8 @@ module ICU
     [
       ["Any-Hex", "abcde", "\\u0061\\u0062\\u0063\\u0064\\u0065"],
       ["Lower", "ABC", "abc"],
-      ["en", "雙屬性集合之空間分群演算法-應用於地理資料", "shuāng shǔ xìng jí hé zhī kōng jiān fēn qún yǎn suàn fǎ-yīng yòng yú de lǐ zī liào"]
+      ["en", "雙屬性集合之空間分群演算法-應用於地理資料", "shuāng shǔ xìng jí hé zhī kōng jiān fēn qún yǎn suàn fǎ-yīng yòng yú de lǐ zī liào"],
+      ["Devanagari-Latin", "दौलत", "daulata"]
     ].each do |id, input, output|
       it "should transliterate #{id}" do
         tl = transliterator_for(id)
@@ -21,7 +22,7 @@ module ICU
     end
   end # Transliterator
 
-  describe Transliteration, broken: true do
+  describe Transliteration do
     it "should provide a list of available ids" do
       ids = ICU::Transliteration.available_ids
       ids.should be_kind_of(Array)

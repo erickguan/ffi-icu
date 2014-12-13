@@ -23,8 +23,6 @@ module ICU
     class Transliterator
 
       def initialize(id, rules = nil, direction = :forward)
-        warn 'the ffi-icu transliteration support is broken, see https://github.com/jarib/ffi-icu/issues/15'
-
         rules_length = 0
 
         if rules
@@ -47,8 +45,8 @@ module ICU
         # this is a bit unpleasant
 
         unicode_size = from.unpack("U*").size
-        capacity     = from.bytesize + 1
-        buf          = UCharPointer.from_string(from)
+        capacity     = unicode_size + 1
+        buf          = UCharPointer.from_string(from, capacity)
         limit        = FFI::MemoryPointer.new :int32
         text_length  = FFI::MemoryPointer.new :int32
 
