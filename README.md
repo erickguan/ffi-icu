@@ -135,4 +135,4 @@ Note on Patches/Pull Requests
 Copyright
 =========
 
-Copyright (c) 2010-2014 Jari Bakken. See LICENSE for details.
+Copyright (c) 2010-2015 Jari Bakken. See LICENSE for details.
