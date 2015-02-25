@@ -20,6 +20,11 @@ pkg
 debian/ruby-ffi-icu.docs
 debian/ruby-ffi-icu.substvars
 debian/ruby-ffi-icu/
+.pc/
+debian/files
+debian/patches/
+debian/ruby-ffi-icu.debhelper.log
+
 
 ## PROJECT::SPECIFIC
 *.rbc
