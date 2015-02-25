@@ -1,0 +1,5 @@
+ruby-ffi-icu (0.1.4-1) UNRELEASED; urgency=medium
+
+  * Initial release (Closes: #nnnn)
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Sat, 21 Feb 2015 00:07:56 +0100

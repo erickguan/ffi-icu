@@ -17,6 +17,9 @@ tmtags
 coverage
 rdoc
 pkg
+debian/ruby-ffi-icu.docs
+debian/ruby-ffi-icu.substvars
+debian/ruby-ffi-icu/
 
 ## PROJECT::SPECIFIC
 *.rbc
