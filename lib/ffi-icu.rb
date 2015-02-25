@@ -40,4 +40,5 @@ require "ffi-icu/transliteration"
 require "ffi-icu/normalization"
 require "ffi-icu/break_iterator"
 require "ffi-icu/number_formatting"
+require "ffi-icu/time_formatting"
 

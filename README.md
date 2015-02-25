@@ -101,6 +101,16 @@ Examples:
     curf.format(1234.56, 'USD') #=> "$1,234.56"
 ```
 
+```ruby
+    # class method interface
+    f = ICU::TimeFormatting.format(Time.mktime(2015, 11, 12, 15, 21, 16), {:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :short, :time => :short})
+    f #=> "12.11.15 15:21"
+
+    # reusable formatting objects
+    formater = ICU::TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :none)
+    formater.format(Time.now)  #=> "25. února 2015"
+```
+
 Tested on:
 ==========
 
