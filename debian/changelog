@@ -1,5 +1,6 @@
-ruby-ffi-icu (0.1.4-1) UNRELEASED; urgency=medium
+ruby-ffi-icu (0.1.4-2.solnet1) release; urgency=medium
 
-  * Initial release (Closes: #nnnn)
+  * Initial release from upstream
+  * add support for TimeFormatting
 
- -- Marek Veber <Marek.Veber@solnet.cz>  Sat, 21 Feb 2015 00:07:56 +0100
+ -- Marek Veber <Marek.Veber@solnet.cz>  Wed, 25 Feb 2015 16:20:16 +0100
