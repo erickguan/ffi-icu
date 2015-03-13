@@ -28,6 +28,7 @@ module ICU
           f1.format(t7).should eql "29. března 2015 3:37:23 GMT+2"
           f1.format(t8).should eql "29. března 2015 4:38:24 GMT+2"
       end
+
       f2 = TimeFormatting.create(:locale => 'en_US', :zone => 'Europe/Moscow', :date => :short , :time => :long)
       it "lang=en_US zone=Europe/Moscow" do
           f2.format(t0).should eql "11/12/15, 6:21:16 PM GMT+4"
@@ -40,6 +41,7 @@ module ICU
           f2.format(t7).should eql "3/29/15, 5:37:23 AM GMT+4"
           f2.format(t8).should eql "3/29/15, 6:38:24 AM GMT+4"
       end
+
       f3 = TimeFormatting.create(:locale => 'de_DE', :zone => 'Africa/Dakar ', :date => :short , :time => :long)
       it "lang=de_DE zone=Africa/Dakar" do
           f3.format(t0).should eql "12.11.15 14:21:16 GMT"
@@ -52,6 +54,7 @@ module ICU
           f3.format(t7).should eql "29.03.15 01:37:23 GMT"
           f3.format(t8).should eql "29.03.15 02:38:24 GMT"
       end
+
     end
   end
 end

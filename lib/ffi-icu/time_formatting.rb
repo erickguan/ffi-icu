@@ -28,31 +28,40 @@ module ICU
 
       private
 
-      def make_formatter(timeStyle, dateStyle, locale, timeZoneStr)
-        timeZone = nil
+      def make_formatter(time_style, date_style, locale, time_zone_str)
+        time_zone = nil
         d_len = 0
-        if timeZoneStr
-            timeZone = UCharPointer.from_string(timeZoneStr)
-            d_len = timeZoneStr.size
+        if time_zone_str
+            time_zone = UCharPointer.from_string(time_zone_str)
+            d_len = time_zone_str.size
         else
             Lib.check_error { | error| 
                 i_len  = 150
-                timeZone = UCharPointer.new(i_len)
-                d_len = Lib.ucal_getDefaultTimeZone(timeZone, i_len, error) 
+                time_zone = UCharPointer.new(i_len)
+                d_len = Lib.ucal_getDefaultTimeZone(time_zone, i_len, error) 
             }
         end
-        ptr = Lib.check_error { | error| Lib.udat_open(timeStyle, dateStyle, locale, timeZone, d_len, FFI::MemoryPointer.new(4), -1, error) }
+        ptr = Lib.check_error { | error| Lib.udat_open(time_style, date_style, locale, time_zone, d_len, FFI::MemoryPointer.new(4), -1, error) }
         FFI::AutoPointer.new(ptr, Lib.method(:udat_close))
       end
     end
 
     class DateTimeFormatter < BaseFormatter
       def initialize(options={})
-        timeStyle = options[:time]   || :short
-        dateStyle = options[:date]   || :short
-        locale    = options[:locale] || 'C'
-        timeZone  = options[:zone]
-        @f = make_formatter(timeStyle, dateStyle, locale, timeZone)
+        time_style = options[:time]   || :short
+        date_style = options[:date]   || :short
+        locale     = options[:locale] || 'C'
+        time_zone  = options[:zone]
+        @f = make_formatter(time_style, date_style, locale, time_zone)
+      end
+
+      def parse(str)
+          str_u = UCharPointer.from_string(str)
+          str_l = str_u.size
+          Lib.check_error do |error|
+              ret = Lib.udat_parse(@f, str_u, str_l, nil, error)
+              Time.at(ret / 1000.0)
+          end
       end
 
       def format(dt)

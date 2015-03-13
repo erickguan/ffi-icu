@@ -417,6 +417,7 @@ module ICU
     attach_function :udat_open, "udat_open#{suffix}", [:date_format_style, :date_format_style, :string, :pointer, :int32_t, :pointer, :int32_t, :pointer ], :pointer
     attach_function :udat_close, "unum_close#{suffix}", [:pointer], :void
     attach_function :udat_format, "udat_format#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :udat_parse, "udat_parse#{suffix}", [:pointer, :pointer, :int32_t,  :pointer, :pointer], :double
     # tz
     attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
     attach_function :ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone#{suffix}", [:pointer, :int32_t, :pointer], :int32_t
