@@ -35,6 +35,9 @@ module ICU
     def self.load_icu
       # First find the library
       lib_names = case ICU.platform
+                  when :bsd
+                    [find_lib("libicui18n.#{FFI::Platform::LIBSUFFIX}.??"),
+                     find_lib("libicutu.#{FFI::Platform::LIBSUFFIX}.??")]
                   when :osx
                     [find_lib("libicucore.#{FFI::Platform::LIBSUFFIX}")]
                   when :linux
