@@ -1,3 +1,9 @@
+ruby-ffi-icu (0.1.4-2.solnet4) UNRELEASED; urgency=low
+
+  * fix - spec scripts to be ruby1.8 compatible
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Thu, 16 Apr 2015 18:28:15 +0200
+
 ruby-ffi-icu (0.1.4-2.solnet3) release; urgency=medium
 
   * fix - dependency na libicu48 | libicu52

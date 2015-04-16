@@ -18,28 +18,28 @@ module ICU
       f1 = TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :long)
       it "for lang=cs_CZ zone=Europe/Prague" do
           f1.should be_an_instance_of TimeFormatting::DateTimeFormatter
-          f1.format(t0).should eql "12. listopadu 2015 15:21:16 GMT+1"
-          f1.format(t1).should eql "25. října 2015 1:15:17 GMT+2"
-          f1.format(t2).should eql "25. října 2015 2:16:18 GMT+1"
-          f1.format(t3).should eql "25. října 2015 3:17:19 GMT+1"
-          f1.format(t4).should eql "25. října 2015 4:18:20 GMT+1"
-          f1.format(t5).should eql "29. března 2015 1:35:21 GMT+1"
-          f1.format(t6).should eql "29. března 2015 3:36:22 GMT+2"
-          f1.format(t7).should eql "29. března 2015 3:37:23 GMT+2"
-          f1.format(t8).should eql "29. března 2015 4:38:24 GMT+2"
+          f1.format(t0).should eql "12. listopadu 2015 15:21:16 GMT+01:00"
+          f1.format(t1).should eql "25. října 2015 1:15:17 GMT+02:00"
+          f1.format(t2).should eql "25. října 2015 2:16:18 GMT+01:00"
+          f1.format(t3).should eql "25. října 2015 3:17:19 GMT+01:00"
+          f1.format(t4).should eql "25. října 2015 4:18:20 GMT+01:00"
+          f1.format(t5).should eql "29. března 2015 1:35:21 GMT+01:00"
+          f1.format(t6).should eql "29. března 2015 3:36:22 GMT+02:00"
+          f1.format(t7).should eql "29. března 2015 3:37:23 GMT+02:00"
+          f1.format(t8).should eql "29. března 2015 4:38:24 GMT+02:00"
       end
 
       f2 = TimeFormatting.create(:locale => 'en_US', :zone => 'Europe/Moscow', :date => :short , :time => :long)
       it "lang=en_US zone=Europe/Moscow" do
-          f2.format(t0).should eql "11/12/15, 6:21:16 PM GMT+4"
-          f2.format(t1).should eql "10/25/15, 3:15:17 AM GMT+4"
-          f2.format(t2).should eql "10/25/15, 5:16:18 AM GMT+4"
-          f2.format(t3).should eql "10/25/15, 6:17:19 AM GMT+4"
-          f2.format(t4).should eql "10/25/15, 7:18:20 AM GMT+4"
-          f2.format(t5).should eql "3/29/15, 4:35:21 AM GMT+4"
-          f2.format(t6).should eql "3/29/15, 5:36:22 AM GMT+4"
-          f2.format(t7).should eql "3/29/15, 5:37:23 AM GMT+4"
-          f2.format(t8).should eql "3/29/15, 6:38:24 AM GMT+4"
+          f2.format(t0).should eql "11/12/15 6:21:16 PM GMT+04:00"
+          f2.format(t1).should eql "10/25/15 3:15:17 AM GMT+04:00"
+          f2.format(t2).should eql "10/25/15 5:16:18 AM GMT+04:00"
+          f2.format(t3).should eql "10/25/15 6:17:19 AM GMT+04:00"
+          f2.format(t4).should eql "10/25/15 7:18:20 AM GMT+04:00"
+          f2.format(t5).should eql "3/29/15 4:35:21 AM GMT+04:00"
+          f2.format(t6).should eql "3/29/15 5:36:22 AM GMT+04:00"
+          f2.format(t7).should eql "3/29/15 5:37:23 AM GMT+04:00"
+          f2.format(t8).should eql "3/29/15 6:38:24 AM GMT+04:00"
       end
 
       f3 = TimeFormatting.create(:locale => 'de_DE', :zone => 'Africa/Dakar ', :date => :short , :time => :long)
