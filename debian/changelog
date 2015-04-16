@@ -1,3 +1,9 @@
+ruby-ffi-icu (0.1.4-2.solnet3) release; urgency=medium
+
+  * fix - dependency na libicu48 | libicu52
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Thu, 16 Apr 2015 18:02:33 +0200
+
 ruby-ffi-icu (0.1.4-2.solnet2) release; urgency=medium
 
   * přidání ICU::DateTimeFormatter.parse(str)
