@@ -1,4 +1,4 @@
-ruby-ffi-icu (0.1.4-2.solnet4) UNRELEASED; urgency=low
+ruby-ffi-icu (0.1.4-2.solnet4) wheezy; urgency=low
 
   * fix - spec scripts to be ruby1.8 compatible
 
