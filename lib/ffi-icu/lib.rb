@@ -262,7 +262,7 @@ module ICU
 
     attach_function :ucsdet_open,                     "ucsdet_open#{suffix}",                      [:pointer], :pointer
     attach_function :ucsdet_close,                    "ucsdet_close#{suffix}",                     [:pointer], :void
-    attach_function :ucsdet_setText,                  "ucsdet_setText#{suffix}",                   [:pointer,  :string,   :int32_t,  :pointer], :void
+    attach_function :ucsdet_setText,                  "ucsdet_setText#{suffix}",                   [:pointer,  :pointer,  :int32_t,  :pointer], :void
     attach_function :ucsdet_setDeclaredEncoding,      "ucsdet_setDeclaredEncoding#{suffix}",       [:pointer,  :string,   :int32_t,  :pointer], :void
     attach_function :ucsdet_detect,                   "ucsdet_detect#{suffix}",                    [:pointer,  :pointer], :pointer
     attach_function :ucsdet_detectAll,                "ucsdet_detectAll#{suffix}",                 [:pointer,  :pointer,  :pointer], :pointer
