@@ -34,4 +34,11 @@ describe ICU::CharDet::Detector do
     detector.detect_all("foo bar").should be_instance_of(Array)
   end
 
+  it "should support null bytes" do
+    # Create a utf-16 string and then force it to binary (ascii) to mimic data from net/http
+    string = "foo".encode("UTF-16").force_encoding("binary")
+    m = detector.detect(string)
+    m.name.should == "UTF-16BE"
+    m.language.should be_kind_of(String)
+  end
 end

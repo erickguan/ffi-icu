@@ -73,7 +73,8 @@ module ICU
 
       def set_text(text)
         Lib.check_error do |status|
-          Lib.ucsdet_setText(@detector, text, text.bytesize, status)
+          data = FFI::MemoryPointer.from_string(text)
+          Lib.ucsdet_setText(@detector, data, text.bytesize, status)
         end
       end
 
