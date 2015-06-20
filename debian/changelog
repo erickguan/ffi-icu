@@ -1,0 +1,24 @@
+ruby-ffi-icu (0.1.4-2.solnet4) wheezy; urgency=low
+
+  * fix - spec scripts to be ruby1.8 compatible
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Thu, 16 Apr 2015 18:28:15 +0200
+
+ruby-ffi-icu (0.1.4-2.solnet3) release; urgency=medium
+
+  * fix - dependency na libicu48 | libicu52
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Thu, 16 Apr 2015 18:02:33 +0200
+
+ruby-ffi-icu (0.1.4-2.solnet2) release; urgency=medium
+
+  * přidání ICU::DateTimeFormatter.parse(str)
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Fri, 13 Mar 2015 16:23:49 +0100
+
+ruby-ffi-icu (0.1.4-2.solnet1) release; urgency=medium
+
+  * Initial release from upstream
+  * add support for TimeFormatting
+
+ -- Marek Veber <Marek.Veber@solnet.cz>  Wed, 25 Feb 2015 16:20:16 +0100

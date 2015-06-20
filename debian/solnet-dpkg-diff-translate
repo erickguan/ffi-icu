@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+dir, name = *ARGV
+if dir == '--inst2src'
+   if name =~ %r{^/usr/lib/ruby/vendor_ruby/(.*)}
+       name = "lib/" + $1
+   end
+elsif dir == '--src2inst'
+   if name =~ %r{^lib/(.*)}
+       name = "/usr/lib/ruby/vendor_ruby/" + $1
+   end
+end
+puts name

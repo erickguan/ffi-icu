@@ -409,6 +409,21 @@ module ICU
     end
     attach_function :unum_format_currency, "unum_formatDoubleCurrency#{suffix}", [:pointer, :double, :pointer, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_set_attribute, "unum_setAttribute#{suffix}", [:pointer, :number_format_attribute, :int32_t], :void
+    # date
+    enum :date_format_style, [
+      :none,  -1,
+      :full,   0,
+      :long,   1,
+      :medium, 2,
+      :short,  3,
+    ]
+    attach_function :udat_open, "udat_open#{suffix}", [:date_format_style, :date_format_style, :string, :pointer, :int32_t, :pointer, :int32_t, :pointer ], :pointer
+    attach_function :udat_close, "unum_close#{suffix}", [:pointer], :void
+    attach_function :udat_format, "udat_format#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
+    attach_function :udat_parse, "udat_parse#{suffix}", [:pointer, :pointer, :int32_t,  :pointer, :pointer], :double
+    # tz
+    attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
+    attach_function :ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone#{suffix}", [:pointer, :int32_t, :pointer], :int32_t
 
   end # Lib
 end # ICU
