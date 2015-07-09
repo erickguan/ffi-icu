@@ -15,7 +15,11 @@ module ICU
       t7 = Time.at(1427593043) # in TZ=Europe/Prague Time.mktime(2015, 03, 29, 03, 37, 23)
       t8 = Time.at(1427596704) # in TZ=Europe/Prague Time.mktime(2015, 03, 29, 04, 38, 24)
 
-      f1 = TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :long)
+      f1 = TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :long, :tz_style => :localized_long)
+      it 'check date_format for lang=cs_CZ' do
+            f1.get_date_format(true).should eql "d. MMMM y H:mm:ss ZZZZ"
+            f1.get_date_format(false).should eql "d. MMMM y H:mm:ss ZZZZ"
+      end
       it "for lang=cs_CZ zone=Europe/Prague" do
           f1.should be_an_instance_of TimeFormatting::DateTimeFormatter
           f1.format(t0).should eql "12. listopadu 2015 15:21:16 GMT+01:00"
@@ -29,17 +33,29 @@ module ICU
           f1.format(t8).should eql "29. března 2015 4:38:24 GMT+02:00"
       end
 
-      f2 = TimeFormatting.create(:locale => 'en_US', :zone => 'Europe/Moscow', :date => :short , :time => :long)
+      f2 = TimeFormatting.create(:locale => 'en_US', :zone => 'Europe/Moscow', :date => :short , :time => :long, :tz_style => :generic_location)
+      cldr_version = Lib.cldr_version.to_s
+      en_tz  = "Moscow Time"
+      en_sep = ","
+      if cldr_version <= "2.0.1"
+        en_tz  = "Russia Time (Moscow)"
+        en_sep = ""
+      end
+      en_exp = "M/d/yy#{en_sep} h:mm:ss a VVVV"
+      it 'check date_format for lang=en_US' do
+            f2.get_date_format(true).should eql en_exp
+            f2.get_date_format(false).should eql en_exp
+      end
       it "lang=en_US zone=Europe/Moscow" do
-          f2.format(t0).should eql "11/12/15 6:21:16 PM GMT+04:00"
-          f2.format(t1).should eql "10/25/15 3:15:17 AM GMT+04:00"
-          f2.format(t2).should eql "10/25/15 5:16:18 AM GMT+04:00"
-          f2.format(t3).should eql "10/25/15 6:17:19 AM GMT+04:00"
-          f2.format(t4).should eql "10/25/15 7:18:20 AM GMT+04:00"
-          f2.format(t5).should eql "3/29/15 4:35:21 AM GMT+04:00"
-          f2.format(t6).should eql "3/29/15 5:36:22 AM GMT+04:00"
-          f2.format(t7).should eql "3/29/15 5:37:23 AM GMT+04:00"
-          f2.format(t8).should eql "3/29/15 6:38:24 AM GMT+04:00"
+          f2.format(t0).should eql "11/12/15#{en_sep} 6:21:16 PM #{en_tz}"
+          f2.format(t1).should eql "10/25/15#{en_sep} 3:15:17 AM #{en_tz}"
+          f2.format(t2).should eql "10/25/15#{en_sep} 5:16:18 AM #{en_tz}"
+          f2.format(t3).should eql "10/25/15#{en_sep} 6:17:19 AM #{en_tz}"
+          f2.format(t4).should eql "10/25/15#{en_sep} 7:18:20 AM #{en_tz}"
+          f2.format(t5).should eql "3/29/15#{en_sep} 4:35:21 AM #{en_tz}"
+          f2.format(t6).should eql "3/29/15#{en_sep} 5:36:22 AM #{en_tz}"
+          f2.format(t7).should eql "3/29/15#{en_sep} 5:37:23 AM #{en_tz}"
+          f2.format(t8).should eql "3/29/15#{en_sep} 6:38:24 AM #{en_tz}"
       end
 
       f3 = TimeFormatting.create(:locale => 'de_DE', :zone => 'Africa/Dakar ', :date => :short , :time => :long)
