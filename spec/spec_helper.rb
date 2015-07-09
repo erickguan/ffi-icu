@@ -11,15 +11,3 @@ RSpec.configure do |config|
     config.filter_run_excluding :broken => true
   end
 end
-
-if RUBY_VERSION < '1.9'
-require 'iconv'
-class String
-    def encode(charset)
-	Iconv.iconv('UTF-8', charset, self)
-    end
-    def force_encoding(charset)
-	self
-    end
-end
-end

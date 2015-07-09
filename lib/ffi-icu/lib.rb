@@ -421,6 +421,8 @@ module ICU
     attach_function :udat_close, "unum_close#{suffix}", [:pointer], :void
     attach_function :udat_format, "udat_format#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :udat_parse, "udat_parse#{suffix}", [:pointer, :pointer, :int32_t,  :pointer, :pointer], :double
+    attach_function :udat_toPattern, "udat_toPattern#{suffix}", [:pointer, :bool    , :pointer, :int32_t    , :pointer], :int32_t
+    attach_function :udat_applyPattern, "udat_applyPattern#{suffix}", [:pointer, :bool    , :pointer, :int32_t     ], :void
     # tz
     attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
     attach_function :ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone#{suffix}", [:pointer, :int32_t, :pointer], :int32_t
