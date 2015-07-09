@@ -6,20 +6,19 @@ module ICU
 
     def self.from_string(str, capacity = nil)
       str   = str.encode("UTF-8") if str.respond_to? :encode
-      bytes = str.unpack("U*")
+      chars = str.unpack("U*")
 
       if capacity
-        capacity *= TYPE_SIZE
-        if capacity < bytes.size
-          raise ArgumentError, "capacity is too small for string of #{bytes.size} bytes"
+        if capacity < chars.size
+          raise ArgumentError, "capacity is too small for string of #{chars.size} UChars"
         end
 
         ptr = new capacity
       else
-        ptr = new bytes.size
+        ptr = new chars.size
       end
 
-      ptr.write_array_of_uint16 bytes
+      ptr.write_array_of_uint16 chars
 
       ptr
     end
