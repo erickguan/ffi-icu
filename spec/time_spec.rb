@@ -17,8 +17,8 @@ module ICU
 
       f1 = TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :long, :tz_style => :localized_long)
       it 'check date_format for lang=cs_CZ' do
-        f1.get_date_format(true).should eql "d. MMMM y H:mm:ss ZZZZ"
-        f1.get_date_format(false).should eql "d. MMMM y H:mm:ss ZZZZ"
+        f1.date_format(true).should eql "d. MMMM y H:mm:ss ZZZZ"
+        f1.date_format(false).should eql "d. MMMM y H:mm:ss ZZZZ"
       end
 
       it "for lang=cs_CZ zone=Europe/Prague" do
@@ -45,8 +45,8 @@ module ICU
 
       en_exp = "M/d/yy#{en_sep} h:mm:ss a VVVV"
       it 'check date_format for lang=en_US' do
-        f2.get_date_format(true).should eql en_exp
-        f2.get_date_format(false).should eql en_exp
+        f2.date_format(true).should eql en_exp
+        f2.date_format(false).should eql en_exp
       end
 
       it "lang=en_US zone=Europe/Moscow" do
