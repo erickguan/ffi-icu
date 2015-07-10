@@ -20,6 +20,7 @@ module ICU
         f1.get_date_format(true).should eql "d. MMMM y H:mm:ss ZZZZ"
         f1.get_date_format(false).should eql "d. MMMM y H:mm:ss ZZZZ"
       end
+
       it "for lang=cs_CZ zone=Europe/Prague" do
         f1.should be_an_instance_of TimeFormatting::DateTimeFormatter
         f1.format(t0).should eql "12. listopadu 2015 15:21:16 GMT+01:00"
@@ -41,11 +42,13 @@ module ICU
         en_tz  = "Russia Time (Moscow)"
         en_sep = ""
       end
+
       en_exp = "M/d/yy#{en_sep} h:mm:ss a VVVV"
       it 'check date_format for lang=en_US' do
         f2.get_date_format(true).should eql en_exp
         f2.get_date_format(false).should eql en_exp
       end
+
       it "lang=en_US zone=Europe/Moscow" do
         f2.format(t0).should eql "11/12/15#{en_sep} 6:21:16 PM #{en_tz}"
         f2.format(t1).should eql "10/25/15#{en_sep} 3:15:17 AM #{en_tz}"
@@ -70,7 +73,6 @@ module ICU
         f3.format(t7).should eql "29.03.15 01:37:23 GMT"
         f3.format(t8).should eql "29.03.15 02:38:24 GMT"
       end
-
     end
   end
 end

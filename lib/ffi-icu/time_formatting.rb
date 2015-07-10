@@ -41,6 +41,7 @@ module ICU
             d_len = Lib.ucal_getDefaultTimeZone(time_zone, i_len, error) 
           }
         end
+
         ptr = Lib.check_error { | error| Lib.udat_open(time_style, date_style, locale, time_zone, d_len, FFI::MemoryPointer.new(4), -1, error) }
         FFI::AutoPointer.new(ptr, Lib.method(:udat_close))
       end
@@ -62,6 +63,7 @@ module ICU
           end
         end
       end
+
       def parse(str)
           str_u = UCharPointer.from_string(str)
           str_l = str_u.size
@@ -86,6 +88,7 @@ module ICU
               needed_length = Lib.udat_format(@f, dt.to_f * 1000.0, out_ptr, needed_length, nil, error)
             end
           end
+
           out_ptr.string
         rescue BufferOverflowError
           raise BufferOverflowError, "needed: #{needed_length}" if retried
@@ -94,6 +97,7 @@ module ICU
           retry
         end
       end
+
       # time-zone formating
       def update_tz_format(format, tz_style)
         return format if format !~ /(.*?)(\s*(?:[zZOVV]+\s*))(.*?)/
@@ -101,7 +105,7 @@ module ICU
         if tz_style == :none
           tz = ((tz =~ /\s/) && !pre.empty? && !suff.empty?) ? ' ' : ''
         else
-          $tz_map ||= {
+          @@tz_map ||= {
             :generic_location =>   'VVVV',# The generic location format.
                                           #   Where that is unavailable, falls back to the long localized GMT format ("OOOO";
                                           #   Note: Fallback is only necessary with a GMT-style Time Zone ID, like Etc/GMT-830.),
@@ -141,8 +145,7 @@ module ICU
           raise 'no such tz_style' unless repl
           tz.gsub!(/^(\s*)(.*?)(\s*)$/, '\1'+repl+'\3')
         end
-        return pre + tz + suff
-        format
+        pre + tz + suff
       end
 
       def get_date_format(localized=true)
@@ -155,6 +158,7 @@ module ICU
           Lib.check_error do |error|
             needed_length = Lib.udat_toPattern(@f, localized, out_ptr, needed_length, error)
           end
+
           out_ptr.string
         rescue BufferOverflowError
           raise BufferOverflowError, "needed: #{needed_length}" if retried
@@ -163,6 +167,7 @@ module ICU
           retry
         end
       end
+
       def set_date_format(localized, pattern_str)
         pattern     = UCharPointer.from_string(pattern_str)
         pattern_len = pattern_str.size
