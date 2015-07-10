@@ -141,7 +141,7 @@ module ICU
                                           #   (for example, "Unknown City"), such as Los Angeles
             # see: http://unicode.org/reports/tr35/tr35-dates.html#Date_Format_Patterns
           }
-          repl = $tz_map[tz_style]
+          repl = @@tz_map[tz_style]
           raise 'no such tz_style' unless repl
           tz.gsub!(/^(\s*)(.*?)(\s*)$/, '\1'+repl+'\3')
         end
