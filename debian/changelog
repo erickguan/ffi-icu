@@ -1,16 +1,16 @@
-ruby-ffi-icu (0.1.6.solnet8) UNRELEASED; urgency=medium
+ruby-ffi-icu (0.1.7.solnet8) wheezy; urgency=medium
 
   * merge with upstream 0.1.7
 
  -- Marek Veber <Marek.Veber@solnet.cz>  Sun, 12 Jul 2015 14:04:31 +0200
 
-ruby-ffi-icu (0.1.6.solnet7) UNRELEASED; urgency=medium
+ruby-ffi-icu (0.1.6.solnet7)  wheezy; urgency=medium
 
   * fix - merge from upstream
 
  -- Marek Veber <Marek.Veber@solnet.cz>  Sun, 12 Jul 2015 11:28:01 +0200
 
-ruby-ffi-icu (0.1.6.solnet6) UNRELEASED; urgency=low
+ruby-ffi-icu (0.1.6.solnet6) wheezy; urgency=low
 
   * fix - podpora pro formát TZ
 
