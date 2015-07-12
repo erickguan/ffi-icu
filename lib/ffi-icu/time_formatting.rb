@@ -1,7 +1,7 @@
 
 module ICU
   module TimeFormatting
-    TZ_MAP ||= {
+    TZ_MAP = {
       :generic_location =>   'VVVV',# The generic location format.
                                     #   Where that is unavailable, falls back to the long localized GMT format ("OOOO";
                                     #   Note: Fallback is only necessary with a GMT-style Time Zone ID, like Etc/GMT-830.),
