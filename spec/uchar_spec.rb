@@ -17,7 +17,7 @@ module ICU
 
     it 'takes an optional capacity' do
       ptr = UCharPointer.from_string('abc', 5)
-      ptr.size.should == 20
+      ptr.size.should == 10
     end
 
     describe 'converting to string' do
