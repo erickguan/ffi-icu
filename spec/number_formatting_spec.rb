@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 module ICU
-  if RUBY_VERSION =~ /^1\.8/
+  if RUBY_VERSION < '1.9'
      A0char = "\xC2\xA0"
      ADchar = "\xC2\xAD"
   else
