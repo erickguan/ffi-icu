@@ -5,15 +5,15 @@ require 'spec_helper'
 module ICU
   describe TimeFormatting do
     describe 'the TimeFormatting ' do
-      t0 = Time.at(1226499676).utc # in TZ=Europe/Prague Time.mktime(2008, 11, 12, 15, 21, 16)
-      t1 = Time.at(1224890117).utc # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 01, 15, 17)
-      t2 = Time.at(1224893778).utc # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 02, 16, 18)
-      t3 = Time.at(1224897439).utc # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 03, 17, 19)
-      t4 = Time.at(1224901100).utc # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 04, 18, 20)
-      t5 = Time.at(1206750921).utc # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 01, 35, 21)
-      t6 = Time.at(1206754582).utc # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 02, 36, 22)
-      t7 = Time.at(1206758243).utc # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 03, 37, 23)
-      t8 = Time.at(1206761904).utc # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 04, 38, 24)
+      t0 = Time.at(1226499676) # in TZ=Europe/Prague Time.mktime(2008, 11, 12, 15, 21, 16)
+      t1 = Time.at(1224890117) # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 01, 15, 17)
+      t2 = Time.at(1224893778) # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 02, 16, 18)
+      t3 = Time.at(1224897439) # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 03, 17, 19)
+      t4 = Time.at(1224901100) # in TZ=Europe/Prague Time.mktime(2008, 10, 25, 04, 18, 20)
+      t5 = Time.at(1206750921) # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 01, 35, 21)
+      t6 = Time.at(1206754582) # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 02, 36, 22)
+      t7 = Time.at(1206758243) # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 03, 37, 23)
+      t8 = Time.at(1206761904) # in TZ=Europe/Prague Time.mktime(2008, 03, 29, 04, 38, 24)
 
       f1 = TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :long, :tz_style => :localized_long)
       it 'check date_format for lang=cs_CZ' do
