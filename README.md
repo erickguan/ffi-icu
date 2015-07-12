@@ -127,19 +127,20 @@ Tested on:
 
 Platforms:
 
-* OS X 10.6
-* Arch Linux
+* OS X 10.6 - 10.10
+* Travis' Linux
 
 Rubies:
 
-* MRI 1.9.1
-* MRI 1.8.7
+* 1.9.3
+* 2.0.0
+* 2.1.0
+* ruby-head
 
 TODO:
 =====
 
-* Useful ICU stuff:
-  - date formatting
+* Any other useful part of ICU? 
 * Windows?!
 
 Note on Patches/Pull Requests
