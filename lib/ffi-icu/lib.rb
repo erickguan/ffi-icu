@@ -171,7 +171,7 @@ module ICU
       def to_s
         buffer = FFI::MemoryPointer.new(:char, MaxStringLength)
         Lib.u_versionToString(self, buffer)
-        buffer.read_string_to_null
+        buffer.read_string
       end
     end
 
