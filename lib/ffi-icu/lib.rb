@@ -339,6 +339,13 @@ module ICU
 
     attach_function :unorm_normalize, "unorm_normalize#{suffix}", [:pointer, :int32_t, :normalization_mode, :int32_t, :pointer, :int32_t, :pointer], :int32_t
 
+    # http://icu-project.org/apiref/icu4c/unorm2_8h.html
+
+    enum :normalization2_mode, [ :compose, :decompose, :fcd, :compose_contiguous ]
+    attach_function :unorm2_getInstance, "unorm2_getInstance#{suffix}", [:pointer, :pointer, :normalization2_mode, :pointer], :pointer
+    attach_function :unorm2_normalize, "unorm2_normalize#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :unorm2_isNormalized, "unorm2_isNormalized#{suffix}", [:pointer, :pointer, :int32_t, :pointer], :bool
+
     #
     # Text Boundary Analysis
     #
@@ -392,10 +399,10 @@ module ICU
       :ignore
     ]
     enum :number_format_attribute, [
-       :parse_int_only, :grouping_used, :decimal_always_show, :max_integer_digits, 
-       :min_integer_digits, :integer_digits, :max_fraction_digits, :min_fraction_digits, 
-       :fraction_digits, :multiplier, :grouping_size, :rounding_mode, 
-       :rounding_increment, :format_width, :padding_position, :secondary_grouping_size, 
+       :parse_int_only, :grouping_used, :decimal_always_show, :max_integer_digits,
+       :min_integer_digits, :integer_digits, :max_fraction_digits, :min_fraction_digits,
+       :fraction_digits, :multiplier, :grouping_size, :rounding_mode,
+       :rounding_increment, :format_width, :padding_position, :secondary_grouping_size,
        :significant_digits_used, :min_significant_digits, :max_significant_digits, :lenient_parse
     ]
     attach_function :unum_open, "unum_open#{suffix}", [:number_format_style, :pointer, :int32_t, :string, :pointer, :pointer ], :pointer
