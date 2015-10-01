@@ -38,7 +38,7 @@ require "ffi-icu/collation"
 require "ffi-icu/locale"
 require "ffi-icu/transliteration"
 require "ffi-icu/normalization"
+require "ffi-icu/normalizer"
 require "ffi-icu/break_iterator"
 require "ffi-icu/number_formatting"
 require "ffi-icu/time_formatting"
-
