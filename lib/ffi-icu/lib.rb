@@ -341,10 +341,12 @@ module ICU
 
     # http://icu-project.org/apiref/icu4c/unorm2_8h.html
 
-    enum :normalization2_mode, [ :compose, :decompose, :fcd, :compose_contiguous ]
-    attach_function :unorm2_getInstance, "unorm2_getInstance#{suffix}", [:pointer, :pointer, :normalization2_mode, :pointer], :pointer
-    attach_function :unorm2_normalize, "unorm2_normalize#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
-    attach_function :unorm2_isNormalized, "unorm2_isNormalized#{suffix}", [:pointer, :pointer, :int32_t, :pointer], :bool
+    if Gem::Version.new('4.4') <= Gem::Version.new(self.version)
+      enum :normalization2_mode, [ :compose, :decompose, :fcd, :compose_contiguous ]
+      attach_function :unorm2_getInstance, "unorm2_getInstance#{suffix}", [:pointer, :pointer, :normalization2_mode, :pointer], :pointer
+      attach_function :unorm2_normalize, "unorm2_normalize#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
+      attach_function :unorm2_isNormalized, "unorm2_isNormalized#{suffix}", [:pointer, :pointer, :int32_t, :pointer], :bool
+    end
 
     #
     # Text Boundary Analysis
