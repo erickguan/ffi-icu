@@ -200,6 +200,10 @@ module ICU
     attach_function :u_getVersion,      "u_getVersion#{suffix}",      [:version], :void
     attach_function :u_versionToString, "u_versionToString#{suffix}", [:version, :pointer], :void
 
+    attach_function :u_strFromUTF8,        "u_strFromUTF8#{suffix}",        [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
+    attach_function :u_strFromUTF8Lenient, "u_strFromUTF8Lenient#{suffix}", [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
+    attach_function :u_strToUTF8,          "u_strToUTF8#{suffix}",          [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
+
     #
     # Locale
     #
