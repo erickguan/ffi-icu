@@ -291,6 +291,9 @@ module ICU
     attach_function :ucol_equal,            "ucol_equal#{suffix}",            [:pointer,   :pointer,  :int32_t,  :pointer, :int32_t], :bool
     attach_function :ucol_getRules,         "ucol_getRules#{suffix}",         [:pointer,   :pointer], :pointer
     attach_function :ucol_getSortKey,       "ucol_getSortKey#{suffix}",       [:pointer, :pointer, :int, :pointer, :int], :int
+    attach_function :ucol_getAttribute,     "ucol_getAttribute#{suffix}",     [:pointer, :int, :pointer], :int
+    attach_function :ucol_setAttribute,     "ucol_setAttribute#{suffix}",     [:pointer, :int, :int, :pointer], :void
+
 
     # Transliteration
     #
