@@ -290,6 +290,7 @@ module ICU
     attach_function :ucol_greaterOrEqual,   "ucol_greaterOrEqual#{suffix}",   [:pointer,   :pointer,  :int32_t,  :pointer, :int32_t], :bool
     attach_function :ucol_equal,            "ucol_equal#{suffix}",            [:pointer,   :pointer,  :int32_t,  :pointer, :int32_t], :bool
     attach_function :ucol_getRules,         "ucol_getRules#{suffix}",         [:pointer,   :pointer], :pointer
+    attach_function :ucol_getSortKey,       "ucol_getSortKey#{suffix}",       [:pointer, :pointer, :int, :pointer, :int], :int
 
     # Transliteration
     #

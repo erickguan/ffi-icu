@@ -80,9 +80,17 @@ module ICU
       def rules
         @rules ||= begin
           length = FFI::MemoryPointer.new(:int)
-          ptr = ICU::Lib.ucol_getRules(@c, length)
+          ptr = Lib.ucol_getRules(@c, length)
           ptr.read_array_of_uint16(length.read_int).pack("U*")
         end
+      end
+
+      def collation_key(string)
+        ptr = UCharPointer.from_string(string)
+        size = Lib.ucol_getSortKey(@c, ptr, string.jlength, nil, 0)
+        buffer = FFI::MemoryPointer.new(:char, size)
+        Lib.ucol_getSortKey(@c, ptr, string.jlength, buffer, size)
+        buffer.read_bytes(size - 1)
       end
     end # Collator
 

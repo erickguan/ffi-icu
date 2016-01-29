@@ -61,6 +61,9 @@ module ICU
         collator.rules.include?('ö<<<Ö').should be_true
       end
 
+      it "returns usable collation keys" do
+        collator.collation_key("abc").should be < collator.collation_key("xyz")
+      end
     end
   end # Collate
 end # ICU
