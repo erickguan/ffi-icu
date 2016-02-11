@@ -3,7 +3,7 @@ require 'bigdecimal'
 module ICU
   module NumberFormatting
     @default_options = {}
-    
+
     def self.create(locale, type = :decimal, options = {})
       case type
       when :currency
@@ -115,7 +115,7 @@ module ICU
 
         begin
           Lib.check_error do |error|
-            needed_length = Lib.unum_format_currency(@f, number, UCharPointer.from_string(currency, 4), out_ptr, needed_length, nil, error)
+            needed_length = Lib.unum_format_currency(@f, number, UCharPointer.from_string(currency), out_ptr, needed_length, nil, error)
           end
           out_ptr.string
         rescue BufferOverflowError

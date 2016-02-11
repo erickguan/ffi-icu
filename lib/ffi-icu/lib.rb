@@ -114,7 +114,7 @@ module ICU
     end
 
     def self.check_error
-      ptr = FFI::MemoryPointer.new(:int)
+      ptr = FFI::MemoryPointer.new(:int32_t)
       ret = yield(ptr)
       error_code = ptr.read_int
 
@@ -194,14 +194,11 @@ module ICU
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer,   :pointer], :int
     attach_function :uenum_close,     "uenum_close#{suffix}",     [:pointer], :void
     attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer,  :pointer,  :pointer], :string
-    attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string,    :pointer,  :int32_t], :void
-    attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer,   :string,   :int32_t], :void
-
     attach_function :u_getVersion,      "u_getVersion#{suffix}",      [:version], :void
     attach_function :u_versionToString, "u_versionToString#{suffix}", [:version, :pointer], :void
 
-    attach_function :u_strFromUTF8,        "u_strFromUTF8#{suffix}",        [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
-    attach_function :u_strFromUTF8Lenient, "u_strFromUTF8Lenient#{suffix}", [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
+    attach_function :u_strFromUTF8,        "u_strFromUTF8#{suffix}",        [:pointer, :int32_t, :pointer, :string, :int32_t, :pointer], :pointer
+    attach_function :u_strFromUTF8Lenient, "u_strFromUTF8Lenient#{suffix}", [:pointer, :int32_t, :pointer, :string, :int32_t, :pointer], :pointer
     attach_function :u_strToUTF8,          "u_strToUTF8#{suffix}",          [:pointer, :int32_t, :pointer, :pointer, :int32_t, :pointer], :pointer
 
     #

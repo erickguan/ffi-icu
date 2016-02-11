@@ -21,15 +21,8 @@ module ICU
     end
 
     describe 'converting to string' do
-      let(:ptr) { UCharPointer.new(3).write_array_of_uint16 [0x78, 0x0, 0x79] }
-
       it 'returns the the entire buffer by default' do
-        ptr.string.should == "x\0y"
-      end
-
-      it 'returns strings of the specified length' do
-        ptr.string(0).should == ""
-        ptr.string(2).should == "x\0"
+        UCharPointer.from_string("x举𝔭𝒶ỿ𝕡𝕒ℓ").string.should == "x举𝔭𝒶ỿ𝕡𝕒ℓ"
       end
     end
   end

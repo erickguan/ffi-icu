@@ -184,11 +184,11 @@ module ICU
 
     def with_keyword(keyword, value)
       keyword = keyword.to_s
-      length = @id.length + keyword.length + 64
+      length = @id.bytesize + keyword.bytesize + 64
 
       unless value.nil?
         value = value.to_s
-        length += value.length
+        length += value.bytesize
       end
 
       result = Lib::Util.read_string_buffer(length) do |buffer, status|

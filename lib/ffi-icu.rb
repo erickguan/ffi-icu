@@ -29,7 +29,6 @@ unless ICU.ruby19?
   $KCODE = 'u'
 end
 
-require "ffi-icu/core_ext/string"
 require "ffi-icu/lib"
 require "ffi-icu/lib/util"
 require "ffi-icu/uchar_pointer"

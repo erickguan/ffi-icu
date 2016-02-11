@@ -21,7 +21,7 @@ module ICU
       @text = str
 
       Lib.check_error { |err|
-        Lib.ubrk_setText @iterator, UCharPointer.from_string(str), str.jlength, err
+        Lib.ubrk_setText @iterator, UCharPointer.from_string(str), str.length, err
       }
     end
 
