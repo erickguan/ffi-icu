@@ -111,7 +111,7 @@ module ICU
 
         it 'returns the script' do
           Locale.new('ja_Hira_JP').display_script('en').should == 'Hiragana'
-          Locale.new('ja_Hira_JP').display_script('ru').should == 'хирагана'
+          Locale.new('ja_Hira_JP').display_script('ru').should == 'Хирагана'
         end
 
         it 'returns the variant' do
