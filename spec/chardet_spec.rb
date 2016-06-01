@@ -21,9 +21,9 @@ describe ICU::CharDet::Detector do
   end
 
   it "should disable / enable the input filter" do
-    detector.input_filter_enabled?.should be_false
+    detector.input_filter_enabled?.should be_falsey
     detector.input_filter_enabled = true
-    detector.input_filter_enabled?.should be_true
+    detector.input_filter_enabled?.should be_truthy
   end
 
   it "should should set declared encoding" do

@@ -5,27 +5,27 @@ require 'spec_helper'
 module ICU
   describe Locale do
     describe 'the available locales' do
-      subject { Locale.available }
+      subject(:locale) { Locale.available }
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a Locale }
+      it { expect(locale.first).to be_a(Locale)}
     end
 
     describe 'the available ISO 639 country codes' do
-      subject { Locale.iso_countries }
+      subject(:countries) { Locale.iso_countries }
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a String }
+      it { expect(countries.first).to be_a(String)}
     end
 
     describe 'the available ISO 639 language codes' do
-      subject { Locale.iso_languages }
+      subject(:languages) { Locale.iso_languages }
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a String }
+      it { expect(languages.first).to be_a(String) }
     end
 
     describe 'the default' do
@@ -111,7 +111,7 @@ module ICU
 
         it 'returns the script' do
           Locale.new('ja_Hira_JP').display_script('en').should == 'Hiragana'
-          Locale.new('ja_Hira_JP').display_script('ru').should == 'Хирагана'
+          Locale.new('ja_Hira_JP').display_script('ru').should == 'хирагана'
         end
 
         it 'returns the variant' do
@@ -154,9 +154,9 @@ module ICU
     end
 
     it 'truncates a properly formatted locale, returning the "parent"' do
-      Locale.new('es-mx').parent.should == ''
-      Locale.new('es_MX').parent.should == 'es'
-      Locale.new('zh_Hans_CH_PINYIN').parent.should == 'zh_Hans_CH'
+      expect(Locale.new('es-mx').parent).to eq ''
+      expect(Locale.new('es_MX').parent).to eq 'es'
+      expect(Locale.new('zh_Hans_CH_PINYIN').parent).to eq 'zh_Hans_CH'
     end
 
     describe 'ISO codes' do

@@ -9,8 +9,8 @@ module ICU
 
       context 'upon success' do
         it 'returns the block result' do
-          Lib.check_error { |status| return_value }.should == return_value
-          Lib.check_error { |status| status.write_int(0); return_value }.should == return_value
+          expect(Lib.check_error { |status| return_value }).to eq return_value
+          expect(Lib.check_error { |status| status.write_int(0); return_value }).to eq return_value
         end
       end
 
@@ -28,8 +28,8 @@ module ICU
           before(:each) { $VERBOSE = true }
 
           it 'prints to STDERR and returns the block result' do
-            $stderr.should_receive(:puts) { |message| message.should match /U_.*_WARNING/ }
-            Lib.check_error { |status| status.write_int(-127); return_value }.should == return_value
+            expect($stderr).to receive(:puts) { |message| expect(message).to match /U_.*_WARNING/ }
+            expect(Lib.check_error { |status| status.write_int(-127); return_value }).to eq return_value
           end
         end
 
@@ -37,8 +37,8 @@ module ICU
           before(:each) { $VERBOSE = false }
 
           it 'returns the block result' do
-            $stderr.should_not_receive(:puts)
-            Lib.check_error { |status| status.write_int(-127); return_value }.should == return_value
+            expect($stderr).not_to receive(:puts)
+            expect(Lib.check_error { |status| status.write_int(-127); return_value }).to eq return_value
           end
         end
       end
@@ -49,7 +49,7 @@ module ICU
         subject { Lib.cldr_version }
 
         it { should be_a Lib::VersionInfo }
-        it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+        it('is populated') { expect(subject.to_a).not_to eq [0,0,0,0] }
       end
     end
 
@@ -57,7 +57,7 @@ module ICU
       subject { Lib.version }
 
       it { should be_a Lib::VersionInfo }
-      it('is populated') { subject.to_a.should_not == [0,0,0,0] }
+      it('is populated') { expect(subject.to_a).not_to eq [0,0,0,0] }
     end
   end
 end
