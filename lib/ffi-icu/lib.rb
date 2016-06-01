@@ -44,8 +44,8 @@ module ICU
                     [find_lib("libicui18n.#{FFI::Platform::LIBSUFFIX}.??"),
                      find_lib("libicutu.#{FFI::Platform::LIBSUFFIX}.??")]
                   when :windows
-                    [find_lib("icuuc??.#{FFI::Platform::LIBSUFFIX}"),
-                     find_lib("icuin??.#{FFI::Platform::LIBSUFFIX}")]
+                    [find_lib("{lib,}icuuc??.#{FFI::Platform::LIBSUFFIX}"),
+                     find_lib("{lib,}icuin??.#{FFI::Platform::LIBSUFFIX}")]
                   end
 
       lib_names.compact! if lib_names
