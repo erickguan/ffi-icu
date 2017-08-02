@@ -1,9 +1,7 @@
 ffi-icu
 =======
 
-Simple FFI wrappers for things I need from ICU. For the full thing, check out [ICU4R](http://icu4r.rubyforge.org/) instead.
-
-[![Build Status](https://secure.travis-ci.org/jarib/ffi-icu.png)](http://travis-ci.org/jarib/ffi-icu)
+Simple FFI wrappers for ICU. Checkout the renovated [ICU gem](https://github.com/fantasticfears/icu4r) instead which supports various of encoding and distributed with packaged source.
 
 Gem
 ---
