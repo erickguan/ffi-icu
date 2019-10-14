@@ -130,10 +130,10 @@ Platforms:
 
 Rubies:
 
-* 1.9.3
-* 2.0.0
-* 2.1.0
-* ruby-head
+- 2.4.6
+- 2.5.5
+- 2.6.3
+- ruby-head
 
 TODO:
 =====

@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors                   = ["Jari Bakken"]
-  s.date                      = %q{2010-08-23}
+  s.date                      = %q{2019-10-15}
+  s.licenses                  = ['MIT']
   s.description               = %q{Provides charset detection, locale sensitive collation and more. Depends on libicu.}
   s.email                     = %q{jari.bakken@gmail.com}
   s.extra_rdoc_files          = ["LICENSE", "README.md"]
@@ -20,7 +21,7 @@ Gem::Specification.new do |s|
   s.summary                   = %q{Simple Ruby FFI wrappers for things I need from ICU.}
 
   s.add_runtime_dependency "ffi", "~> 1.0", ">= 1.0.9"
-  s.add_development_dependency "rspec", ["~> 2.5.0"]
+  s.add_development_dependency 'rspec', '~> 2.5', '>= 2.5.0'
   s.add_development_dependency "rake", ["~> 0.9.2"]
 end
 
