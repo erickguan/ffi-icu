@@ -93,6 +93,8 @@ module ICU
     end
 
     describe 'display' do
+      let(:locale_ids) { Locale.available.map(&:id) }
+
       context 'in a specific locale' do
         it 'returns the country' do
           Locale.new('de_DE').display_country('en').should == 'Germany'
@@ -111,12 +113,23 @@ module ICU
 
         it 'returns the script' do
           Locale.new('ja_Hira_JP').display_script('en').should == 'Hiragana'
-          Locale.new('ja_Hira_JP').display_script('ru').should == 'Хирагана'
+          Locale.new('ja_Hira_JP').display_script('ru').should == 'хирагана'
         end
 
         it 'returns the variant' do
           Locale.new('be_BY_TARASK').display_variant('de').should == 'Taraskievica-Orthographie'
           Locale.new('zh_CH_POSIX').display_variant('en').should == 'Computer'
+        end
+
+        # If memory set for 'read_uchar_buffer' is set too low it will throw an out
+        # of bounds memory error, which results in a Segmentation fault error.
+        it 'insures memory sizes is set correctly' do
+          # Currently, testing the longest known locales. May need to be update in the future.
+          Locale.new('en_VI').display_country('ccp').should_not be_nil
+          Locale.new('yue_Hant').display_language('ccp').should_not be_nil
+          Locale.new('en_VI').display_name('ccp').should_not be_nil
+          Locale.new('yue_Hant').display_script('ccp').should_not be_nil
+          Locale.new('en_US_POSIX').display_variant('sl').should_not be_nil
         end
       end
 

@@ -75,7 +75,7 @@ module ICU
     def display_country(locale = nil)
       locale = locale.to_s unless locale.nil?
 
-      Lib::Util.read_uchar_buffer(64) do |buffer, status|
+      Lib::Util.read_uchar_buffer(256) do |buffer, status|
         Lib.uloc_getDisplayCountry(@id, locale, buffer, buffer.size, status)
       end
     end
@@ -83,7 +83,7 @@ module ICU
     def display_language(locale = nil)
       locale = locale.to_s unless locale.nil?
 
-      Lib::Util.read_uchar_buffer(64) do |buffer, status|
+      Lib::Util.read_uchar_buffer(192) do |buffer, status|
         Lib.uloc_getDisplayLanguage(@id, locale, buffer, buffer.size, status)
       end
     end
@@ -91,7 +91,7 @@ module ICU
     def display_name(locale = nil)
       locale = locale.to_s unless locale.nil?
 
-      Lib::Util.read_uchar_buffer(64) do |buffer, status|
+      Lib::Util.read_uchar_buffer(256) do |buffer, status|
         Lib.uloc_getDisplayName(@id, locale, buffer, buffer.size, status)
       end
     end
@@ -99,7 +99,7 @@ module ICU
     def display_script(locale = nil)
       locale = locale.to_s unless locale.nil?
 
-      Lib::Util.read_uchar_buffer(64) do |buffer, status|
+      Lib::Util.read_uchar_buffer(128) do |buffer, status|
         Lib.uloc_getDisplayScript(@id, locale, buffer, buffer.size, status)
       end
     end
