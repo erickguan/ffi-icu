@@ -5,3 +5,7 @@ rvm:
   - ruby-head
 before_script:
   - sudo apt-get install -y libicu-dev
+
+matrix:
+  allow_failures:
+    - rvm: ruby-head
