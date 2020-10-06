@@ -9,7 +9,10 @@ module ICU
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a Locale }
+
+      it 'should be an array of available Locales' do
+        expect(subject.first).to be_a(Locale)
+      end
     end
 
     describe 'the available ISO 639 country codes' do
@@ -17,7 +20,10 @@ module ICU
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a String }
+
+      it 'should be an array of Strings' do
+        expect(subject.first).to be_a(String)
+      end
     end
 
     describe 'the available ISO 639 language codes' do
@@ -25,7 +31,10 @@ module ICU
 
       it { should be_an Array }
       it { should_not be_empty }
-      its(:first) { should be_a String }
+
+      it 'should be an array of Strings' do
+        expect(subject.first).to be_a(String)
+      end
     end
 
     describe 'the default' do
