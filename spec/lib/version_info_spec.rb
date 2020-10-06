@@ -1,7 +1,5 @@
 # encoding: UTF-8
 
-require 'spec_helper'
-
 module ICU
   module Lib
     describe VersionInfo do

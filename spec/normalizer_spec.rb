@@ -1,21 +1,19 @@
 # encoding: UTF-8
 
-require 'spec_helper'
-
 module ICU
   describe Normalizer do
     describe 'NFD: nfc decompose' do
       let(:normalizer) { ICU::Normalizer.new(nil, 'nfc', :decompose) }
 
       it "should normalize a string" do
-        normalizer.normalize("Å").unpack("U*").should == [65, 778]
-        normalizer.normalize("ô").unpack("U*").should == [111, 770]
-        normalizer.normalize("a").unpack("U*").should == [97]
-        normalizer.normalize("中文").unpack("U*").should == [20013, 25991]
-        normalizer.normalize("Äffin").unpack("U*").should == [65, 776, 102, 102, 105, 110]
-        normalizer.normalize("Äﬃn").unpack("U*").should == [65, 776, 64259, 110]
-        normalizer.normalize("Henry IV").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
-        normalizer.normalize("Henry Ⅳ").unpack("U*").should == [72, 101, 110, 114, 121, 32, 8547]
+        expect(normalizer.normalize("Å").unpack("U*")).to eq([65, 778])
+        expect(normalizer.normalize("ô").unpack("U*")).to eq([111, 770])
+        expect(normalizer.normalize("a").unpack("U*")).to eq([97])
+        expect(normalizer.normalize("中文").unpack("U*")).to eq([20013, 25991])
+        expect(normalizer.normalize("Äffin").unpack("U*")).to eq([65, 776, 102, 102, 105, 110])
+        expect(normalizer.normalize("Äﬃn").unpack("U*")).to eq([65, 776, 64259, 110])
+        expect(normalizer.normalize("Henry IV").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
+        expect(normalizer.normalize("Henry Ⅳ").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 8547])
       end
     end
 
@@ -23,14 +21,14 @@ module ICU
       let(:normalizer) { ICU::Normalizer.new(nil, 'nfc', :compose) }
 
       it "should normalize a string" do
-        normalizer.normalize("Å").unpack("U*").should == [197]
-        normalizer.normalize("ô").unpack("U*").should == [244]
-        normalizer.normalize("a").unpack("U*").should == [97]
-        normalizer.normalize("中文").unpack("U*").should == [20013, 25991]
-        normalizer.normalize("Äffin").unpack("U*").should == [196, 102, 102, 105, 110]
-        normalizer.normalize("Äﬃn").unpack("U*").should == [196, 64259, 110]
-        normalizer.normalize("Henry IV").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
-        normalizer.normalize("Henry Ⅳ").unpack("U*").should == [72, 101, 110, 114, 121, 32, 8547]
+        expect(normalizer.normalize("Å").unpack("U*")).to eq([197])
+        expect(normalizer.normalize("ô").unpack("U*")).to eq([244])
+        expect(normalizer.normalize("a").unpack("U*")).to eq([97])
+        expect(normalizer.normalize("中文").unpack("U*")).to eq([20013, 25991])
+        expect(normalizer.normalize("Äffin").unpack("U*")).to eq([196, 102, 102, 105, 110])
+        expect(normalizer.normalize("Äﬃn").unpack("U*")).to eq([196, 64259, 110])
+        expect(normalizer.normalize("Henry IV").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
+        expect(normalizer.normalize("Henry Ⅳ").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 8547])
       end
     end
 
@@ -38,10 +36,10 @@ module ICU
       let(:normalizer) { ICU::Normalizer.new(nil, 'nfkc', :decompose) }
 
       it "should normalize a string" do
-        normalizer.normalize("Äffin").unpack("U*").should == [65, 776, 102, 102, 105, 110]
-        normalizer.normalize("Äﬃn").unpack("U*").should == [65, 776, 102, 102, 105, 110]
-        normalizer.normalize("Henry IV").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
-        normalizer.normalize("Henry Ⅳ").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
+        expect(normalizer.normalize("Äffin").unpack("U*")).to eq([65, 776, 102, 102, 105, 110])
+        expect(normalizer.normalize("Äﬃn").unpack("U*")).to eq([65, 776, 102, 102, 105, 110])
+        expect(normalizer.normalize("Henry IV").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
+        expect(normalizer.normalize("Henry Ⅳ").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
       end
     end
 
@@ -49,10 +47,10 @@ module ICU
       let(:normalizer) { ICU::Normalizer.new(nil, 'nfkc', :compose) }
 
       it "should normalize a string" do
-        normalizer.normalize("Äffin").unpack("U*").should == [196, 102, 102, 105, 110]
-        normalizer.normalize("Äﬃn").unpack("U*").should == [196, 102, 102, 105, 110]
-        normalizer.normalize("Henry IV").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
-        normalizer.normalize("Henry Ⅳ").unpack("U*").should == [72, 101, 110, 114, 121, 32, 73, 86]
+        expect(normalizer.normalize("Äffin").unpack("U*")).to eq([196, 102, 102, 105, 110])
+        expect(normalizer.normalize("Äﬃn").unpack("U*")).to eq([196, 102, 102, 105, 110])
+        expect(normalizer.normalize("Henry IV").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
+        expect(normalizer.normalize("Henry Ⅳ").unpack("U*")).to eq([72, 101, 110, 114, 121, 32, 73, 86])
       end
     end
   end # Normalizer

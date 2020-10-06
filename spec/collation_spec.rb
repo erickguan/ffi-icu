@@ -1,12 +1,10 @@
 # encoding: UTF-8
 
-require 'spec_helper'
-
 module ICU
   module Collation
     describe "Collation" do
       it "should collate an array of strings" do
-        Collation.collate("nb", %w[æ å ø]).should == %w[æ ø å]
+        expect(Collation.collate("nb", %w[æ å ø])).to eq(%w[æ ø å])
       end
     end
 
@@ -14,51 +12,50 @@ module ICU
       let(:collator) { Collator.new("nb") }
 
       it "should collate an array of strings" do
-        collator.collate(%w[å ø æ]).should == %w[æ ø å]
+        expect(collator.collate(%w[å ø æ])).to eq(%w[æ ø å])
       end
 
       it "raises an error if argument does not respond to :sort" do
-        lambda { collator.collate(1) }.should raise_error(ArgumentError)
+        expect { collator.collate(1) }.to raise_error(ArgumentError)
       end
 
       it "should return available locales" do
         locales = ICU::Collation.available_locales
-        locales.should be_kind_of(Array)
-        locales.should_not be_empty
-        locales.should include("nb")
+        expect(locales).to be_an(Array)
+        expect(locales).to_not be_empty
+        expect(locales).to include("nb")
       end
 
       it "should return the locale of the collator" do
-        l = collator.locale
-        l.should == "nb"
+        expect(collator.locale).to eq('nb')
       end
 
       it "should compare two strings" do
-        collator.compare("blåbærsyltetøy", "blah").should == 1
-        collator.compare("blah", "blah").should == 0
-        collator.compare("ba", "bl").should == -1
+        expect(collator.compare("blåbærsyltetøy", "blah")).to eq(1)
+        expect(collator.compare("blah", "blah")).to eq(0)
+        expect(collator.compare("ba", "bl")).to eq(-1)
       end
 
       it "should know if a string is greater than another" do
-        collator.should be_greater("z", "a")
-        collator.should_not be_greater("a", "z")
+        expect(collator).to be_greater("z", "a")
+        expect(collator).to_not be_greater("a", "z")
       end
 
       it "should know if a string is greater or equal to another" do
-        collator.should be_greater_or_equal("z", "a")
-        collator.should be_greater_or_equal("z", "z")
-        collator.should_not be_greater_or_equal("a", "z")
+        expect(collator).to be_greater_or_equal("z", "a")
+        expect(collator).to be_greater_or_equal("z", "z")
+        expect(collator).to_not be_greater_or_equal("a", "z")
       end
 
       it "should know if a string is equal to another" do
-        collator.should be_equal("a", "a")
-        collator.should_not be_equal("a", "b")
+        expect(collator).to be_equal("a", "a")
+        expect(collator).to_not be_equal("a", "b")
       end
 
       it "should return rules" do
-        collator.rules.should_not be_empty
+        expect(collator.rules).to_not be_empty
         # ö sorts before Ö
-        collator.rules.include?('ö<<<Ö').should be_true
+        expect(collator.rules).to include('ö<<<Ö')
       end
 
     end
