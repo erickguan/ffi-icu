@@ -47,7 +47,6 @@ or
 Why not just use rchardet?
 
 * speed
-* 1.9 support
 
 Locale Sensitive Collation
 --------------------------
