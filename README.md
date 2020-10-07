@@ -130,15 +130,16 @@ Platforms:
 
 Rubies:
 
-- 2.4.6
-- 2.5.5
-- 2.6.3
+- 2.4
+- 2.5
+- 2.6
+- 2.7
 - ruby-head
 
 TODO:
 =====
 
-* Any other useful part of ICU? 
+* Any other useful part of ICU?
 * Windows?!
 
 Note on Patches/Pull Requests
