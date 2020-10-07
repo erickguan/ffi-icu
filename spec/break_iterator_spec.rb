@@ -29,7 +29,9 @@ module ICU
       iterator = BreakIterator.new :word, "th_TH"
       iterator.text = "รู้อะไรไม่สู้รู้วิชา รู้รักษาตัวรอดเป็นยอดดี"
 
-      expect(iterator.substrings).to eq( ["รู้", "อะไร", "ไม่สู้", "รู้", "วิชา", " ", "รู้", "รักษา", "ตัว", "รอด", "เป็น", "ยอดดี"])
+      expect(iterator.substrings).to eq(
+        ["รู้", "อะไร", "ไม่สู้", "รู้", "วิชา", " ", "รู้", "รักษา", "ตัว", "รอด", "เป็น", "ยอดดี"]
+      )
     end
 
     it "finds all word boundaries in a non-ASCII string" do
