@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require "spec_helper"
-
 module ICU
   describe Transliteration::Transliterator do
     def transliterator_for(*args)
@@ -16,7 +14,7 @@ module ICU
     ].each do |id, input, output|
       it "should transliterate #{id}" do
         tl = transliterator_for(id)
-        tl.transliterate(input).should == output
+        expect(tl.transliterate(input)).to eq(output)
       end
 
     end
@@ -25,12 +23,13 @@ module ICU
   describe Transliteration do
     it "should provide a list of available ids" do
       ids = ICU::Transliteration.available_ids
-      ids.should be_kind_of(Array)
-      ids.should_not be_empty
+
+      expect(ids).to be_an(Array)
+      expect(ids).to_not be_empty
     end
 
    it "should transliterate custom rules" do
-     ICU::Transliteration.translit("NFD; [:Nonspacing Mark:] Remove; NFC", "âêîôû").should == "aeiou"
+     expect(ICU::Transliteration.translit("NFD; [:Nonspacing Mark:] Remove; NFC", "âêîôû")).to eq("aeiou")
    end
 
   end # Transliteration
