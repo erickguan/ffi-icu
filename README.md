@@ -1,4 +1,4 @@
-ffi-icu
+ffi-icu [![Build Status](https://travis-ci.org/erickguan/ffi-icu.svg?branch=master)](https://travis-ci.org/erickguan/ffi-icu)
 =======
 
 Simple FFI wrappers for ICU. Checkout the renovated [ICU gem](https://github.com/fantasticfears/icu4r) instead which supports various of encoding and distributed with packaged source. FFI-ICU needs some love with ICU gem's transcoding method.
