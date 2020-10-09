@@ -47,7 +47,6 @@ or
 Why not just use rchardet?
 
 * speed
-* 1.9 support
 
 Locale Sensitive Collation
 --------------------------
@@ -130,7 +129,6 @@ Platforms:
 
 Rubies:
 
-- 2.4
 - 2.5
 - 2.6
 - 2.7

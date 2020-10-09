@@ -18,15 +18,6 @@ module ICU
       os
     end
   end
-
-  def self.ruby19?
-    RUBY_VERSION >= '1.9'
-  end
-end
-
-unless ICU.ruby19?
-  require 'jcode'
-  $KCODE = 'u'
 end
 
 require "ffi-icu/core_ext/string"
