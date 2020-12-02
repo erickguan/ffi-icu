@@ -77,7 +77,12 @@ module ICU
           if Gem::Version.new('4.4') <= Gem::Version.new(Lib.version)
             expect(Locale.new('en_US').to_language_tag).to eq('en-US')
             expect(Locale.new('zh_TW').to_language_tag).to eq('zh-TW')
-            expect(Locale.new('zh_Hans_CH_PINYIN').to_language_tag).to eq('zh-Hans-CH-u-co-pinyin')
+            # Support for this "magic" transform was dropped with https://unicode-org.atlassian.net/browse/ICU-20187, so don't test it
+            if Gem::Version.new(Lib.version) < Gem::Version.new('64')
+              expect(Locale.new('zh_Hans_CH_PINYIN').to_language_tag).to eq('zh-Hans-CH-u-co-pinyin')
+            else
+              expect(Locale.new('zh_Hans_CH@collation=pinyin').to_language_tag).to eq('zh-Hans-CH-u-co-pinyin')
+            end
           else
             expect(Locale.new('en_US').to_language_tag).to eq('en-us')
             expect(Locale.new('zh_TW').to_language_tag).to eq('zh-tw')

@@ -39,7 +39,12 @@ module ICU
                     [find_lib("libicui18n.#{FFI::Platform::LIBSUFFIX}.??"),
                      find_lib("libicutu.#{FFI::Platform::LIBSUFFIX}.??")]
                   when :osx
-                    [find_lib("libicucore.#{FFI::Platform::LIBSUFFIX}")]
+                    # See https://developer.apple.com/documentation/macos-release-notes/macos-big-sur-11_0_1-release-notes (62986286)
+                    if Gem::Version.new(`sw_vers -productVersion`) >= Gem::Version.new('11')
+                      ["libicucore.#{FFI::Platform::LIBSUFFIX}"]
+                    else
+                      [find_lib("libicucore.#{FFI::Platform::LIBSUFFIX}")]
+                    end
                   when :linux
                     [find_lib("libicui18n.#{FFI::Platform::LIBSUFFIX}.??"),
                      find_lib("libicutu.#{FFI::Platform::LIBSUFFIX}.??")]

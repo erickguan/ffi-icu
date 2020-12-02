@@ -20,7 +20,7 @@ module ICU
       end
 
       it 'should format a decimal' do
-        expect(NumberFormatting.format_number("en", BigDecimal.new("10000.123"))).to eq("10,000.123")
+        expect(NumberFormatting.format_number("en", BigDecimal("10000.123"))).to eq("10,000.123")
       end
 
       it 'should format a currency' do
@@ -54,7 +54,12 @@ module ICU
       it 'should allow for various styles of currency formatting if the version is new enough' do
         if ICU::Lib.version.to_a.first >= 53
           curf = NumberFormatting.create('en-US', :currency, style: :iso)
-          expect(curf.format(1_000.12, 'USD')).to eq("USD1,000.12")
+          expected = if ICU::Lib.version.to_a.first >= 62
+            "USD\u00A01,000.12"
+          else
+            "USD1,000.12"
+          end
+          expect(curf.format(1_000.12, 'USD')).to eq(expected)
           curf = NumberFormatting.create('en-US', :currency, style: :plural)
           expect(curf.format(1_000.12, 'USD')).to eq("1,000.12 US dollars")
           expect { NumberFormatting.create('en-US', :currency, style: :fake) }.to raise_error(StandardError)
