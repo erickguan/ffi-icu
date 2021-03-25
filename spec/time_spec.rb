@@ -59,7 +59,7 @@ module ICU
         expect(f2.format(t8)).to eq("3/29/08#{en_sep} 6:38:24 AM #{en_tz}")
       end
 
-      f3 = TimeFormatting.create(:locale => 'de_DE', :zone => 'Africa/Dakar ', :date => :short , :time => :long)
+      f3 = TimeFormatting.create(:locale => 'de_DE', :zone => 'Africa/Dakar', :date => :short , :time => :long)
       ge_sep = ""
       if cldr_version >= "27.0.1"
         ge_sep = ","
@@ -81,6 +81,19 @@ module ICU
         expect(f3.format(t6)).to eq("29.03.08#{ge_sep} 01:36:22 GMT")
         expect(f3.format(t7)).to eq("29.03.08#{ge_sep} 02:37:23 GMT")
         expect(f3.format(t8)).to eq("29.03.08#{ge_sep} 03:38:24 GMT")
+      end
+
+      context 'skeleton pattern' do
+        f4 = TimeFormatting.create(:locale => 'fr_FR', :date => :pattern , :time => :pattern, :skeleton => 'MMMy')
+
+        it 'check format' do
+          expect(f4.format(t0)).to eq("nov. 2008")
+          expect(f4.format(t1)).to eq("oct. 2008")
+        end
+
+        it 'check date_format' do
+          expect(f4.date_format(true)).to eq("MMM y")
+        end
       end
     end
   end

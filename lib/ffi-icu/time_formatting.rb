@@ -65,21 +65,46 @@ module ICU
 
       private
 
-      def make_formatter(time_style, date_style, locale, time_zone_str)
+      def make_formatter(time_style, date_style, locale, time_zone_str, skeleton)
         time_zone = nil
-        d_len = 0
+        tz_len = 0
         if time_zone_str
           time_zone = UCharPointer.from_string(time_zone_str)
-          d_len = time_zone_str.size
+          tz_len = time_zone_str.size
         else
           Lib.check_error { | error| 
             i_len  = 150
             time_zone = UCharPointer.new(i_len)
-            d_len = Lib.ucal_getDefaultTimeZone(time_zone, i_len, error) 
+            tz_len = Lib.ucal_getDefaultTimeZone(time_zone, i_len, error) 
           }
         end
 
-        ptr = Lib.check_error { | error| Lib.udat_open(time_style, date_style, locale, time_zone, d_len, FFI::MemoryPointer.new(4), -1, error) }
+        pattern_len = -1
+        pattern_ptr = FFI::MemoryPointer.new(4)
+
+        if skeleton
+          skeleton = UCharPointer.from_string(skeleton)
+
+          pattern_len = 0
+          pattern_ptr = UCharPointer.new(pattern_len)
+
+          pg_ptr = Lib.check_error { |error| Lib.udatpg_open(locale, error) }
+          generator = FFI::AutoPointer.new(pg_ptr, Lib.method(:udat_close))
+
+          retried = false  
+          begin
+            Lib.check_error do |error|
+              pattern_len = Lib.udatpg_getBestPattern(generator, skeleton, skeleton.size, pattern_ptr, pattern_len, error)
+            end
+          rescue BufferOverflowError
+            raise BufferOverflowError, "needed: #{pattern_len}" if retried
+            pattern_ptr = pattern_ptr.resized_to pattern_len
+            retried = true
+            retry
+          end
+        end
+
+        ptr = Lib.check_error { | error| Lib.udat_open(time_style, date_style, locale, time_zone, tz_len, pattern_ptr, pattern_len, error) }
         FFI::AutoPointer.new(ptr, Lib.method(:udat_close))
       end
     end
@@ -91,7 +116,9 @@ module ICU
         locale     = options[:locale] || 'C'
         tz_style   = options[:tz_style]
         time_zone  = options[:zone]
-        @f = make_formatter(time_style, date_style, locale, time_zone)
+        skeleton   = options[:skeleton]
+
+        @f = make_formatter(time_style, date_style, locale, time_zone, skeleton)
         if tz_style
           f0 = date_format(true)
           f1 = update_tz_format(f0, tz_style)    
@@ -175,6 +202,23 @@ module ICU
 
         Lib.check_error do |error|
           needed_length = Lib.udat_applyPattern(@f, localized, pattern, pattern_len)
+        end
+      end
+
+      def with_retry(out_ptr)
+        needed_length = 0
+        out_ptr = UCharPointer.new(needed_length)
+        retried = false
+
+        begin
+          Lib.check_error do |error|
+            yield(error)
+          end
+        rescue BufferOverflowError
+          raise BufferOverflowError, "needed: #{needed_length}" if retried
+          out_ptr = out_ptr.resized_to needed_length
+          retried = true
+          retry
         end
       end
     end # DateTimeFormatter
