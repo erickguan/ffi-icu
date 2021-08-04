@@ -19,9 +19,7 @@ module ICU
             '/usr/local/{lib64,lib}',
             '/opt/local/{lib64,lib}',
             '/usr/{lib64,lib}',
-            '/usr/lib/x86_64-linux-gnu', # for Debian Multiarch http://wiki.debian.org/Multiarch
-            '/usr/lib/i386-linux-gnu',   # for Debian Multiarch
-          ]
+          ] + Dir['/usr/lib/*-linux-gnu'] # for Debian Multiarch http://wiki.debian.org/Multiarch
         end
       end
     end
