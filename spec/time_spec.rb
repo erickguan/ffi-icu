@@ -84,7 +84,7 @@ module ICU
       end
 
       context 'skeleton pattern' do
-        f4 = TimeFormatting.create(:locale => 'fr_FR', :date => :pattern , :time => :pattern, :skeleton => 'MMMy')
+        f4 = TimeFormatting.create(:locale => 'fr_FR', :date => :pattern, :time => :pattern, :skeleton => 'MMMy')
 
         it 'check format' do
           expect(f4.format(t0)).to eq("nov. 2008")

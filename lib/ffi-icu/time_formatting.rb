@@ -66,8 +66,11 @@ module ICU
       private
 
       def make_formatter(time_style, date_style, locale, time_zone_str, skeleton)
-        time_zone = nil
-        tz_len = 0
+        time_zone   = nil
+        tz_len      = 0
+        pattern_len = -1
+        pattern_ptr = FFI::MemoryPointer.new(4)
+
         if time_zone_str
           time_zone = UCharPointer.from_string(time_zone_str)
           tz_len = time_zone_str.size
@@ -79,29 +82,12 @@ module ICU
           }
         end
 
-        pattern_len = -1
-        pattern_ptr = FFI::MemoryPointer.new(4)
-
         if skeleton
-          skeleton = UCharPointer.from_string(skeleton)
-
-          pattern_len = 0
-          pattern_ptr = UCharPointer.new(pattern_len)
-
-          pg_ptr = Lib.check_error { |error| Lib.udatpg_open(locale, error) }
-          generator = FFI::AutoPointer.new(pg_ptr, Lib.method(:udat_close))
-
-          retried = false  
-          begin
-            Lib.check_error do |error|
-              pattern_len = Lib.udatpg_getBestPattern(generator, skeleton, skeleton.size, pattern_ptr, pattern_len, error)
-            end
-          rescue BufferOverflowError
-            raise BufferOverflowError, "needed: #{pattern_len}" if retried
-            pattern_ptr = pattern_ptr.resized_to pattern_len
-            retried = true
-            retry
+          unless time_style == :pattern && date_style == :pattern
+            raise '`time_style` and `date_style` must be :pattern type when using a skeleton pattern'
           end
+
+          pattern_len, pattern_ptr = skeleton_format(skeleton, locale)
         end
 
         ptr = Lib.check_error { | error| Lib.udat_open(time_style, date_style, locale, time_zone, tz_len, pattern_ptr, pattern_len, error) }
@@ -205,18 +191,26 @@ module ICU
         end
       end
 
-      def with_retry(out_ptr)
-        needed_length = 0
-        out_ptr = UCharPointer.new(needed_length)
-        retried = false
+      def skeleton_format(pattern, locale)
+          pattern = UCharPointer.from_string(pattern)
+
+          needed_length = 0
+          pattern_ptr = UCharPointer.new(needed_length)
+
+          udatpg_ptr = Lib.check_error { |error| Lib.udatpg_open(locale, error) }
+          generator = FFI::AutoPointer.new(udatpg_ptr, Lib.method(:udat_close))
+
+          retried = false
 
         begin
           Lib.check_error do |error|
-            yield(error)
+            needed_length = Lib.udatpg_getBestPattern(generator, pattern, pattern.size, pattern_ptr, needed_length, error)
           end
+
+          return needed_length, pattern_ptr
         rescue BufferOverflowError
           raise BufferOverflowError, "needed: #{needed_length}" if retried
-          out_ptr = out_ptr.resized_to needed_length
+          pattern_ptr = pattern_ptr.resized_to needed_length
           retried = true
           retry
         end
