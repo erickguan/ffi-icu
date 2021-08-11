@@ -16,7 +16,7 @@ Dependencies
 ICU.
 
 If you get messages that the library or functions are not found, you can
-set some environment varibles to tell ffi-icu where to find it, e.g.:
+set some environment variables to tell ffi-icu where to find it, e.g.:
 
     $ export FFI_ICU_LIB="icui18n.so"
     $ export FFI_ICU_VERSION_SUFFIX="_3_8"
@@ -109,14 +109,24 @@ Examples:
     f #=> "12.11.15 15:21"
 
     # reusable formatting objects
-    formater = ICU::TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :none)
-    formater.format(Time.now)  #=> "25. února 2015"
+    formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long, :time => :none)
+    formatter.format(Time.now)  #=> "25. února 2015"
 ```
 
 ```ruby
     # reusable formatting objects
-    formater = ICU::TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long , :time => :none)
-    formater.parse("25. února 2015") #=> Wed Feb 25 00:00:00 +0100 2015
+    formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :zone => 'Europe/Prague', :date => :long, :time => :none)
+    formatter.parse("25. února 2015") #=> Wed Feb 25 00:00:00 +0100 2015
+```
+
+For skeleton formatting, visit the [Unicode date field symbol table](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table) to help find the pattern characters to use.
+
+```ruby
+    formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :date => :pattern, :time => :pattern, :skeleton => 'MMMMY')
+    formatter.format(Time.now)  #=> "únor 2015"
+
+    formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :date => :pattern, :time => :pattern, :skeleton => 'Y')
+    formatter.format(Time.now)  #=> "2015"
 ```
 
 Tested on:
