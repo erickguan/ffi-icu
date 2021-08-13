@@ -119,7 +119,7 @@ Examples:
     formatter.parse("25. února 2015") #=> Wed Feb 25 00:00:00 +0100 2015
 ```
 
-For skeleton formatting, visit the [Unicode date field symbol table](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table) to help find the pattern characters to use.
+For skeleton formatting, visit the [Unicode date field symbol table](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#date-field-symbol-table) page to help find the pattern characters to use.
 
 ```ruby
     formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :date => :pattern, :time => :pattern, :skeleton => 'MMMMY')
