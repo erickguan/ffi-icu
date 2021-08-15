@@ -14,3 +14,7 @@ rvm:
 
 before_script:
   - sudo apt-get install -y libicu-dev
+
+jobs:
+  allow_failures:
+    - arch: arm64
