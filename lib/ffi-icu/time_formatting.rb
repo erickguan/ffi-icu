@@ -83,9 +83,8 @@ module ICU
         end
 
         if skeleton
-          unless time_style == :pattern && date_style == :pattern
-            raise '`time_style` and `date_style` must be :pattern type when using a skeleton pattern'
-          end
+          date_style = :pattern
+          time_style = :pattern
 
           pattern_len, pattern_ptr = skeleton_format(skeleton, locale)
         end
