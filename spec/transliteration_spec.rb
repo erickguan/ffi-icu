@@ -9,7 +9,7 @@ module ICU
     [
       ["Any-Hex", "abcde", "\\u0061\\u0062\\u0063\\u0064\\u0065"],
       ["Lower", "ABC", "abc"],
-      ["en", "雙屬性集合之空間分群演算法-應用於地理資料", "shuāng shǔ xìng jí hé zhī kōng jiān fēn qún yǎn suàn fǎ-yīng yòng yú de lǐ zī liào"],
+      ["Han-Latin", "雙屬性集合之空間分群演算法-應用於地理資料", "shuāng shǔ xìng jí hé zhī kōng jiān fēn qún yǎn suàn fǎ-yīng yòng yú de lǐ zī liào"],
       ["Devanagari-Latin", "दौलत", "daulata"]
     ].each do |id, input, output|
       it "should transliterate #{id}" do

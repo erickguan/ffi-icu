@@ -1,13 +1,20 @@
 language: ruby
 os: linux
-dist: xenial
+dist: focal
+
+arch:
+  - amd64
+  - arm64
 
 rvm:
-  - 2.5
   - 2.6
   - 2.7
+  - 3.0
   - ruby-head
 
 before_script:
   - sudo apt-get install -y libicu-dev
 
+jobs:
+  allow_failures:
+    - arch: arm64
