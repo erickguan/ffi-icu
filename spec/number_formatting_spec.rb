@@ -69,6 +69,11 @@ module ICU
           expect { NumberFormatting.create('en-US', :currency, style: :iso) }.to raise_error(StandardError)
         end
       end
+
+      it 'should format a bignum' do
+        str = NumberFormatting.format_number("en", 1_000_000_000_000_000_000_000_000_000_000_000_000_000)
+        expect(str).to eq('1,000,000,000,000,000,000,000,000,000,000,000,000,000')
+      end
     end
   end # NumberFormatting
 end # ICU
