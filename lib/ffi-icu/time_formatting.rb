@@ -115,7 +115,7 @@ module ICU
 
       def parse(str)
           str_u = UCharPointer.from_string(str)
-          str_l = str_u.size
+          str_l = str.size
           Lib.check_error do |error|
             ret = Lib.udat_parse(@f, str_u, str_l, nil, error)
             Time.at(ret / 1000.0)
@@ -190,8 +190,9 @@ module ICU
         end
       end
 
-      def skeleton_format(pattern, locale)
-          pattern = UCharPointer.from_string(pattern)
+      def skeleton_format(skeleton_pattern_str, locale)
+          skeleton_pattern_ptr = UCharPointer.from_string(skeleton_pattern_str)
+          skeleton_pattern_len = skeleton_pattern_str.size
 
           needed_length = 0
           pattern_ptr = UCharPointer.new(needed_length)
@@ -203,7 +204,7 @@ module ICU
 
         begin
           Lib.check_error do |error|
-            needed_length = Lib.udatpg_getBestPattern(generator, pattern, pattern.size, pattern_ptr, needed_length, error)
+            needed_length = Lib.udatpg_getBestPattern(generator, skeleton_pattern_ptr, skeleton_pattern_len, pattern_ptr, needed_length, error)
           end
 
           return needed_length, pattern_ptr
