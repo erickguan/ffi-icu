@@ -68,8 +68,19 @@ module ICU
             case number
             when Float
               needed_length = Lib.unum_format_double(@f, number, out_ptr, needed_length, nil, error)
-            when Fixnum
-              needed_length = Lib.unum_format_int32(@f, number, out_ptr, needed_length, nil, error)
+            when Integer
+              begin
+                # Try doing it fast, for integers that can be marshaled into an int64_t
+                needed_length = Lib.unum_format_int64(@f, number, out_ptr, needed_length, nil, error)
+              rescue RangeError
+                # Fall back to stringifying in Ruby and passing that to ICU
+                unless defined? Lib.unum_format_decimal
+                  raise RangeError,"Number #{number} is too big to fit in int64_t and your "\
+                                    "ICU version is too old to have unum_format_decimal"
+                end
+                string_version = number.to_s
+                needed_length = Lib.unum_format_decimal(@f, string_version, string_version.bytesize, out_ptr, needed_length, nil, error)
+              end
             when BigDecimal
               string_version = number.to_s('F')
               if Lib.respond_to? :unum_format_decimal
@@ -77,8 +88,6 @@ module ICU
               else
                 needed_length = Lib.unum_format_double(@f, number.to_f, out_ptr, needed_length, nil, error)
               end
-            when Bignum
-              needed_length = Lib.unum_format_int64(@f, number, out_ptr, needed_length, nil, error)
             end
           end
           out_ptr.string needed_length
