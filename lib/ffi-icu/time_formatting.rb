@@ -103,6 +103,7 @@ module ICU
         time_zone  = options[:zone]
         skeleton   = options[:skeleton]
 
+        @formatter_locale = locale
         @f = make_formatter(time_style, date_style, locale, time_zone, skeleton)
         if tz_style
           f0 = date_format(true)
@@ -187,6 +188,40 @@ module ICU
 
         Lib.check_error do |error|
           needed_length = Lib.udat_applyPattern(@f, localized, pattern, pattern_len)
+        end
+      end
+
+      def as_skeleton
+        current_pattern = date_format
+
+        needed_length = 0
+        skeleton_pattern_ptr = UCharPointer.new(needed_length)
+        retried = false
+        begin
+          Lib.check_error do |error|
+            needed_length = Lib.udatpg_getSkeleton(
+              nil,
+              UCharPointer.from_string(current_pattern),
+              current_pattern.size,
+              skeleton_pattern_ptr,
+              needed_length,
+              error
+            )
+          end
+        rescue BufferOverflowError
+          raise BufferOverflowError, "needed: #{needed_length}" if retried
+          skeleton_pattern_ptr = skeleton_pattern_ptr.resized_to needed_length
+          retried = true
+          retry
+        end
+
+        skeleton_pattern_ptr.string(needed_length)
+      end
+
+      def set_date_format_from_skeleton(skeleton, locale: @formatter_locale)
+        pattern_len, pattern_ptr = skeleton_format(skeleton, locale)
+        Lib.check_error do |error|
+          Lib.udat_applyPattern(@f, true, pattern_ptr, pattern_len)
         end
       end
 

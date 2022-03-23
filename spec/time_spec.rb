@@ -95,6 +95,69 @@ module ICU
           expect(f4.date_format(true)).to eq("MMM y")
         end
       end
+
+      context 'using skeleton patterns to manipulate 12/24 hour time' do
+        it 'can faithfully round-trip 12-hour time patterns' do
+          locale = ICU::Locale.new("en_AU@hours=h12")
+          formatter = ICU::TimeFormatting::DateTimeFormatter.new(
+            time: :long, date: :long, locale: locale.to_s, zone: 'UTC'
+          )
+          
+          sk = formatter.as_skeleton
+          sk.gsub!('a', '')
+          sk.gsub!(/[hHkK]/, 'j')
+          formatter.set_date_format_from_skeleton sk
+
+          formatted_t0 = formatter.format t0
+          expect(formatted_t0).to match(/[^0]2\:21/)
+          expect(formatted_t0).to match(/pm/i)
+        end
+        it 'can convert 12-hour patterns to 24 hour time' do
+          locale = ICU::Locale.new("en_AU@hours=h23")
+          formatter = ICU::TimeFormatting::DateTimeFormatter.new(
+            time: :long, date: :long, locale: locale.to_s, zone: 'UTC'
+          )
+          
+          sk = formatter.as_skeleton
+          sk.gsub!('a', '')
+          sk.gsub!(/[hHkK]/, 'j')
+          formatter.set_date_format_from_skeleton sk
+
+          formatted_t0 = formatter.format t0
+          expect(formatted_t0).to match(/14\:21/)
+          expect(formatted_t0).to_not match(/pm/i)
+        end
+        it 'can faithfully round-trip 24 hour time patterns' do
+          locale = ICU::Locale.new("en_FR@hours=h23")
+          formatter = ICU::TimeFormatting::DateTimeFormatter.new(
+            time: :long, date: :long, locale: locale.to_s, zone: 'UTC'
+          )
+          
+          sk = formatter.as_skeleton
+          sk.gsub!('a', '')
+          sk.gsub!(/[hHkK]/, 'j')
+          formatter.set_date_format_from_skeleton sk
+
+          formatted_t0 = formatter.format t0
+          expect(formatted_t0).to match(/14\:21/)
+          expect(formatted_t0).to_not match(/pm/i)
+        end
+        it 'can convert 24-hour patterns to 12 hour time' do
+          locale = ICU::Locale.new("en_FR@hours=h12")
+          formatter = ICU::TimeFormatting::DateTimeFormatter.new(
+            time: :long, date: :long, locale: locale.to_s, zone: 'UTC'
+          )
+          
+          sk = formatter.as_skeleton
+          sk.gsub!('a', '')
+          sk.gsub!(/[hHkK]/, 'j')
+          formatter.set_date_format_from_skeleton sk
+
+          formatted_t0 = formatter.format t0
+          expect(formatted_t0).to match(/[^0]2\:21/)
+          expect(formatted_t0).to match(/pm/i)
+        end
+      end
     end
   end
 end
