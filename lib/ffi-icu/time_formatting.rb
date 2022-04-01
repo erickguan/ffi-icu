@@ -38,6 +38,14 @@ module ICU
                                     #   (for example, "Unknown City"), such as Los Angeles
       # see: http://unicode.org/reports/tr35/tr35-dates.html#Date_Format_Patterns
     }
+
+    HOUR_CYCLE_SYMS = {
+      'h11' => 'K',
+      'h12' => 'h',
+      'h23' => 'H',
+      'h24' => 'k',
+      :locale => 'j',
+    }
     @default_options = {}
     
     def self.create(options = {})
@@ -96,14 +104,19 @@ module ICU
 
     class DateTimeFormatter < BaseFormatter
       def initialize(options={})
-        time_style = options[:time]   || :short
-        date_style = options[:date]   || :short
-        locale     = options[:locale] || 'C'
-        tz_style   = options[:tz_style]
-        time_zone  = options[:zone]
-        skeleton   = options[:skeleton]
+        time_style  = options[:time]   || :short
+        date_style  = options[:date]   || :short
+        @locale     = options[:locale] || 'C'
+        tz_style    = options[:tz_style]
+        time_zone   = options[:zone]
+        skeleton    = options[:skeleton]
+        @hour_cycle = options[:hour_cycle]
 
-        @f = make_formatter(time_style, date_style, locale, time_zone, skeleton)
+        if @hour_cycle && !HOUR_CYCLE_SYMS.keys.include?(@hour_cycle)
+          raise ICU::Error.new("Unknown hour cycle #{@hour_cycle}")
+        end
+
+        @f = make_formatter(time_style, date_style, @locale, time_zone, skeleton)
         if tz_style
           f0 = date_format(true)
           f1 = update_tz_format(f0, tz_style)    
@@ -111,6 +124,8 @@ module ICU
             set_date_format(true, f1)
           end
         end
+
+        replace_hour_symbol!
       end
 
       def parse(str)
@@ -182,12 +197,11 @@ module ICU
       end
 
       def set_date_format(localized, pattern_str)
-        pattern     = UCharPointer.from_string(pattern_str)
-        pattern_len = pattern_str.size
+        set_date_format_impl(localized, pattern_str)
 
-        Lib.check_error do |error|
-          needed_length = Lib.udat_applyPattern(@f, localized, pattern, pattern_len)
-        end
+        # After setting the date format string, we need to ensure that any hour
+        # symbols were properly localised according to @hour_cycle.
+        replace_hour_symbol!
       end
 
       def skeleton_format(skeleton_pattern_str, locale)
@@ -213,6 +227,103 @@ module ICU
           pattern_ptr = pattern_ptr.resized_to needed_length
           retried = true
           retry
+        end
+      end
+
+      private
+
+      # Converts the current pattern to a pattern that takes the desired hour cycle
+      # into account. This is needed because most of the standard patterns in ICU
+      # contain either h (12 hour) or H (23 hour) in them, instead of j (locale-
+      # specified hour cycle). This means if you use a locale with an @hours=h12
+      # keyword in it, for example, it would normally be totally ignored by ICU.
+      #
+      # This is the same fixup done by Firefox:
+      # https://github.com/tc39/ecma402/issues/665#issuecomment-1084833809
+      # https://searchfox.org/mozilla-central/rev/625c3d0c8ae46502aed83f33bd530cb93e926e9f/intl/components/src/DateTimeFormat.cpp#282-323
+      def replace_hour_symbol!
+        # Short circuit this case - nil means "use whatever is in the pattern already", so
+        # no need to actually run any of this implementation.
+        return unless @hour_cycle
+
+        # Get the current pattern and convert to a skeleton
+        skeleton_str = pattern_to_skeleton_uchar(current_pattern_as_uchar).string
+
+        # Manipulate the skeleton to make it work with the correct hour cycle.
+        skeleton_str.gsub!(/[hHkKjJ]/, HOUR_CYCLE_SYMS[@hour_cycle])
+
+        # Either ensure the skeleton has, or does not have, am/pm, as appropriate
+        if ['h11', 'h12'].include?(@hour_cycle)
+          skeleton_str << 'a' unless skeleton_str.include? 'a'
+        else
+          skeleton_str.gsub!('a', '')
+        end
+
+        # Convert the skeleton back to a pattern
+        new_pattern_str = skeleton_to_pattern_uchar(UCharPointer.from_string(skeleton_str)).string
+
+        # We also need to manipulate the _pattern_, a little bit, because (according to Firefox source):
+        #
+        #     Input skeletons don't differentiate between "K" and "h" resp. "k" and "H".
+        #
+        # https://searchfox.org/mozilla-central/rev/625c3d0c8ae46502aed83f33bd530cb93e926e9f/intl/components/src/DateTimeFormat.cpp#183
+        # So, if we put a skeleton with a k in it into getBestPattern, it comes out with a H (and a
+        # skeleton with a K in it comes out with a h). Need to fix this in the generated pattern.
+        resolved_hour_cycle = @hour_cycle == :locale ? Locale.new(@locale).keyword('hours') : @hour_cycle
+
+        if HOUR_CYCLE_SYMS.keys.include?(resolved_hour_cycle)
+          new_pattern_str.gsub!(/[hHkK]/, HOUR_CYCLE_SYMS[resolved_hour_cycle])
+        end
+
+        # Finally, set the new pattern onto the date time formatter
+        set_date_format_impl(false, new_pattern_str)
+      end
+
+      # Load up the date formatter locale and make a generator
+      # Note that we _MUST_ actually use @locale as passed to us, rather than calling
+      # udat_getLocaleByType to look it up from @f, because the latter will throw away
+      # any @hours specifier in the locale, and we need it.
+      def datetime_pattern_generator
+        @datetime_pattern_generator ||= FFI::AutoPointer.new(
+          Lib.check_error { |error| Lib.udatpg_open(@locale, error) },
+          Lib.method(:udatpg_close)
+        )
+      end
+
+      def current_pattern_as_uchar
+        Lib::Util.read_uchar_buffer_as_ptr(0) do |buf, error|
+          Lib.udat_toPattern(@f, false, buf, buf.length_in_uchars, error)
+        end
+      end
+
+      def pattern_to_skeleton_uchar(pattern_uchar)
+        Lib::Util.read_uchar_buffer_as_ptr(0) do |buf, error|
+          Lib.udatpg_getSkeleton(
+            datetime_pattern_generator,
+            pattern_uchar, pattern_uchar.length_in_uchars,
+            buf, buf.length_in_uchars,
+            error
+          )
+        end
+      end
+
+      def skeleton_to_pattern_uchar(skeleton_uchar)
+        Lib::Util.read_uchar_buffer_as_ptr(0) do |buf, error|
+          Lib.udatpg_getBestPattern(
+            datetime_pattern_generator,
+            skeleton_uchar, skeleton_uchar.length_in_uchars,
+            buf, buf.length_in_uchars,
+            error
+          )
+        end
+      end
+
+      def set_date_format_impl(localized, pattern_str)
+        pattern     = UCharPointer.from_string(pattern_str)
+        pattern_len = pattern_str.size
+
+        Lib.check_error do |error|
+          needed_length = Lib.udat_applyPattern(@f, localized, pattern, pattern_len)
         end
       end
     end # DateTimeFormatter

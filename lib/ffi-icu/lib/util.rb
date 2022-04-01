@@ -28,7 +28,19 @@ module ICU
         result.read_string(length)
       end
 
-      def self.read_uchar_buffer(length)
+      def self.read_uchar_buffer(length, &blk)
+        buf, len = read_uchar_buffer_as_ptr_impl(length, &blk)
+        buf.string(len)
+      end
+
+      def self.read_uchar_buffer_as_ptr(length, &blk)
+        buf, _ = read_uchar_buffer_as_ptr_impl(length, &blk)
+        buf
+      end
+
+      private
+
+      def self.read_uchar_buffer_as_ptr_impl(length)
         attempts = 0
 
         begin
@@ -40,7 +52,7 @@ module ICU
           raise BufferOverflowError, "needed: #{length}"
         end
 
-        result.string(length)
+        [result, length]
       end
     end
   end

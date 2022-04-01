@@ -434,6 +434,10 @@ module ICU
       :medium,  2,
       :short,   3,
     ]
+    enum :uloc_data_locale_type, [
+      :actual_locale, 0,
+      :valid_locale, 1,
+    ]
     attach_function :udat_open, "udat_open#{suffix}", [:date_format_style, :date_format_style, :string, :pointer, :int32_t, :pointer, :int32_t, :pointer ], :pointer
     attach_function :udat_close, "unum_close#{suffix}", [:pointer], :void
     attach_function :udat_format, "udat_format#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
@@ -444,6 +448,7 @@ module ICU
     attach_function :udatpg_open, "udatpg_open#{suffix}", [:string, :pointer], :pointer
     attach_function :udatpg_close, "udatpg_close#{suffix}", [:pointer], :void
     attach_function :udatpg_getBestPattern, "udatpg_getBestPattern#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :udatpg_getSkeleton, "udatpg_getSkeleton#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
     # tz
     attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
     attach_function :ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone#{suffix}", [:pointer, :int32_t, :pointer], :int32_t
