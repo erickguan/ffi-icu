@@ -198,7 +198,7 @@ module ICU
           pattern_ptr = UCharPointer.new(needed_length)
 
           udatpg_ptr = Lib.check_error { |error| Lib.udatpg_open(locale, error) }
-          generator = FFI::AutoPointer.new(udatpg_ptr, Lib.method(:udat_close))
+          generator = FFI::AutoPointer.new(udatpg_ptr, Lib.method(:udatpg_close))
 
           retried = false
 

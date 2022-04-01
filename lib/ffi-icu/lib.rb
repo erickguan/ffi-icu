@@ -438,6 +438,7 @@ module ICU
     attach_function :udat_applyPattern, "udat_applyPattern#{suffix}", [:pointer, :bool    , :pointer, :int32_t     ], :void
     # skeleton pattern
     attach_function :udatpg_open, "udatpg_open#{suffix}", [:string, :pointer], :pointer
+    attach_function :udatpg_close, "udatpg_close#{suffix}", [:pointer], :void
     attach_function :udatpg_getBestPattern, "udatpg_getBestPattern#{suffix}", [:pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
     # tz
     attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
