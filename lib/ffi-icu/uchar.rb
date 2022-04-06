@@ -43,6 +43,10 @@ module ICU
       wstring.pack("U*")
     end
 
+    def length_in_uchars
+      size / type_size
+    end
+
 
   end # UCharPointer
 end # ICU

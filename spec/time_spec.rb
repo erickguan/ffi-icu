@@ -95,6 +95,92 @@ module ICU
           expect(f4.date_format(true)).to eq("MMM y")
         end
       end
+
+      context 'hour cycle' do
+        # en_AU normally is 12 hours, fr_FR is normally 23 hours
+        ['en_AU', 'fr_FR', 'zh_CN'].each do |locale_name|
+          context "with locale #{locale_name}" do
+            it 'works with hour_cycle: h11' do
+              t = Time.new(2021, 04, 01, 12, 05, 0, "+00:00")
+              str = TimeFormatting.format(t, time: :short, date: :none, locale: locale_name, zone: 'UTC', hour_cycle: 'h11')
+              expect(str).to match(/0:05/i)
+              expect(str).to match(/(pm|下午)/i)
+            end
+
+            it 'works with hour_cycle: h12' do
+              t = Time.new(2021, 04, 01, 12, 05, 0, "+00:00")
+              str = TimeFormatting.format(t, time: :short, date: :none, locale: locale_name, zone: 'UTC', hour_cycle: 'h12')
+              expect(str).to match(/12:05/i)
+              expect(str).to match(/(pm|下午)/i)
+            end
+
+            it 'works with hour_cycle: h23' do
+              t = Time.new(2021, 04, 01, 00, 05, 0, "+00:00")
+              str = TimeFormatting.format(t, time: :short, date: :none, locale: locale_name, zone: 'UTC', hour_cycle: 'h23')
+              expect(str).to match(/0:05/i)
+              expect(str).to_not match(/(am|pm)/i)
+            end
+
+            it 'works with hour_cycle: h24' do
+              t = Time.new(2021, 04, 01, 00, 05, 0, "+00:00")
+              str = TimeFormatting.format(t, time: :short, date: :none, locale: locale_name, zone: 'UTC', hour_cycle: 'h24')
+              expect(str).to match(/24:05/i)
+              expect(str).to_not match(/(am|pm)/i)
+            end
+
+            context '@hours keyword' do
+              before(:each) do
+                skip("Only works on ICU >= 67") if Lib.version.to_a[0] < 67
+              end
+
+              it 'works with @hours=h11 keyword' do
+                t = Time.new(2021, 04, 01, 12, 05, 0, "+00:00")
+                locale = Locale.new(locale_name).with_keyword('hours', 'h11').to_s
+                str = TimeFormatting.format(t, time: :short, date: :none, locale: locale, zone: 'UTC', hour_cycle: :locale)
+                expect(str).to match(/0:05/i)
+                expect(str).to match(/(pm|下午)/i)
+              end
+              it 'works with @hours=h12 keyword' do
+                t = Time.new(2021, 04, 01, 12, 05, 0, "+00:00")
+                locale = Locale.new(locale_name).with_keyword('hours', 'h12').to_s
+                str = TimeFormatting.format(t, time: :short, date: :none, locale: locale, zone: 'UTC', hour_cycle: :locale)
+                expect(str).to match(/12:05/i)
+                expect(str).to match(/(pm|下午)/i)
+              end
+
+              it 'works with @hours=h23 keyword' do
+                t = Time.new(2021, 04, 01, 00, 05, 0, "+00:00")
+                locale = Locale.new(locale_name).with_keyword('hours', 'h23').to_s
+                str = TimeFormatting.format(t, time: :short, date: :none, locale: locale, zone: 'UTC', hour_cycle: :locale)
+                expect(str).to match(/0:05/i)
+                expect(str).to_not match(/(am|pm)/i)
+              end
+
+              it 'works with @hours=h24 keyword' do
+                t = Time.new(2021, 04, 01, 00, 05, 0, "+00:00")
+                locale = Locale.new(locale_name).with_keyword('hours', 'h24').to_s
+                str = TimeFormatting.format(t, time: :short, date: :none, locale: locale, zone: 'UTC', hour_cycle: :locale)
+                expect(str).to match(/24:05/i)
+                expect(str).to_not match(/(am|pm)/i)
+              end
+            end
+          end
+        end
+
+        it 'works with defaults on a h12 locale' do
+          t = Time.new(2021, 04, 01, 13, 05, 0, "+00:00")
+          str = TimeFormatting.format(t, time: :short, date: :none, locale: 'en_AU', zone: 'UTC', hour_cycle: :locale)
+          expect(str).to match(/1:05/i)
+          expect(str).to match(/pm/i)
+        end
+
+        it 'works with defaults on a h23 locale' do
+          t = Time.new(2021, 04, 01, 0, 05, 0, "+00:00")
+          str = TimeFormatting.format(t, time: :short, date: :none, locale: 'fr_FR', zone: 'UTC', hour_cycle: :locale)
+          expect(str).to match(/0:05/i)
+          expect(str).to_not match(/(am|pm)/i)
+        end
+      end
     end
   end
 end
