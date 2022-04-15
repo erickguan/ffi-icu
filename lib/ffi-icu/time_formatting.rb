@@ -254,7 +254,10 @@ module ICU
 
         # Either ensure the skeleton has, or does not have, am/pm, as appropriate
         if ['h11', 'h12'].include?(@hour_cycle)
-          skeleton_str << 'a' unless skeleton_str.include? 'a'
+          # Only actually append 'am/pm' if there is an hour in the format string
+          if skeleton_str =~ /[hHkKjJ]/ && !skeleton_str.include?('a')
+            skeleton_str << 'a'
+          end
         else
           skeleton_str.gsub!('a', '')
         end

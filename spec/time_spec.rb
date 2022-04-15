@@ -128,6 +128,12 @@ module ICU
               expect(str).to_not match(/(am|pm)/i)
             end
 
+            it 'does not include am/pm if time is not requested' do
+              t = Time.new(2021, 04, 01, 00, 05, 0, "+00:00")
+              str = TimeFormatting.format(t, time: :none, date: :short, locale: locale_name, zone: 'UTC', hour_cycle: 'h12')
+              expect(str).to_not match(/(am|pm|下午|上午)/i)
+            end
+
             context '@hours keyword' do
               before(:each) do
                 skip("Only works on ICU >= 67") if Lib.version.to_a[0] < 67
