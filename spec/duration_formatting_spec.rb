@@ -133,6 +133,11 @@ module ICU
                 result = DurationFormatting.format(duration, locale: 'en-AU', style: :short)
                 expect(result).to match(/7[^0-9]*hrs.*9[^0-9]*min/)
             end
+
+            it 'raises on durations with any negative component' do
+                duration = {hours: 7.3, minutes: -9.7}
+                expect { DurationFormatting.format(duration, locale: 'en-AU') }.to raise_error(ArgumentError)
+            end
         end
     end
 end

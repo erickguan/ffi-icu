@@ -89,6 +89,7 @@ module ICU
                 # if that unit is sub-second. All other fields therefore need to be truncated.
                 smallest_unit = VALID_FIELDS[fields.keys.map { |k| VALID_FIELDS.index(k) }.max]
                 fields.each_key do |k|
+                    raise ArgumentError, "Negative durations are not yet supported" if fields[k] < 0
                     fields[k] = fields[k].to_i unless k == smallest_unit && ROUNDABLE_FIELDS.include?(smallest_unit)
                 end
 
@@ -126,7 +127,7 @@ module ICU
             private
 
             def hms_duration_units_pattern(fields)
-                return nil unless [:hours, :minutes, :seconds].any? { |k| fields.key?(k) }
+                return nil unless HMS_FIELDS.any? { |k| fields.key?(k) }
                 @unit_res_bundle ||= FFI::AutoPointer.new(
                     Lib.check_error { |error| Lib.ures_open(Lib.resource_bundle_name(:unit), @locale, error) },
                     Lib.method(:ures_close)
