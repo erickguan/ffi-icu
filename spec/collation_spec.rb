@@ -65,13 +65,13 @@ module ICU
       context "attributes" do
         it "can set and get normalization_mode" do
           collator.normalization_mode = true
-          collator.normalization_mode.should be_true
+          collator.normalization_mode.should be true
 
-          collator[:normalization_mode].should be_true
+          collator[:normalization_mode].should be true
           collator[:normalization_mode] = false
-          collator.normalization_mode.should be_false
+          collator.normalization_mode.should be false
 
-          collator.case_first.should be_false
+          collator.case_first.should be false
           collator.case_first = :lower_first
           collator.case_first.should == :lower_first
 
