@@ -129,6 +129,16 @@ For skeleton formatting, visit the [Unicode date field symbol table](https://uni
     formatter.format(Time.now)  #=> "2015"
 ```
 
+Transliteration
+---------------
+
+Example:
+
+```ruby
+ICU::Transliteration.transliterate('Traditional-Simplified', '沈從文') # => "沈从文"
+
+```
+
 Tested on:
 ==========
 
