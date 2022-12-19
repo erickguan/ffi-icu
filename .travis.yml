@@ -14,12 +14,15 @@ rvm:
   - truffleruby
 
 before_script:
-  - sudo apt install -y libicu-dev icu-devtools
+  - sudo apt install -y icu-devtools g++
+  - sudo chmod +x build_icu.sh
+  - sudo $PWD/build_icu.sh versions
+  - sudo $PWD/build_icu.sh install 71.1
+  - export LD_LIBRARY_PATH=/usr/local/lib
   - icuinfo
   - yes | gem update --system --force
   - gem install bundler
 
 jobs:
   allow_failures:
-    - arch: arm64
     - rvm: truffleruby
