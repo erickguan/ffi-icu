@@ -7,14 +7,19 @@ arch:
   - arm64
 
 rvm:
-  - 2.6
   - 2.7
   - 3.0
+  - 3.1
   - ruby-head
+  - truffleruby
 
 before_script:
-  - sudo apt-get install -y libicu-dev
+  - sudo apt install -y libicu-dev icu-devtools
+  - icuinfo
+  - yes | gem update --system --force
+  - gem install bundler
 
 jobs:
   allow_failures:
     - arch: arm64
+    - rvm: truffleruby
