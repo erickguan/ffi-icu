@@ -5,6 +5,9 @@ module ICU
   class BufferOverflowError < StandardError
   end
 
+  class MissingResourceError < StandardError
+  end
+
   module Lib
     extend FFI::Library
 
@@ -129,6 +132,8 @@ module ICU
         name = Lib.u_errorName error_code
         if name == "U_BUFFER_OVERFLOW_ERROR"
           raise BufferOverflowError
+        elsif name == "U_MISSING_RESOURCE_ERROR"
+          raise MissingResourceError
         else
           raise Error, name
         end
@@ -190,6 +195,11 @@ module ICU
 
     def self.version
       @version ||= VersionInfo.new.tap { |version| u_getVersion(version) }
+    end
+
+    def self.attach_optional_function(*args)
+      attach_function *args
+    rescue FFI::NotFoundError
     end
 
     version = load_icu
@@ -423,12 +433,45 @@ module ICU
     attach_function :unum_format_int32, "unum_format#{suffix}", [:pointer, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_format_int64, "unum_formatInt64#{suffix}", [:pointer, :int64_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_format_double, "unum_formatDouble#{suffix}", [:pointer, :double, :pointer, :int32_t, :pointer, :pointer], :int32_t
-    begin
-      attach_function :unum_format_decimal, "unum_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
-    rescue FFI::NotFoundError
-    end
+    attach_optional_function :unum_format_decimal, "unum_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_format_currency, "unum_formatDoubleCurrency#{suffix}", [:pointer, :double, :pointer, :pointer, :int32_t, :pointer, :pointer], :int32_t
     attach_function :unum_set_attribute, "unum_setAttribute#{suffix}", [:pointer, :number_format_attribute, :int32_t], :void
+
+    # UResourceBundle
+    attach_function :ures_open, "ures_open#{suffix}", [:string, :string, :pointer], :pointer
+    attach_function :ures_close, "ures_close#{suffix}", [:pointer], :void
+    # This function is marked "internal" but it's fully exported by the library ABI, so we can use it anyway.
+    attach_function :ures_getBykeyWithFallback, "ures_getByKeyWithFallback#{suffix}", [:pointer, :string, :pointer, :pointer], :pointer
+    attach_function :ures_getString, "ures_getString#{suffix}", [:pointer, :pointer, :pointer], :pointer
+
+    def self.resource_bundle_name(type)
+      stem = "icudt" + version.read_array_of_char(4)[0].to_s + "l" + "-"
+      stem + type.to_s
+    end
+
+    # UNumberFormatter
+    attach_optional_function :unumf_openForSkeletonAndLocale, "unumf_openForSkeletonAndLocale#{suffix}", [:pointer, :int32_t, :string, :pointer], :pointer
+    attach_optional_function :unumf_close, "unumf_close#{suffix}", [:pointer], :void
+    attach_optional_function :unumf_openResult, "unumf_openResult#{suffix}", [:pointer], :pointer
+    attach_optional_function :unumf_closeResult, "unumf_closeResult#{suffix}", [:pointer], :void
+    attach_optional_function :unumf_formatDecimal, "unumf_formatDecimal#{suffix}", [:pointer, :string, :int32_t, :pointer, :pointer], :void
+    attach_optional_function :unumf_resultToString, "unumf_resultToString#{suffix}", [:pointer, :pointer, :int32_t, :pointer], :int32_t
+
+    # UListFormatter
+    enum :ulistfmt_type, [
+      :and, 0,
+      :or, 1,
+      :units, 2,
+    ]
+    enum :ulistfmt_width, [
+      :wide, 0,
+      :short, 1,
+      :narrow, 2,
+    ]
+    attach_optional_function :ulistfmt_openForType, "ulistfmt_openForType#{suffix}", [:string, :ulistfmt_type, :ulistfmt_width, :pointer], :pointer
+    attach_optional_function :ulistfmt_close, "ulistfmt_close#{suffix}", [:pointer], :void
+    attach_optional_function :ulistfmt_format, "ulistfmt_format#{suffix}", [:pointer, :pointer, :pointer, :int32_t, :pointer, :int32_t, :pointer], :int32_t
+
     # date
     enum :date_format_style, [
       :pattern, -2,
