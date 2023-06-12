@@ -275,7 +275,7 @@ module ICU
         resolved_hour_cycle = @hour_cycle == :locale ? Locale.new(@locale).keyword('hours') : @hour_cycle
 
         if HOUR_CYCLE_SYMS.keys.include?(resolved_hour_cycle)
-          new_pattern_str.gsub!(/[hHkK]/, HOUR_CYCLE_SYMS[resolved_hour_cycle])
+          new_pattern_str.gsub!(/[hHkK](?=(?:[^\']|\'[^\']*\')*$)/, HOUR_CYCLE_SYMS[resolved_hour_cycle])
         end
 
         # Finally, set the new pattern onto the date time formatter
