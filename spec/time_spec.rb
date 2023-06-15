@@ -173,6 +173,12 @@ module ICU
           end
         end
 
+        it 'for lang=fi hour_cycle=h12' do
+          t = Time.new(2021, 04, 01, 13, 05, 0, "+00:00")
+          str = TimeFormatting.format(t, locale: 'fi', zone: 'America/Los_Angeles', date: :long, time: :short, hour_cycle: 'h12')
+          expect(str).to match(/\sklo\s/)
+        end
+
         it 'works with defaults on a h12 locale' do
           t = Time.new(2021, 04, 01, 13, 05, 0, "+00:00")
           str = TimeFormatting.format(t, time: :short, date: :none, locale: 'en_AU', zone: 'UTC', hour_cycle: :locale)
