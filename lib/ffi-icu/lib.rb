@@ -500,5 +500,8 @@ module ICU
     attach_function :ucal_setDefaultTimeZone, "ucal_setDefaultTimeZone#{suffix}", [:pointer, :pointer], :int32_t
     attach_function :ucal_getDefaultTimeZone, "ucal_getDefaultTimeZone#{suffix}", [:pointer, :int32_t, :pointer], :int32_t
 
+    # ULocaleDisplayNames
+    attach_function :uldn_openForContext, "uldn_openForContext#{suffix}", [:string, :pointer, :int32_t, :pointer], :pointer
+    attach_function :uldn_localeDisplayName, "uldn_localeDisplayName#{suffix}", [:pointer, :string, :pointer, :int32_t, :pointer], :int32_t
   end # Lib
 end # ICU
