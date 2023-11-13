@@ -503,5 +503,6 @@ module ICU
     # ULocaleDisplayNames
     attach_function :uldn_openForContext, "uldn_openForContext#{suffix}", [:string, :pointer, :int32_t, :pointer], :pointer
     attach_function :uldn_localeDisplayName, "uldn_localeDisplayName#{suffix}", [:pointer, :string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :uldn_close, "uldn_close#{suffix}", [:pointer], :void
   end # Lib
 end # ICU
