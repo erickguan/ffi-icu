@@ -42,6 +42,11 @@ module ICU
 
     attr_reader :id
 
+    DISPLAY_CONTEXT = {
+      length_full:  512, # UDISPCTX_LENGTH_FULL  = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 0
+      length_short: 513  # UDISPCTX_LENGTH_SHORT = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 1
+    }
+
     def initialize(id)
       @id = id.to_s
     end
@@ -93,6 +98,16 @@ module ICU
 
       Lib::Util.read_uchar_buffer(256) do |buffer, status|
         Lib.uloc_getDisplayName(@id, locale, buffer, buffer.size, status)
+      end
+    end
+
+    def display_name_with_context(locale, contexts = [])
+      contexts = DISPLAY_CONTEXT.select { |context| contexts.include?(context) }.values
+
+      with_locale_display_name(@id, contexts) do |locale_display_names|
+        Lib::Util.read_uchar_buffer(256) do |buffer, status|
+          Lib.uldn_localeDisplayName(locale_display_names, locale, buffer, buffer.size, status)
+        end
       end
     end
 
@@ -219,6 +234,15 @@ module ICU
       end
 
       Locale.new(result)
+    end
+
+    def with_locale_display_name(locale, contexts)
+      pointer = FFI::MemoryPointer.new(:int, contexts.length).write_array_of_int(contexts)
+      locale_display_names = ICU::Lib.check_error { |status| ICU::Lib.uldn_openForContext(locale, pointer, contexts.length, status) }
+
+      yield locale_display_names
+    ensure
+      Lib.uldn_close(locale_display_names) if locale_display_names
     end
   end
 end

@@ -100,7 +100,7 @@ curf.format(1234.56, 'USD') #=> "$1,234.56"
 ```
 
 Time Formatting/Parsing
---------------------------
+-----------------------
 
 Examples:
 
@@ -130,9 +130,8 @@ formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :date => :pattern, :t
 formatter.format(Time.now)  #=> "2015"
 ```
 
-
 Duration Formatting
----------------
+-------------------
 
 ```ruby
 # What the various styles look like
@@ -177,7 +176,7 @@ formatter.format({hours: 5, minutes: 7, seconds: 23, milliseconds: 400, microsec
 formatter = ICU::DurationFormatting::DurationFormatter.new(locale: 'en-AU', style: :long)
 formatter.format({days: 2, hours: 7.3, minutes: 40.9, seconds:0.43})  #=> "2 days, 7 hours, 40 minutes, 0.43 seconds"
 
-# With RU locale 
+# With RU locale
 formatter = ICU::DurationFormatting::DurationFormatter.new(locale: 'ru', style: :long)
 formatter.format({hours: 1, minutes: 2, seconds: 3})  #=> "1 час 2 минуты 3 секунды"
 formatter = ICU::DurationFormatting::DurationFormatter.new(locale: 'ru', style: :long)
@@ -195,7 +194,20 @@ Example:
 
 ```ruby
 ICU::Transliteration.transliterate('Traditional-Simplified', '沈從文') # => "沈从文"
+```
 
+Locale
+------
+
+Examples:
+
+```ruby
+locale = ICU::Locale.new('en-US')
+locale.display_country('en-US') #=> "United States"
+locale.display_language('es') #=> "inglés"
+locale.display_name('es') #=> "inglés (Estados Unidos)"
+locale.display_name_with_context('en-US', [:length_short]) #=> "English (US)"
+locale.display_name_with_context('en-US', [:length_long])  #=> "English (United States)"
 ```
 
 TODO:
