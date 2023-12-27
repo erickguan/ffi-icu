@@ -124,8 +124,8 @@ module ICU
         end
 
         it 'returns the name using display context' do
-          expect(Locale.new('en_US').display_name_with_context('en_HK', [:length_full])).to eq('English (Hong Kong SAR China)')
-          expect(Locale.new('en_US').display_name_with_context('en_HK', [:length_short])).to eq('English (Hong Kong)')
+          expect(Locale.new('en_HK').display_name_with_context('en_US', [:length_full])).to eq('English (Hong Kong SAR China)')
+          expect(Locale.new('en_HK').display_name_with_context('en_US', [:length_short])).to eq('English (Hong Kong)')
         end
 
         it 'returns the script' do
@@ -145,7 +145,7 @@ module ICU
           expect(Locale.new('en_VI').display_country('ccp')).to_not be_nil
           expect(Locale.new('yue_Hant').display_language('ccp')).to_not be_nil
           expect(Locale.new('en_VI').display_name('ccp')).to_not be_nil
-          expect(Locale.new('ccp').display_name_with_context('en_VI')).to_not be_nil
+          expect(Locale.new('en_VI').display_name_with_context('ccp')).to_not be_nil
           expect(Locale.new('yue_Hant').display_script('ccp')).to_not be_nil
           expect(Locale.new('en_US_POSIX').display_variant('sl')).to_not be_nil
         end
