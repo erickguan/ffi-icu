@@ -104,9 +104,9 @@ module ICU
     def display_name_with_context(locale, contexts = [])
       contexts = DISPLAY_CONTEXT.select { |context| contexts.include?(context) }.values
 
-      with_locale_display_name(@id, contexts) do |locale_display_names|
+      with_locale_display_name(locale, contexts) do |locale_display_names|
         Lib::Util.read_uchar_buffer(256) do |buffer, status|
-          Lib.uldn_localeDisplayName(locale_display_names, locale, buffer, buffer.size, status)
+          Lib.uldn_localeDisplayName(locale_display_names, @id, buffer, buffer.size, status)
         end
       end
     end
