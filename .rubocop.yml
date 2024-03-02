@@ -1,0 +1,60 @@
+require:
+  - rubocop-minitest
+  - rubocop-packaging
+
+AllCops:
+  NewCops: enable
+  StyleGuideBaseURL: https://rubystyle.guide
+
+Bundler/OrderedGems: { Include: ['*.gemspec'] }
+
+# Documentation
+Style/Documentation:
+  Enabled: false
+
+# Allow more flexibility with string literals
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+# Enforce dots on the next line for multi-line method calls
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/LineLength:
+  Max: 120
+
+# Enforce comma after the last item of a multiline array or hash
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+
+# Encourage the use of method call with args parentheses
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  EnforcedStyle: require_parentheses
+
+# Allow guard clauses
+Style/GuardClause:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+# Exclude test files from BlockComments check
+Style/BlockComments:
+  Exclude:
+    - 'test/**/*'
+
+# Naming conventions
+Naming/PredicateName:
+  Enabled: true
+
+# Allow private methods to be placed after public methods of the same category
+Layout/EmptyLinesAroundAccessModifier:
+  EnforcedStyle: only_before
