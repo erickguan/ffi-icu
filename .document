@@ -1,4 +1,5 @@
-README.rdoc
+# Documentation listing for RDoc
+README.md
 lib/**/*.rb
 bin/*
 features/**/*.feature
