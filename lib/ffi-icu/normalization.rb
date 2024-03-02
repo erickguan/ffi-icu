@@ -1,6 +1,5 @@
 module ICU
   module Normalization
-
     def self.normalize(input, mode = :default)
       input_length  = input.jlength
       needed_length = out_length = options = 0
@@ -25,6 +24,5 @@ module ICU
 
       out_ptr.string
     end
-
   end # Normalization
 end # ICU

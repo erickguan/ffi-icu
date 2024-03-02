@@ -1,6 +1,5 @@
 module ICU
   module Transliteration
-
     class << self
       def transliterate(translit_id, str, rules = nil)
         t = Transliterator.new translit_id, rules
@@ -21,7 +20,6 @@ module ICU
     end
 
     class Transliterator
-
       def initialize(id, rules = nil, direction = :forward)
         rules_length = 0
 
@@ -33,7 +31,8 @@ module ICU
         parse_error = Lib::UParseError.new
         begin
           Lib.check_error do |status|
-            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.jlength, direction, rules, rules_length, @parse_error, status)
+            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.jlength, direction, rules, rules_length,
+                                   @parse_error, status)
             @tr = FFI::AutoPointer.new(ptr, Lib.method(:utrans_close))
           end
         rescue ICU::Error => ex
@@ -80,7 +79,6 @@ module ICU
 
         buf.string text_length.get_int32(0)
       end
-
     end # Transliterator
   end # Translit
 end # ICU

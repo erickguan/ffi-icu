@@ -88,6 +88,5 @@ module ICU
     def boundary?(offset)
       Lib.ubrk_isBoundary(@iterator, Integer(offset)) != 0
     end
-
   end # BreakIterator
 end # ICU

@@ -54,7 +54,3 @@ Style/BlockComments:
 # Naming conventions
 Naming/PredicateName:
   Enabled: true
-
-# Allow private methods to be placed after public methods of the same category
-Layout/EmptyLinesAroundAccessModifier:
-  EnforcedStyle: only_before

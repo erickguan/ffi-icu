@@ -13,5 +13,5 @@ $icu = ICU::CharDet::Detector.new
 
 Benchmark.bmbm do |results|
   results.report("rchardet instance:") { TESTS.times { $rchardet.reset; $rchardet.feed("æåø"); $rchardet.result } }
-  results.report("ffi-icu instance:") { TESTS.times { $icu.detect("æåø")  } }
+  results.report("ffi-icu instance:") { TESTS.times { $icu.detect("æåø") } }
 end

@@ -37,11 +37,8 @@ module ICU
       in_ptr        = UCharPointer.from_string(input)
 
       Lib.check_error do |error|
-        result = Lib.unorm2_isNormalized(@instance, in_ptr, input_length, error)
+        return Lib.unorm2_isNormalized(@instance, in_ptr, input_length, error)
       end
-
-      result
     end
-
   end # Normalizer
 end # ICU

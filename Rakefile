@@ -1,21 +1,18 @@
 require 'rubygems'
 require 'rake'
+require "rake/testtask"
 
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rspec_opts = '--backtrace'
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.libs << "lib"
+  t.test_files = FileList['test/**/*_test.rb']
+  t.verbose = true
 end
 
-RSpec::Core::RakeTask.new(:rcov) do |spec|
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
-
-task :default => :spec
+task :default => :test
 
 begin
   require 'yard'

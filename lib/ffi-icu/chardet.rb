@@ -1,6 +1,5 @@
 module ICU
   module CharDet
-
     def self.detect(string)
       Detector.new.detect string
     end
@@ -77,8 +76,6 @@ module ICU
           Lib.ucsdet_setText(@detector, data, text.bytesize, status)
         end
       end
-
     end # Detector
   end # CharDet
 end # ICU
-

@@ -1,37 +1,36 @@
 module ICU
   module Collation
-
     ATTRIBUTES = {
-        french_collation: 0,
-        alternate_handling: 1,
-        case_first: 2,
-        case_level: 3,
-        normalization_mode: 4,
-        strength: 5,
-        hiragana_quaternary_mode: 6,
-        numeric_collation: 7,
+      french_collation: 0,
+      alternate_handling: 1,
+      case_first: 2,
+      case_level: 3,
+      normalization_mode: 4,
+      strength: 5,
+      hiragana_quaternary_mode: 6,
+      numeric_collation: 7,
     }.freeze
 
     ATTRIBUTE_VALUES = {
-        nil => -1,
-        primary: 0,
-        secondary: 1,
-        default_strength: 2,
-        tertiary: 2,
-        quaternary: 3,
-        identical: 15,
+      nil => -1,
+      primary: 0,
+      secondary: 1,
+      default_strength: 2,
+      tertiary: 2,
+      quaternary: 3,
+      identical: 15,
 
-        false => 16,
-        true => 17,
+      false => 16,
+      true => 17,
 
-        shifted: 20,
-        non_ignorable: 21,
+      shifted: 20,
+      non_ignorable: 21,
 
-        lower_first: 24,
-        upper_first: 25,
+      lower_first: 24,
+      upper_first: 25,
     }.freeze
 
-    ATTRIBUTE_VALUES_INVERSE = Hash[ATTRIBUTE_VALUES.map {|k,v| [v, k]}].freeze
+    ATTRIBUTE_VALUES_INVERSE = Hash[ATTRIBUTE_VALUES.map { |k, v| [v, k] }].freeze
 
     def self.collate(locale, arr)
       Collator.new(locale).collate(arr)
@@ -80,12 +79,12 @@ module ICU
 
       def greater?(a, b)
         Lib.ucol_greater(@c, UCharPointer.from_string(a), a.jlength,
-                             UCharPointer.from_string(b), b.jlength)
+                         UCharPointer.from_string(b), b.jlength)
       end
 
       def greater_or_equal?(a, b)
         Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.jlength,
-                                    UCharPointer.from_string(b), b.jlength)
+                                UCharPointer.from_string(b), b.jlength)
       end
 
       def equal?(*args)
@@ -98,7 +97,7 @@ module ICU
         a, b = args
 
         Lib.ucol_equal(@c, UCharPointer.from_string(a), a.jlength,
-                           UCharPointer.from_string(b), b.jlength)
+                       UCharPointer.from_string(b), b.jlength)
       end
 
       def collate(sortable)
@@ -151,6 +150,5 @@ module ICU
         CODE
       end
     end # Collator
-
   end # Collate
 end # ICU

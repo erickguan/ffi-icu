@@ -1,6 +1,5 @@
 module ICU
   class UCharPointer < FFI::MemoryPointer
-
     UCHAR_TYPE = :uint16 # not sure how platform-dependent this is..
     TYPE_SIZE  = FFI.type_size(UCHAR_TYPE)
 
@@ -46,7 +45,5 @@ module ICU
     def length_in_uchars
       size / type_size
     end
-
-
   end # UCharPointer
 end # ICU
