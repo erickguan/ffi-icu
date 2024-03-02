@@ -5,6 +5,7 @@
 
 ### Changed
 
+- Required Ruby 3.0 and up.
 
 ### Fixed
 
