@@ -12,6 +12,7 @@ AllCops:
   NewCops: enable
   StyleGuideBaseURL: https://rubystyle.guide
   TargetRubyVersion: 3.0
+  SuggestExtensions: false # reduce noise. consider add rubocop-benchmark
 
   Exclude:
     - bin/**/*
@@ -21,38 +22,26 @@ Bundler/OrderedGems:
   Include:
     - '*.gemspec'
 
-# Documentation
+# Allow no documentation.
 Style/Documentation:
   Enabled: false
 
-# Allow more flexibility with string literals
+# Enforce single quotes in the gem
 Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
+
+Style/HashSyntax:
+  EnforcedStyle: no_mixed_keys # consistent hash syntax
+  EnforcedShorthandSyntax: consistent # enforce explicit hash syntax
 
 # Enforce dots on the next line for multi-line method calls
 Layout/DotPosition:
   EnforcedStyle: trailing
 
+# Project maximum code line length
 Layout/LineLength:
   Max: 120
-
-# Enforce comma after the last item of a multiline array or hash
-Style/TrailingCommaInArrayLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInHashLiteral:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
-
-Style/TrailingCommaInArguments:
-  Enabled: true
-  EnforcedStyleForMultiline: comma
-
-Layout/ArgumentAlignment:
-  Enabled: true
-  EnforcedStyle: with_fixed_indentation
 
 Layout/FirstArrayElementIndentation:
   Enabled: true
@@ -62,40 +51,25 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
+Style/SymbolArray:
+  EnforcedStyle: brackets # Prefer brackets
+
 Style/WordArray:
-  # difficult to figure out source text
-  EnforcedStyle: brackets
-
-# Encourage the use of method call with args parentheses
-Style/MethodCallWithArgsParentheses:
-  Enabled: true
-  EnforcedStyle: require_parentheses
-
-# Allow guard clauses
-Style/GuardClause:
-  Enabled: true
+  EnforcedStyle: brackets # Prefer brackets
 
 Style/FrozenStringLiteralComment:
   Enabled: false
-
-Layout/EmptyLineAfterMagicComment:
-  Enabled: true
 
 # Exclude test files from BlockComments check
 Style/BlockComments:
   Exclude:
     - 'test/**/*'
 
-# Naming conventions
-Naming/PredicateName:
-  Enabled: true
-
 Metrics/ClassLength:
   Max: 500
 
 Metrics/BlockLength:
   Max: 50
-
   Exclude:
     # allows longer block for RSpec
     - spec/**/*.rb

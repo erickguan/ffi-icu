@@ -1,0 +1,35 @@
+extends: default
+
+locale: en_US.UTF-8
+
+# ignored directories
+ignore: |
+  .git/
+
+rules:
+  octal-values: enable
+
+  document-start: disable
+  document-end: disable
+
+  # allow 120 characters in a line
+  line-length:
+    max: 120
+    level: error
+
+  indentation:
+    spaces: 2
+    indent-sequences: true
+
+  # allow one space indent
+  comments:
+    level: error
+    min-spaces-from-content: 1
+
+  # disallow boolean values to avoid surprise
+  truthy:
+    level: error
+
+    # github workflows uses `on` as trigger
+    ignore: |
+      .github/workflows/*.yml

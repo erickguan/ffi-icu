@@ -1,0 +1,30 @@
+name: Linting
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Lint YAML
+        run: yamllint .
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          # uses .ruby-version implicitly
+          bundler-cache: true
+
+      - name: Lint Ruby code
+        run: bundle exec rubocop
