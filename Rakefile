@@ -25,4 +25,3 @@ rescue LoadError
     abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
   end
 end
-

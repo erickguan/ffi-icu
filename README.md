@@ -1,6 +1,6 @@
 # ffi-icu
 
-Simple FFI wrappers for ICU.
+Simple FFI wrappers for [International Components for Unicode (ICU)][icu].
 
 ## Gem
 
@@ -185,3 +185,5 @@ Example:
 ```ruby
 ICU::Transliteration.transliterate('Traditional-Simplified', '沈從文') # => "沈从文"
 ```
+
+[icu]: https://github.com/unicode-org/icu
