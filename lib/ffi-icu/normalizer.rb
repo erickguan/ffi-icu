@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ICU
   class Normalizer
     # support for newer ICU normalization API
@@ -20,10 +22,10 @@ module ICU
           needed_length = Lib.unorm2_normalize(@instance, in_ptr, input_length, out_ptr, capacity, error)
         end
       rescue BufferOverflowError
-        raise BufferOverflowError, "needed: #{needed_length}" if retried
+        raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
         capacity = needed_length
-        out_ptr = out_ptr.resized_to needed_length
+        out_ptr = out_ptr.resized_to(needed_length)
 
         retried = true
         retry
@@ -32,16 +34,15 @@ module ICU
       out_ptr.string
     end
 
-    def is_normailzed?(input)
+    def is_normailzed?(input) # rubocop:disable Naming/PredicateName
       input_length  = input.jlength
       in_ptr        = UCharPointer.from_string(input)
 
       Lib.check_error do |error|
-        result = Lib.unorm2_isNormalized(@instance, in_ptr, input_length, error)
+        Lib.unorm2_isNormalized(@instance, in_ptr, input_length, error)
       end
 
       result
     end
-
-  end # Normalizer
-end # ICU
+  end
+end

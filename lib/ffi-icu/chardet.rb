@@ -1,20 +1,21 @@
+# frozen_string_literal: true
+
 module ICU
   module CharDet
-
     def self.detect(string)
-      Detector.new.detect string
+      Detector.new.detect(string)
     end
 
     class Detector
       Match = Struct.new(:name, :confidence, :language)
 
       def initialize
-        ptr = Lib.check_error { |err| Lib.ucsdet_open err }
+        ptr = Lib.check_error { |err| Lib.ucsdet_open(err) }
         @detector = FFI::AutoPointer.new(ptr, Lib.method(:ucsdet_close))
       end
 
       def input_filter_enabled?
-        Lib.ucsdet_isInputFilterEnabled @detector
+        Lib.ucsdet_isInputFilterEnabled(@detector)
       end
 
       def input_filter_enabled=(bool)
@@ -37,7 +38,7 @@ module ICU
       def detect_all(str)
         set_text(str)
 
-        matches_found_ptr = FFI::MemoryPointer.new :int32_t
+        matches_found_ptr = FFI::MemoryPointer.new(:int32_t)
         array_ptr = Lib.check_error do |status|
           Lib.ucsdet_detectAll(@detector, matches_found_ptr, status)
         end
@@ -71,14 +72,12 @@ module ICU
         result
       end
 
-      def set_text(text)
+      def set_text(text) # rubocop:disable Naming/AccessorMethodName
         Lib.check_error do |status|
           data = FFI::MemoryPointer.from_string(text)
           Lib.ucsdet_setText(@detector, data, text.bytesize, status)
         end
       end
-
-    end # Detector
-  end # CharDet
-end # ICU
-
+    end
+  end
+end

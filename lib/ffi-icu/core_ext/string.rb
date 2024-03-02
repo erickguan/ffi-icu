@@ -1,9 +1,7 @@
-class String
-  unless method_defined?(:bytesize)
-    alias_method :bytesize, :length
-  end
+# frozen_string_literal: true
 
-  unless method_defined?(:jlength)
-    alias_method :jlength, :length
-  end
+class String
+  alias bytesize length unless method_defined?(:bytesize)
+
+  alias jlength length unless method_defined?(:jlength)
 end
