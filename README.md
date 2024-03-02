@@ -1,22 +1,20 @@
-ffi-icu [![Build Status](https://app.travis-ci.com/erickguan/ffi-icu.svg?branch=master)](https://app.travis-ci.com/erickguan/ffi-icu)
-=======
+# ffi-icu
 
-Simple FFI wrappers for ICU. Checkout the renovated [ICU gem](https://github.com/fantasticfears/icu4r) instead which supports various of encoding and distributed with packaged source. FFI-ICU needs some love with ICU gem's transcoding method.
+Simple FFI wrappers for [International Components for Unicode (ICU)][icu].
 
-Gem
----
+## Gem
 
 [Rubygem](http://rubygems.org/gems/ffi-icu "ffi-icu")
 
-    gem install ffi-icu
+```
+gem install ffi-icu
+```
 
-Dependencies
-------------
+## Dependencies
 
 ICU.
 
-If you get messages that the library or functions are not found, you can
-set some environment variables to tell ffi-icu where to find it, e.g.:
+If you get messages that the library or functions are not found, you can set some environment variables to tell ffi-icu where to find it, e.g.:
 
 ```sh
 $ export FFI_ICU_LIB="icui18n.so"
@@ -24,11 +22,9 @@ $ export FFI_ICU_VERSION_SUFFIX="_3_8"
 $ ruby -r ffi-icu program.rb
 ```
 
-Features
-========
+# Features
 
-Character Encoding Detection
-----------------------------
+## Character Encoding Detection
 
 Examples:
 
@@ -49,8 +45,7 @@ Why not just use rchardet?
 
 * speed
 
-Locale Sensitive Collation
---------------------------
+## Locale Sensitive Collation
 
 Examples:
 
@@ -67,8 +62,7 @@ collator.greater?("z", "a") #=> true
 collator.collate(%w[å æ ø]) #=> ["æ", "ø", "å"]
 ```
 
-Text Boundary Analysis
-----------------------
+## Text Boundary Analysis
 
 Examples:
 
@@ -78,8 +72,7 @@ iterator.text = "This is a sentence."
 iterator.to_a  #=> [0, 4, 5, 7, 8, 9, 10, 18, 19]
 ```
 
-Number/Currency Formatting
---------------------------
+## Number/Currency Formatting
 
 Examples:
 
@@ -99,8 +92,7 @@ curf = ICU::NumberFormatting.create('en-US', :currency)
 curf.format(1234.56, 'USD') #=> "$1,234.56"
 ```
 
-Time Formatting/Parsing
------------------------
+## Time Formatting/Parsing
 
 Examples:
 
@@ -130,8 +122,7 @@ formatter = ICU::TimeFormatting.create(:locale => 'cs_CZ', :date => :pattern, :t
 formatter.format(Time.now)  #=> "2015"
 ```
 
-Duration Formatting
--------------------
+## Duration Formatting
 
 ```ruby
 # What the various styles look like
@@ -187,8 +178,7 @@ formatter = ICU::DurationFormatting::DurationFormatter.new(locale: 'ru', style: 
 formatter.format({hours: 10, minutes: 20, seconds: 30})  #=> "10 ч 20 мин 30 с"
 ```
 
-Transliteration
----------------
+## Transliteration
 
 Example:
 
@@ -196,8 +186,7 @@ Example:
 ICU::Transliteration.transliterate('Traditional-Simplified', '沈從文') # => "沈从文"
 ```
 
-Locale
-------
+## Locale
 
 Examples:
 
@@ -210,24 +199,4 @@ locale.display_name_with_context('en-US', [:length_short]) #=> "English (US)"
 locale.display_name_with_context('en-US', [:length_long])  #=> "English (United States)"
 ```
 
-TODO:
-=====
-
-* Any other useful part of ICU?
-* Windows?!
-
-Note on Patches/Pull Requests
-=============================
-
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
-
-Copyright
-=========
-
-Copyright (c) 2010-2015 Jari Bakken. See LICENSE for details.
+[icu]: https://github.com/unicode-org/icu
