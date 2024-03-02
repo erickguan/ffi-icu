@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ICU
   module Lib
     module Util
@@ -18,11 +20,11 @@ module ICU
 
         begin
           result = FFI::MemoryPointer.new(:char, length)
-          Lib.check_error { |status| length = yield result, status }
+          Lib.check_error { |status| length = yield(result, status) }
         rescue BufferOverflowError
           attempts += 1
           retry if attempts < 2
-          raise BufferOverflowError, "needed: #{length}"
+          raise(BufferOverflowError, "needed: #{length}")
         end
 
         result.read_string(length)
@@ -34,22 +36,20 @@ module ICU
       end
 
       def self.read_uchar_buffer_as_ptr(length, &blk)
-        buf, _ = read_uchar_buffer_as_ptr_impl(length, &blk)
+        buf, = read_uchar_buffer_as_ptr_impl(length, &blk)
         buf
       end
-
-      private
 
       def self.read_uchar_buffer_as_ptr_impl(length)
         attempts = 0
 
         begin
           result = UCharPointer.new(length)
-          Lib.check_error { |status| length = yield result, status }
+          Lib.check_error { |status| length = yield(result, status) }
         rescue BufferOverflowError
           attempts += 1
           retry if attempts < 2
-          raise BufferOverflowError, "needed: #{length}"
+          raise(BufferOverflowError, "needed: #{length}")
         end
 
         [result, length]

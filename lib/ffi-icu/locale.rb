@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ICU
   class Locale
     class << self
@@ -43,16 +45,16 @@ module ICU
     attr_reader :id
 
     DISPLAY_CONTEXT = {
-      length_full:  512, # UDISPCTX_LENGTH_FULL  = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 0
-      length_short: 513  # UDISPCTX_LENGTH_SHORT = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 1
-    }
+      length_full: 512, # UDISPCTX_LENGTH_FULL  = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 0
+      length_short: 513 # UDISPCTX_LENGTH_SHORT = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 1
+    }.freeze
 
     def initialize(id)
       @id = id.to_s
     end
 
     def ==(other)
-      other.is_a?(self.class) && other.id == self.id
+      other.is_a?(self.class) && other.id == id
     end
 
     def base_name
@@ -183,13 +185,13 @@ module ICU
       end
     end
 
-    def to_language_tag(strict = false)
+    def to_language_tag(strict = false) # rubocop:disable Style/OptionalBooleanParameter
       Lib::Util.read_string_buffer(64) do |buffer, status|
         Lib.uloc_toLanguageTag(@id, buffer, buffer.size, strict ? 1 : 0, status)
       end
     end
 
-    alias_method :to_s, :id
+    alias to_s id
 
     def variant
       Lib::Util.read_string_buffer(64) do |buffer, status|
@@ -238,9 +240,11 @@ module ICU
 
     def with_locale_display_name(locale, contexts)
       pointer = FFI::MemoryPointer.new(:int, contexts.length).write_array_of_int(contexts)
-      locale_display_names = ICU::Lib.check_error { |status| ICU::Lib.uldn_openForContext(locale, pointer, contexts.length, status) }
+      locale_display_names = ICU::Lib.check_error do |status|
+        ICU::Lib.uldn_openForContext(locale, pointer, contexts.length, status)
+      end
 
-      yield locale_display_names
+      yield(locale_display_names)
     ensure
       Lib.uldn_close(locale_display_names) if locale_display_names
     end

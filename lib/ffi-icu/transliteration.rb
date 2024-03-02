@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 module ICU
   module Transliteration
-
     class << self
       def transliterate(translit_id, str, rules = nil)
-        t = Transliterator.new translit_id, rules
-        t.transliterate str
+        t = Transliterator.new(translit_id, rules)
+        t.transliterate(str)
       end
-      alias_method :translit, :transliterate
+      alias translit transliterate
 
       def available_ids
         enum_ptr = Lib.check_error do |error|
@@ -21,7 +22,6 @@ module ICU
     end
 
     class Transliterator
-
       def initialize(id, rules = nil, direction = :forward)
         rules_length = 0
 
@@ -33,22 +33,23 @@ module ICU
         parse_error = Lib::UParseError.new
         begin
           Lib.check_error do |status|
-            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.jlength, direction, rules, rules_length, @parse_error, status)
+            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.jlength, direction, rules, rules_length,
+                                   @parse_error, status)
             @tr = FFI::AutoPointer.new(ptr, Lib.method(:utrans_close))
           end
-        rescue ICU::Error => ex
-          raise ex, "#{ex.message} (#{parse_error})"
+        rescue ICU::Error => e
+          raise(e, "#{e.message} (#{parse_error})")
         end
       end
 
       def transliterate(from)
         # this is a bit unpleasant
 
-        unicode_size = from.unpack("U*").size
+        unicode_size = from.unpack('U*').size
         capacity     = unicode_size + 1
         buf          = UCharPointer.from_string(from, capacity)
-        limit        = FFI::MemoryPointer.new :int32
-        text_length  = FFI::MemoryPointer.new :int32
+        limit        = FFI::MemoryPointer.new(:int32)
+        text_length  = FFI::MemoryPointer.new(:int32)
 
         retried = false
 
@@ -63,9 +64,9 @@ module ICU
           end
         rescue BufferOverflowError
           new_size = text_length.get_int32(0)
-          $stderr.puts "BufferOverflowError, needs: #{new_size}" if $DEBUG
+          warn("BufferOverflowError, needs: #{new_size}") if $DEBUG
 
-          raise BufferOverflowError, "needed #{new_size}" if retried
+          raise(BufferOverflowError, "needed #{new_size}") if retried
 
           capacity = new_size + 1
 
@@ -78,9 +79,8 @@ module ICU
           retry
         end
 
-        buf.string text_length.get_int32(0)
+        buf.string(text_length.get_int32(0))
       end
-
-    end # Transliterator
-  end # Translit
-end # ICU
+    end
+  end
+end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ICU
   class BreakIterator
     include Enumerable
@@ -8,7 +10,7 @@ module ICU
 
     def self.available_locales
       (0...Lib.ubrk_countAvailable).map do |idx|
-        Lib.ubrk_getAvailable idx
+        Lib.ubrk_getAvailable(idx)
       end
     end
 
@@ -20,25 +22,25 @@ module ICU
     def text=(str)
       @text = str
 
-      Lib.check_error { |err|
-        Lib.ubrk_setText @iterator, UCharPointer.from_string(str), str.jlength, err
-      }
+      Lib.check_error do |err|
+        Lib.ubrk_setText(@iterator, UCharPointer.from_string(str), str.jlength, err)
+      end
     end
 
-    def each(&blk)
+    def each
       return to_enum(:each) unless block_given?
 
       int = first
 
       while int != DONE
-        yield int
+        yield(int)
         int = self.next
       end
 
       self
     end
 
-    def each_substring(&blk)
+    def each_substring
       return to_enum(:each_substring) unless block_given?
 
       # each_char needed for 1.8, where String#[] works on bytes, not characters
@@ -46,7 +48,7 @@ module ICU
       low   = first
 
       while (high = self.next) != DONE
-        yield chars[low...high].join
+        yield(chars[low...high].join)
         low = high
       end
 
@@ -58,36 +60,35 @@ module ICU
     end
 
     def next
-      Lib.ubrk_next @iterator
+      Lib.ubrk_next(@iterator)
     end
 
     def previous
-      Lib.ubrk_next @iterator
+      Lib.ubrk_next(@iterator)
     end
 
     def first
-      Lib.ubrk_first @iterator
+      Lib.ubrk_first(@iterator)
     end
 
     def last
-      Lib.ubrk_last @iterator
+      Lib.ubrk_last(@iterator)
     end
 
     def preceding(offset)
-      Lib.ubrk_preceding @iterator, Integer(offset)
+      Lib.ubrk_preceding(@iterator, Integer(offset))
     end
 
     def following(offset)
-      Lib.ubrk_following @iterator, Integer(offset)
+      Lib.ubrk_following(@iterator, Integer(offset))
     end
 
     def current
-      Lib.ubrk_current @iterator
+      Lib.ubrk_current(@iterator)
     end
 
     def boundary?(offset)
       Lib.ubrk_isBoundary(@iterator, Integer(offset)) != 0
     end
-
-  end # BreakIterator
-end # ICU
+  end
+end
