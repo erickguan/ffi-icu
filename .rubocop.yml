@@ -1,0 +1,166 @@
+# merge the default 'Exclude' key with ours
+inherit_mode:
+  merge:
+    - Exclude
+
+require:
+  - rubocop-rspec
+  - rubocop-minitest
+  - rubocop-packaging
+
+AllCops:
+  NewCops: enable
+  StyleGuideBaseURL: https://rubystyle.guide
+  TargetRubyVersion: 3.0
+
+  Exclude:
+    - bin/**/*
+    - tmp/**/*
+
+Bundler/OrderedGems:
+  Include:
+    - '*.gemspec'
+
+# Documentation
+Style/Documentation:
+  Enabled: false
+
+# Allow more flexibility with string literals
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+# Enforce dots on the next line for multi-line method calls
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/LineLength:
+  Max: 120
+
+# Enforce comma after the last item of a multiline array or hash
+Style/TrailingCommaInArrayLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArguments:
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+
+Layout/ArgumentAlignment:
+  Enabled: true
+  EnforcedStyle: with_fixed_indentation
+
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: indented
+
+Style/WordArray:
+  # difficult to figure out source text
+  EnforcedStyle: brackets
+
+# Encourage the use of method call with args parentheses
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  EnforcedStyle: require_parentheses
+
+# Allow guard clauses
+Style/GuardClause:
+  Enabled: true
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+# Exclude test files from BlockComments check
+Style/BlockComments:
+  Exclude:
+    - 'test/**/*'
+
+# Naming conventions
+Naming/PredicateName:
+  Enabled: true
+
+Metrics/ClassLength:
+  Max: 500
+
+Metrics/BlockLength:
+  Max: 50
+
+  Exclude:
+    # allows longer block for RSpec
+    - spec/**/*.rb
+
+Metrics/AbcSize:
+  Max: 110
+
+Metrics/BlockNesting:
+  Max: 5
+
+Metrics/CyclomaticComplexity:
+  Max: 40
+
+Metrics/MethodLength:
+  Max: 100
+
+Metrics/ModuleLength:
+  Max: 250
+  Exclude:
+    # allows longer block for RSpec
+    - spec/**/*.rb
+    - lib/ffi-icu/lib.rb
+
+Metrics/PerceivedComplexity:
+  Max: 50
+
+RSpec/ExampleLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Max: 10
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/NoExpectationExample:
+  Enabled: false
+
+RSpec/MultipleDescribes:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/PredicateMatcher:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Naming/FileName:
+  Exclude:
+    - lib/ffi-icu.rb
