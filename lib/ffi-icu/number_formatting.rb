@@ -84,13 +84,13 @@ module ICU
                                     'ICU version is too old to have unum_format_decimal')
                 end
                 string_version = number.to_s
-                needed_length = Lib.unum_format_decimal(@f, string_version, string_version.bytesize, out_ptr,
+                needed_length = Lib.unum_format_decimal(@f, string_version, string_version.size, out_ptr,
                                                         needed_length, nil, error)
               end
             when BigDecimal
               string_version = number.to_s('F')
               needed_length = if Lib.respond_to?(:unum_format_decimal)
-                                Lib.unum_format_decimal(@f, string_version, string_version.bytesize, out_ptr,
+                                Lib.unum_format_decimal(@f, string_version, string_version.size, out_ptr,
                                                         needed_length, nil, error)
                               else
                                 Lib.unum_format_double(@f, number.to_f, out_ptr, needed_length, nil, error)

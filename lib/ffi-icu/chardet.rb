@@ -24,7 +24,7 @@ module ICU
 
       def declared_encoding=(str)
         Lib.check_error do |ptr|
-          Lib.ucsdet_setDeclaredEncoding(@detector, str, str.bytesize, ptr)
+          Lib.ucsdet_setDeclaredEncoding(@detector, str, str.size, ptr)
         end
       end
 
@@ -75,7 +75,7 @@ module ICU
       def set_text(text) # rubocop:disable Naming/AccessorMethodName
         Lib.check_error do |status|
           data = FFI::MemoryPointer.from_string(text)
-          Lib.ucsdet_setText(@detector, data, text.bytesize, status)
+          Lib.ucsdet_setText(@detector, data, text.size, status)
         end
       end
     end

@@ -23,7 +23,7 @@ module ICU
       @text = str
 
       Lib.check_error do |err|
-        Lib.ubrk_setText(@iterator, UCharPointer.from_string(str), str.jlength, err)
+        Lib.ubrk_setText(@iterator, UCharPointer.from_string(str), str.size, err)
       end
     end
 
