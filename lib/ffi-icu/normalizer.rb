@@ -11,7 +11,7 @@ module ICU
     end
 
     def normalize(input)
-      input_length  = input.jlength
+      input_length  = input.size
       in_ptr        = UCharPointer.from_string(input)
       needed_length = capacity = 0
       out_ptr       = UCharPointer.new(needed_length)
@@ -35,7 +35,7 @@ module ICU
     end
 
     def is_normailzed?(input) # rubocop:disable Naming/PredicateName
-      input_length  = input.jlength
+      input_length  = input.size
       in_ptr        = UCharPointer.from_string(input)
 
       Lib.check_error do |error|

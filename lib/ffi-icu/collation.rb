@@ -74,19 +74,19 @@ module ICU
       def compare(a, b)
         Lib.ucol_strcoll(
           @c,
-          UCharPointer.from_string(a), a.jlength,
-          UCharPointer.from_string(b), b.jlength
+          UCharPointer.from_string(a), a.size,
+          UCharPointer.from_string(b), b.size
         )
       end
 
       def greater?(a, b)
-        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.jlength,
-                         UCharPointer.from_string(b), b.jlength)
+        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.size,
+                         UCharPointer.from_string(b), b.size)
       end
 
       def greater_or_equal?(a, b)
-        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.jlength,
-                                UCharPointer.from_string(b), b.jlength)
+        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.size,
+                                UCharPointer.from_string(b), b.size)
       end
 
       def equal?(*args)
@@ -96,8 +96,8 @@ module ICU
 
         a, b = args
 
-        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.jlength,
-                       UCharPointer.from_string(b), b.jlength)
+        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.size,
+                       UCharPointer.from_string(b), b.size)
       end
 
       def collate(sortable)
@@ -116,9 +116,9 @@ module ICU
 
       def collation_key(string)
         ptr = UCharPointer.from_string(string)
-        size = Lib.ucol_getSortKey(@c, ptr, string.jlength, nil, 0)
+        size = Lib.ucol_getSortKey(@c, ptr, string.size, nil, 0)
         buffer = FFI::MemoryPointer.new(:char, size)
-        Lib.ucol_getSortKey(@c, ptr, string.jlength, buffer, size)
+        Lib.ucol_getSortKey(@c, ptr, string.size, buffer, size)
         buffer.read_bytes(size - 1)
       end
 

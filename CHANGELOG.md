@@ -12,3 +12,4 @@
 
 ### Removed
 
+- Stop monkeypatching `String#bytesize` or `String#jlength`.
