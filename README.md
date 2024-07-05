@@ -1,6 +1,9 @@
 # ffi-icu
 
-Simple FFI wrappers for [International Components for Unicode (ICU)][icu].
+FFI wrappers for [International Components for Unicode (ICU)][icu].
+ICU provides comprehensive localization and security features.
+Majority personal computing devices, server operating systems and web browsers use ICU.
+ICU builds on top of Unicode's Common Locale Data Repository (CLDR).
 
 ## Gem
 
@@ -40,8 +43,6 @@ or
 detector = ICU::CharDet::Detector.new
 detector.detect(str) => #<struct ICU::CharDet::Detector::Match ...>
 ```
-
-Why not just use rchardet?
 
 * speed
 
