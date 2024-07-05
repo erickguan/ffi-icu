@@ -1,0 +1,27 @@
+name: Release
+
+on:
+  workflow_dispatch: # allow repo collaborators to publish gem
+
+permissions:
+  contents: write # required for `rake release` to push the release tag
+  id-token: write # required for workflow to publish gem
+
+jobs:
+  package-linting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # required to run `rake release`.
+      - name: Setup Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          # setup-ruby implicitly uses .ruby-version
+          bundler-cache: true
+
+      # Run `rake release` to create git tag and push to repository based on `lib/version.rb`.
+      # Then publish the new gem via trusted publishing
+      # Read more on https://guides.rubygems.org/trusted-publishing/releasing-gems/
+      - uses: rubygems/release-gem@v1
