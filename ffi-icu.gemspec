@@ -6,11 +6,12 @@ Gem::Specification.new do |spec|
   spec.platform    = Gem::Platform::RUBY # rely on FFI library, but being platform-independent
 
   spec.required_rubygems_version = Gem::Requirement.new('>= 2.5.0')
-  spec.authors     = ['Jari Bakken']
+  spec.authors     = ['Erick Guan', 'Damian Nelson']
   spec.licenses    = ['MIT']
-  spec.summary     = 'Simple Ruby FFI wrappers for International Components for Unicode (ICU).'
-  spec.description = 'Provides charset detection, locale sensitive collation and more. Depends on libicu.'
-  spec.email       = 'jari.bakken@gmail.com'
+  spec.summary     = 'Ruby FFI wrappers for International Components for Unicode (ICU).'
+  spec.description = 'Provides charset detection, transiliteration, locale sensitive collation and more. ' \
+                     'Depends on libicu. ICU operates on CLDR data.'
+  spec.email       = 'erickguanst@gmail.com'
   spec.homepage    = 'https://github.com/erickguan/ffi-icu'
 
   spec.metadata['source_code_uri'] = spec.homepage

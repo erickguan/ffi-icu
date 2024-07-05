@@ -5,7 +5,7 @@
 
 ### Changed
 
-- Required Ruby 3.0 and up.
+- Required Ruby 3.0 and up. Ruby 3.0 is EOL as of 2024-05.
 
 ### Fixed
 
