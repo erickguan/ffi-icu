@@ -2,9 +2,6 @@ name: Tests
 
 on:
   pull_request:
-  push:
-    branches:
-      - master
 
 permissions:
   contents: read
@@ -16,15 +13,32 @@ jobs:
         # test a range of Ruby to ensure gem works
         # keep ruby until EOL. Read more on https://endoflife.date/ruby
         ruby-version:
-          - '3.0'
           - '3.1'
           - '3.2'
           - '3.3'
-          - head
-        # test distributions up to 4 years
         runner:
           - ubuntu-22.04
-          - ubuntu-20.04
+        include:
+          # test distributions up to 4 years
+          - runner: ubuntu-20.04
+            ruby-version: '3.3'
+          - runner: ubuntu-24.04
+            ruby-version: '3.3'
+
+          # test latest ruby
+          - runner: ubuntu-24.04
+            ruby-version: head
+
+          # test other platforms
+          - runner: windows-2022
+            ruby-version: '3.3'
+
+          - runner: macos-13
+            ruby-version: '3.3'
+
+          - runner: macos-14
+            ruby-version: '3.3'
+
       fail-fast: false # allow contributors understand failure builds
 
     runs-on: ${{ matrix.runner }}
