@@ -31,7 +31,10 @@ jobs:
             allow-failures: true # windows builds are not in active use, but test to unblock contributions
 
           - runner: macos-14
-            ruby-version: '4.0'
+            ruby-version: '3.4'
+
+          - runner: macos-15
+            ruby-version: '3.4'
 
           - runner: macos-15
             ruby-version: '4.0'
@@ -55,4 +58,8 @@ jobs:
         run: brew install icu4c
 
       - name: Run tests
-        run: bundle exec rake spec
+        run: |
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            export FFI_ICU_LIB="$(brew --prefix icu4c)/lib"
+          fi
+          bundle exec rake spec
