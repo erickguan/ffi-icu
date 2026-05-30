@@ -70,8 +70,17 @@ module ICU
       end
 
       it 'can format narrow' do
+        icu_major = ICU::Lib.version.to_a[0]
+
         result = DurationFormatting.format({ hours: 1, minutes: 2, seconds: 3 }, locale: 'en-AU', style: :narrow)
-        expect(result).to(match(/h.*min.*s/i))
+
+        expected_pattern = if icu_major >= 70
+                             /h.*m.*s/i # "1h 2m 3s"
+                           else
+                             /h.*min.*s/i # "1h 2min 3s"
+                           end
+
+        expect(result).to(match(expected_pattern))
         expect(result).not_to(match(/hr/i))
         expect(result).not_to(match(/sec/i))
       end

@@ -14,21 +14,40 @@ module ICU
       f1 = described_class.create(locale: 'cs_CZ', zone: 'Europe/Prague', date: :long, time: :long,
                                   tz_style: :localized_long)
       it 'check date_format for lang=cs_CZ' do
-        expect(f1.date_format(true)).to(eq('d. MMMM y H:mm:ss ZZZZ'))
-        expect(f1.date_format(false)).to(eq('d. MMMM y H:mm:ss ZZZZ'))
+        expected = if Lib.version.to_a[0] >= 73
+                     "d. MMMM y 'v' H:mm:ss ZZZZ"
+                   else
+                     'd. MMMM y H:mm:ss ZZZZ'
+                   end
+
+        expect(f1.date_format(true)).to(eq(expected))
+        expect(f1.date_format(false)).to(eq(expected))
       end
 
       it 'for lang=cs_CZ zone=Europe/Prague' do
-        expect(f1).to(be_an_instance_of(described_class::DateTimeFormatter))
-        expect(f1.format(t0)).to(eq('12. listopadu 2008 15:21:16 GMT+01:00'))
-        expect(f1.format(t1)).to(eq('25. října 2008 1:15:17 GMT+02:00'))
-        expect(f1.format(t2)).to(eq('25. října 2008 2:16:18 GMT+02:00'))
-        expect(f1.format(t3)).to(eq('25. října 2008 3:17:19 GMT+02:00'))
-        expect(f1.format(t4)).to(eq('25. října 2008 4:18:20 GMT+02:00'))
-        expect(f1.format(t5)).to(eq('29. března 2008 1:35:21 GMT+01:00'))
-        expect(f1.format(t6)).to(eq('29. března 2008 2:36:22 GMT+01:00'))
-        expect(f1.format(t7)).to(eq('29. března 2008 3:37:23 GMT+01:00'))
-        expect(f1.format(t8)).to(eq('29. března 2008 4:38:24 GMT+01:00'))
+        icu_major = Lib.version.to_a[0]
+
+        if icu_major >= 73
+          expect(f1.format(t0)).to(eq('12. listopadu 2008 v 15:21:16 GMT+01:00'))
+          expect(f1.format(t1)).to(eq('25. října 2008 v 1:15:17 GMT+02:00'))
+          expect(f1.format(t2)).to(eq('25. října 2008 v 2:16:18 GMT+02:00'))
+          expect(f1.format(t3)).to(eq('25. října 2008 v 3:17:19 GMT+02:00'))
+          expect(f1.format(t4)).to(eq('25. října 2008 v 4:18:20 GMT+02:00'))
+          expect(f1.format(t5)).to(eq('29. března 2008 v 1:35:21 GMT+01:00'))
+          expect(f1.format(t6)).to(eq('29. března 2008 v 2:36:22 GMT+01:00'))
+          expect(f1.format(t7)).to(eq('29. března 2008 v 3:37:23 GMT+01:00'))
+          expect(f1.format(t8)).to(eq('29. března 2008 v 4:38:24 GMT+01:00'))
+        else
+          expect(f1.format(t0)).to(eq('12. listopadu 2008 15:21:16 GMT+01:00'))
+          expect(f1.format(t1)).to(eq('25. října 2008 1:15:17 GMT+02:00'))
+          expect(f1.format(t2)).to(eq('25. října 2008 2:16:18 GMT+02:00'))
+          expect(f1.format(t3)).to(eq('25. října 2008 3:17:19 GMT+02:00'))
+          expect(f1.format(t4)).to(eq('25. října 2008 4:18:20 GMT+02:00'))
+          expect(f1.format(t5)).to(eq('29. března 2008 1:35:21 GMT+01:00'))
+          expect(f1.format(t6)).to(eq('29. března 2008 2:36:22 GMT+01:00'))
+          expect(f1.format(t7)).to(eq('29. března 2008 3:37:23 GMT+01:00'))
+          expect(f1.format(t8)).to(eq('29. března 2008 4:38:24 GMT+01:00'))
+        end
       end
 
       f2 = described_class.create(locale: 'en_US', zone: 'Europe/Moscow', date: :short, time: :long,
@@ -41,22 +60,42 @@ module ICU
         en_sep = ''
       end
 
-      en_exp = "M/d/yy#{en_sep} h:mm:ss a VVVV"
+      icu_major = ICU::Lib.version.to_a[0]
+      en_exp = if icu_major >= 73
+                 "M/d/yy#{en_sep} h:mm:ss\u202Fa VVVV"
+               else
+                 "M/d/yy#{en_sep} h:mm:ss a VVVV"
+               end
+
       it 'check date_format for lang=en_US' do
         expect(f2.date_format(true)).to(eq(en_exp))
         expect(f2.date_format(false)).to(eq(en_exp))
       end
 
       it 'lang=en_US zone=Europe/Moscow' do
-        expect(f2.format(t0)).to(eq("11/12/08#{en_sep} 5:21:16 PM #{en_tz}"))
-        expect(f2.format(t1)).to(eq("10/25/08#{en_sep} 3:15:17 AM #{en_tz}"))
-        expect(f2.format(t2)).to(eq("10/25/08#{en_sep} 4:16:18 AM #{en_tz}"))
-        expect(f2.format(t3)).to(eq("10/25/08#{en_sep} 5:17:19 AM #{en_tz}"))
-        expect(f2.format(t4)).to(eq("10/25/08#{en_sep} 6:18:20 AM #{en_tz}"))
-        expect(f2.format(t5)).to(eq("3/29/08#{en_sep} 3:35:21 AM #{en_tz}"))
-        expect(f2.format(t6)).to(eq("3/29/08#{en_sep} 4:36:22 AM #{en_tz}"))
-        expect(f2.format(t7)).to(eq("3/29/08#{en_sep} 5:37:23 AM #{en_tz}"))
-        expect(f2.format(t8)).to(eq("3/29/08#{en_sep} 6:38:24 AM #{en_tz}"))
+        icu_major = ICU::Lib.version.to_a[0]
+
+        if icu_major >= 73
+          expect(f2.format(t0)).to(eq("11/12/08, 5:21:16\u202FPM #{en_tz}"))
+          expect(f2.format(t1)).to(eq("10/25/08, 3:15:17\u202FAM #{en_tz}"))
+          expect(f2.format(t2)).to(eq("10/25/08, 4:16:18\u202FAM #{en_tz}"))
+          expect(f2.format(t3)).to(eq("10/25/08, 5:17:19\u202FAM #{en_tz}"))
+          expect(f2.format(t4)).to(eq("10/25/08, 6:18:20\u202FAM #{en_tz}"))
+          expect(f2.format(t5)).to(eq("3/29/08, 3:35:21\u202FAM #{en_tz}"))
+          expect(f2.format(t6)).to(eq("3/29/08, 4:36:22\u202FAM #{en_tz}"))
+          expect(f2.format(t7)).to(eq("3/29/08, 5:37:23\u202FAM #{en_tz}"))
+          expect(f2.format(t8)).to(eq("3/29/08, 6:38:24\u202FAM #{en_tz}"))
+        else
+          expect(f2.format(t0)).to(eq("11/12/08, 5:21:16 PM #{en_tz}"))
+          expect(f2.format(t1)).to(eq("10/25/08, 3:15:17 AM #{en_tz}"))
+          expect(f2.format(t2)).to(eq("10/25/08, 4:16:18 AM #{en_tz}"))
+          expect(f2.format(t3)).to(eq("10/25/08, 5:17:19 AM #{en_tz}"))
+          expect(f2.format(t4)).to(eq("10/25/08, 6:18:20 AM #{en_tz}"))
+          expect(f2.format(t5)).to(eq("3/29/08, 3:35:21 AM #{en_tz}"))
+          expect(f2.format(t6)).to(eq("3/29/08, 4:36:22 AM #{en_tz}"))
+          expect(f2.format(t7)).to(eq("3/29/08, 5:37:23 AM #{en_tz}"))
+          expect(f2.format(t8)).to(eq("3/29/08, 6:38:24 AM #{en_tz}"))
+        end
       end
 
       f3 = described_class.create(locale: 'de_DE', zone: 'Africa/Dakar', date: :short, time: :long)
@@ -70,15 +109,24 @@ module ICU
       end
 
       it 'lang=de_DE zone=Africa/Dakar' do
-        expect(f3.format(t0)).to(eq("12.11.08#{ge_sep} 14:21:16 GMT"))
-        expect(f3.format(t1)).to(eq("24.10.08#{ge_sep} 23:15:17 GMT"))
-        expect(f3.format(t2)).to(eq("25.10.08#{ge_sep} 00:16:18 GMT"))
-        expect(f3.format(t3)).to(eq("25.10.08#{ge_sep} 01:17:19 GMT"))
-        expect(f3.format(t4)).to(eq("25.10.08#{ge_sep} 02:18:20 GMT"))
-        expect(f3.format(t5)).to(eq("29.03.08#{ge_sep} 00:35:21 GMT"))
-        expect(f3.format(t6)).to(eq("29.03.08#{ge_sep} 01:36:22 GMT"))
-        expect(f3.format(t7)).to(eq("29.03.08#{ge_sep} 02:37:23 GMT"))
-        expect(f3.format(t8)).to(eq("29.03.08#{ge_sep} 03:38:24 GMT"))
+        icu_major = Lib.version.to_a[0]
+
+        suffix =
+          if icu_major >= 73
+            'GMT+0'
+          else
+            'GMT'
+          end
+
+        expect(f3.format(t0)).to(eq("12.11.08#{ge_sep} 14:21:16 #{suffix}"))
+        expect(f3.format(t1)).to(eq("24.10.08#{ge_sep} 23:15:17 #{suffix}"))
+        expect(f3.format(t2)).to(eq("25.10.08#{ge_sep} 00:16:18 #{suffix}"))
+        expect(f3.format(t3)).to(eq("25.10.08#{ge_sep} 01:17:19 #{suffix}"))
+        expect(f3.format(t4)).to(eq("25.10.08#{ge_sep} 02:18:20 #{suffix}"))
+        expect(f3.format(t5)).to(eq("29.03.08#{ge_sep} 00:35:21 #{suffix}"))
+        expect(f3.format(t6)).to(eq("29.03.08#{ge_sep} 01:36:22 #{suffix}"))
+        expect(f3.format(t7)).to(eq("29.03.08#{ge_sep} 02:37:23 #{suffix}"))
+        expect(f3.format(t8)).to(eq("29.03.08#{ge_sep} 03:38:24 #{suffix}"))
       end
 
       context 'skeleton pattern' do
