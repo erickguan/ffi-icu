@@ -136,3 +136,6 @@ Naming/MethodParameterName:
 Naming/FileName:
   Exclude:
     - lib/ffi-icu.rb
+
+RSpec/LeakyLocalVariable:
+  Enabled: false
