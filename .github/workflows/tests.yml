@@ -49,7 +49,7 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
-      
+
       - name: Install ICU on macOS
         if: runner.os == 'macOS'
         run: brew install icu4c
