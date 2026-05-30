@@ -30,13 +30,13 @@ module ICU
         result.read_string(length)
       end
 
-      def self.read_uchar_buffer(length, &blk)
-        buf, len = read_uchar_buffer_as_ptr_impl(length, &blk)
+      def self.read_uchar_buffer(length, &)
+        buf, len = read_uchar_buffer_as_ptr_impl(length, &)
         buf.string(len)
       end
 
-      def self.read_uchar_buffer_as_ptr(length, &blk)
-        buf, = read_uchar_buffer_as_ptr_impl(length, &blk)
+      def self.read_uchar_buffer_as_ptr(length, &)
+        buf, = read_uchar_buffer_as_ptr_impl(length, &)
         buf
       end
 
