@@ -28,6 +28,7 @@ jobs:
           # test other platforms
           - runner: windows-2022
             ruby-version: '4.0'
+            allow-failures: true # windows builds are not in active use, but test to unblock contributions
 
           - runner: macos-14
             ruby-version: '4.0'
@@ -48,6 +49,10 @@ jobs:
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
+      
+      - name: Install ICU on macOS
+        if: runner.os == 'macOS'
+        run: brew install icu4c
 
       - name: Run tests
         run: bundle exec rake spec
