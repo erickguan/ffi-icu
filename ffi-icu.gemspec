@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.extra_rdoc_files = ['LICENSE', 'README.md']
   spec.rdoc_options = ['--charset=UTF-8']
 
-  spec.required_ruby_version = '>= 3.0.0'
+  spec.required_ruby_version = '>= 3.2.0'
 
   spec.add_runtime_dependency('bigdecimal', '~> 3.1')
   spec.add_runtime_dependency('ffi', '~> 1.0', '>= 1.0.9')
