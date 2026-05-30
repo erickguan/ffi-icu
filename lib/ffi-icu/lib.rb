@@ -192,8 +192,8 @@ module ICU
       @version ||= VersionInfo.new.tap { |version| u_getVersion(version) }
     end
 
-    def self.attach_optional_function(*args)
-      attach_function(*args)
+    def self.attach_optional_function(*)
+      attach_function(*)
     rescue FFI::NotFoundError
       # ignore
     end

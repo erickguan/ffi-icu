@@ -34,7 +34,7 @@ module ICU
       out_ptr.string
     end
 
-    def is_normailzed?(input) # rubocop:disable Naming/PredicateName
+    def normailzed?(input)
       input_length  = input.size
       in_ptr        = UCharPointer.from_string(input)
 
@@ -43,6 +43,11 @@ module ICU
       end
 
       result
+    end
+
+    def is_normalized?(input) # rubocop:disable Naming/PredicatePrefix
+      Warning.warn('is_normalized? is deprecated and will be removed after v0.7. Please use normalized? instead.')
+      normalized?(input)
     end
   end
 end

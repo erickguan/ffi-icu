@@ -64,7 +64,7 @@ module ICU
     }.freeze
 
     def self.format(fields, locale:, style: :long)
-      DurationFormatter.new(locale: locale, style: style).format(fields)
+      DurationFormatter.new(locale:, style:).format(fields)
     end
 
     class DurationFormatter
@@ -99,7 +99,7 @@ module ICU
         # if that unit is sub-second. All other fields therefore need to be truncated.
         smallest_unit = VALID_FIELDS[fields.keys.map { |k| VALID_FIELDS.index(k) }.max]
         fields.each_key do |k|
-          raise(ArgumentError, 'Negative durations are not yet supported') if (fields[k]).negative?
+          raise(ArgumentError, 'Negative durations are not yet supported') if fields[k].negative?
 
           fields[k] = fields[k].to_i unless k == smallest_unit && ROUNDABLE_FIELDS.include?(smallest_unit)
         end

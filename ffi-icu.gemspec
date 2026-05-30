@@ -27,9 +27,9 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = '>= 3.2.0'
 
-  spec.add_runtime_dependency('bigdecimal', '~> 3.1')
-  spec.add_runtime_dependency('ffi', '~> 1.0', '>= 1.0.9')
-  spec.add_runtime_dependency('stringio', '~> 3.0')
+  spec.add_dependency('bigdecimal', '~> 3.1')
+  spec.add_dependency('ffi', '~> 1.0', '>= 1.0.9')
+  spec.add_dependency('stringio', '~> 3.0')
 
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
