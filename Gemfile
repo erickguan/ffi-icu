@@ -4,9 +4,10 @@ gemspec
 
 group :development, :test do
   gem 'rake', '>= 12.3.3'
-  gem 'rspec', '~> 3.9'
-  gem 'rubocop', '~> 1.60'
-  gem 'rubocop-minitest', '~> 0.34.5'
-  gem 'rubocop-packaging', '~> 0.5.2'
-  gem 'rubocop-rspec', '~> 2.27'
+  gem 'rspec', '~> 3.13'
+  gem 'rubocop', '~> 1.86'
+  gem 'rubocop-minitest', '~> 0.39'
+  gem 'rubocop-packaging', '~> 0.6'
+  gem 'rubocop-rspec', '~> 3.9'
+  gem 'rubocop-rspec_rails', '~> 2.32'
 end

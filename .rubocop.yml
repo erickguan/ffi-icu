@@ -3,15 +3,16 @@ inherit_mode:
   merge:
     - Exclude
 
-require:
+plugins:
   - rubocop-rspec
+  - rubocop-rspec_rails
   - rubocop-minitest
   - rubocop-packaging
 
 AllCops:
   NewCops: enable
   StyleGuideBaseURL: https://rubystyle.guide
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.2
   SuggestExtensions: false # reduce noise. consider add rubocop-benchmark
 
   Exclude:
@@ -104,9 +105,6 @@ RSpec/MultipleExpectations:
 
 RSpec/NestedGroups:
   Max: 5
-
-RSpec/FilePath:
-  Enabled: false
 
 RSpec/SpecFilePathFormat:
   Enabled: false
