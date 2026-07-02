@@ -1,4 +1,4 @@
-## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.6.0...master) ##
+## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.6.1...master)
 
 ### Added
 
@@ -8,7 +8,13 @@
 
 ### Removed
 
-## [v0.6.0](https://github.com/erickguan/ffi-icu/compare/v0.5.3...v0.6.0) ##
+## [v0.6.1](https://github.com/erickguan/ffi-icu/compare/v0.6.0...v0.6.1)
+
+### Changed
+
+- Loosen bigdecimal constraint `'bigdecimal', '>= 3.1'`
+
+## [v0.6.0](https://github.com/erickguan/ffi-icu/compare/v0.5.3...v0.6.0)
 
 ### Added
 
