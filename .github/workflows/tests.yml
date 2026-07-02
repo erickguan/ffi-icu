@@ -59,5 +59,28 @@ jobs:
           brew install icu4c
           echo "FFI_ICU_LIB=$(brew --prefix icu4c)/lib" >> "$GITHUB_ENV"
 
+      - name: Install ICU on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $version = '78.3'
+          $zipName = "icu4c-$version-Win64-MSVC2022.zip"
+          $url = "https://github.com/unicode-org/icu/releases/download/release-$version/$zipName"
+          Invoke-WebRequest -Uri $url -OutFile $zipName
+          Expand-Archive -Path $zipName -DestinationPath C:\icu -Force
+          # Copy the DLLs next to ruby.exe. Modern Ruby on Windows calls
+          # SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS), which
+          # excludes PATH from the search used to resolve a DLL's transitive
+          # dependencies — so having C:\icu\bin64 on PATH lets ffi-icu's
+          # find_lib locate icuuc??.dll, but Windows then fails to load
+          # icudt??.dll from the same directory (error 126). The application
+          # directory (ruby.exe's directory) is always searched first, so
+          # placing all ICU DLLs there resolves both the lookup and the
+          # transitive deps. ruby/setup-ruby prepends ruby.exe's directory
+          # to PATH, so find_lib finds icuuc??.dll here before any stale
+          # icuuc*.dll on the runner image (e.g. c:\tools\php).
+          $rubyBin = (Get-Command ruby).Source | Split-Path
+          Copy-Item C:\icu\bin64\icu*.dll -Destination $rubyBin -Force
+
       - name: Run tests
         run: bundle exec rake spec
