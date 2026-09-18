@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add the `:dialect_names` locale display context.
+
 ### Changed
 
 ### Fixed
