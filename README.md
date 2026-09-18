@@ -93,6 +93,28 @@ curf = ICU::NumberFormatting.create('en-US', :currency)
 curf.format(1234.56, 'USD') #=> "$1,234.56"
 ```
 
+## Message Formatting
+
+Message formatting supports ICU MessageFormat patterns using numbered arguments:
+
+```ruby
+formatter = ICU::MessageFormatting.create(
+  '{0, plural, one {# item} other {# items}}',
+  locale: 'en-US'
+)
+
+formatter.format([2]) #=> "2 items"
+```
+
+Patterns can also be validated without formatting a message:
+
+```ruby
+ICU::MessageFormatting.validate('{0, select, male {He} female {She} other {They}}', locale: 'en-US')
+#=> true
+```
+
+The current API uses ICU's C MessageFormat API and therefore resolves numbered arguments only. Named arguments are not resolved by this API, and rich-text tags require a separate compatibility layer. Supported Ruby argument types are `String`, `Integer`, `Float`, and `BigDecimal`.
+
 ## Time Formatting/Parsing
 
 Examples:

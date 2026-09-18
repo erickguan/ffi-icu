@@ -23,12 +23,12 @@ module ICU
         end
       end
 
-      # rubocop:disable RSpec/InstanceVariable
+      # rubocop:disable-next RSpec/InstanceVariable
       context 'upon warning' do
         before { @verbose = $VERBOSE }
         after { $VERBOSE = @verbose }
 
-        # rubocop:disable RSpec/ExpectOutput
+        # rubocop:disable-next RSpec/ExpectOutput
         context 'when warnings are enabled' do
           before do
             @original_stderr = $stderr
@@ -51,7 +51,6 @@ module ICU
             expect(error_check).to(eq(return_value))
           end
         end
-        # rubocop:enable RSpec/ExpectOutput
 
         context 'when warnings are disabled' do
           before { $VERBOSE = false }
@@ -66,7 +65,6 @@ module ICU
           end
         end
       end
-      # rubocop:enable RSpec/InstanceVariable
     end
 
     if Gem::Version.new('4.2') <= Gem::Version.new(described_class.version)

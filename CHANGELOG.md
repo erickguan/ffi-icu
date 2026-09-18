@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add ICU MessageFormat validation and formatting for numbered arguments.
+
 ### Changed
 
 ### Fixed
