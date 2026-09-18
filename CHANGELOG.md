@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add `ICU::Currency` API.
+
 ### Changed
 
 ### Fixed
