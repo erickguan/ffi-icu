@@ -22,6 +22,22 @@ module ICU
       ptr
     end
 
+    def self.from_utf8(str, capacity = nil)
+      chars = str.encode(Encoding::UTF_16LE).unpack('v*')
+
+      if capacity
+        raise(ArgumentError, "capacity is too small for string of #{chars.size} UChars") if capacity < chars.size
+
+        ptr = new(capacity)
+      else
+        ptr = new(chars.size)
+      end
+
+      ptr.write_array_of_uint16(chars)
+
+      ptr
+    end
+
     def initialize(size)
       super(UCHAR_TYPE, size)
     end
@@ -40,6 +56,13 @@ module ICU
 
       wstring = read_array_of_uint16(length)
       wstring.pack('U*')
+    end
+
+    def utf8_string(length = nil)
+      length ||= size / TYPE_SIZE
+
+      wstring = read_array_of_uint16(length).pack('v*')
+      wstring.force_encoding(Encoding::UTF_16LE).encode(Encoding::UTF_8)
     end
 
     def length_in_uchars

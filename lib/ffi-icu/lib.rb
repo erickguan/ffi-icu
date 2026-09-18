@@ -120,6 +120,7 @@ module ICU
 
     def self.check_error
       ptr = FFI::MemoryPointer.new(:int)
+      ptr.write_int(0)
       ret = yield(ptr)
       error_code = ptr.read_int
 
@@ -353,14 +354,25 @@ module ICU
     class UParseError < FFI::Struct
       layout :line, :int32_t,
              :offset,       :int32_t,
-             :pre_context,  :pointer,
-             :post_context, :pointer
+             :pre_context,  [:uint16, 16],
+             :post_context, [:uint16, 16]
 
       def to_s
         format('#<%<class>s:%<hash>x line: %<line>d offset: %<offset>d',
                class: self.class, hash: hash * 2, line: self[:line], offset: self[:offset])
       end
     end
+
+    # MessageFormat
+    #
+    # https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/umsg_8h.html
+    #
+
+    attach_function :umsg_open, "umsg_open#{suffix}",
+                    [:pointer, :int32_t, :string, :pointer, :pointer], :pointer
+    attach_function :umsg_close, "umsg_close#{suffix}", [:pointer], :void
+    attach_function :umsg_format, "umsg_format#{suffix}",
+                    [:pointer, :pointer, :int32_t, :pointer, :varargs], :int32_t
 
     class UTransPosition < FFI::Struct
       layout :context_start, :int32_t,

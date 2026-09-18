@@ -11,6 +11,13 @@ module ICU
       expect(ptr.read_array_of_uint16(3)).to(eq([0x61, 0x62, 0x63]))
     end
 
+    it 'encodes non-BMP characters as UTF-16 code units' do
+      ptr = described_class.from_utf8('😀')
+
+      expect(ptr.read_array_of_uint16(2)).to(eq([0xD83D, 0xDE00]))
+      expect(ptr.utf8_string).to(eq('😀'))
+    end
+
     it 'takes an optional capacity' do
       ptr = described_class.from_string('abc', 5)
       expect(ptr.size).to(eq(10))
