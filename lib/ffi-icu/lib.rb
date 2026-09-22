@@ -345,6 +345,39 @@ module ICU
     attach_function :ucol_getAttribute,     "ucol_getAttribute#{suffix}",     [:pointer, :int, :pointer], :int
     attach_function :ucol_setAttribute,     "ucol_setAttribute#{suffix}",     [:pointer, :int, :int, :pointer], :void
 
+    # Currency
+    #
+    # https://unicode-org.github.io/icu-docs/apidoc/dev/icu4c/ucurr_8h.html
+    #
+
+    enum :ucurr_name_style, [
+      :symbol_name,         0,   # "$"
+      :long_name,           1,   # "US Dollar"
+      :narrow_symbol_name,  4,   # shortest unambiguous symbol (ICU >= 61)
+      :formal_symbol_name,  5,   # banking context (ICU >= 68)
+      :variant_symbol_name, 6    # regional variant (ICU >= 68)
+    ]
+
+    enum :ucurrency_usage, [
+      :standard, 0,  # UCURR_USAGE_STANDARD
+      :cash,     1   # UCURR_USAGE_CASH
+    ]
+
+    attach_function :ucurr_getName, "ucurr_getName#{suffix}",
+                    [:pointer, :string, :ucurr_name_style, :pointer, :pointer, :pointer], :pointer
+    attach_optional_function :ucurr_getPluralName, "ucurr_getPluralName#{suffix}",
+                             [:pointer, :string, :pointer, :string, :pointer, :pointer], :pointer
+    attach_function :ucurr_forLocale, "ucurr_forLocale#{suffix}",
+                    [:string, :pointer, :int32_t, :pointer], :int32_t
+    attach_function :ucurr_openISOCurrencies, "ucurr_openISOCurrencies#{suffix}",
+                    [:uint32, :pointer], :pointer
+    attach_function :ucurr_getDefaultFractionDigits, "ucurr_getDefaultFractionDigits#{suffix}",
+                    [:pointer, :pointer], :int32_t
+    attach_optional_function :ucurr_getDefaultFractionDigitsForUsage, "ucurr_getDefaultFractionDigitsForUsage#{suffix}",
+                             [:pointer, :ucurrency_usage, :pointer], :int32_t
+    attach_optional_function :ucurr_getNumericCode, "ucurr_getNumericCode#{suffix}",
+                             [:pointer], :int32_t
+
     # Transliteration
     #
     # http://icu-project.org/apiref/icu4c/utrans_8h.html
