@@ -3,6 +3,7 @@
 ### Added
 
 - Add ICU MessageFormat validation and formatting for numbered arguments.
+- Add the `:dialect_names` locale display context.
 
 ### Changed
 

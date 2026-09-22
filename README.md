@@ -219,7 +219,10 @@ locale.display_country('en-US') #=> "United States"
 locale.display_language('es') #=> "inglés"
 locale.display_name('es') #=> "inglés (Estados Unidos)"
 locale.display_name_with_context('en-US', [:length_short]) #=> "English (US)"
-locale.display_name_with_context('en-US', [:length_long])  #=> "English (United States)"
+locale.display_name_with_context('en-US', [:length_full])  #=> "English (United States)"
+
+dari = ICU::Locale.new('fa-AF')
+dari.display_name_with_context('en', [:dialect_names]) #=> "Dari"
 ```
 
 [icu]: https://github.com/unicode-org/icu

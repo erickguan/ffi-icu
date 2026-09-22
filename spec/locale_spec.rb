@@ -125,6 +125,8 @@ module ICU
         end
 
         it 'returns the name using display context' do
+          expect(described_class.new('fa-AF').display_name_with_context('en',
+                                                                        [:dialect_names])).to(eq('Dari'))
           expect(described_class.new('en_HK').display_name_with_context('en_US',
                                                                         [:length_full])).to(
                                                                           eq('English (Hong Kong SAR China)')
