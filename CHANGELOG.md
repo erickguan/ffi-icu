@@ -2,6 +2,8 @@
 
 ### Added
 
+- Add locale-aware list formatting with `ICU::ListFormatting`.
+
 ### Changed
 
 ### Fixed

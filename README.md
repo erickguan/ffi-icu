@@ -187,6 +187,20 @@ Example:
 ICU::Transliteration.transliterate('Traditional-Simplified', '沈從文') # => "沈从文"
 ```
 
+## List Formatting
+
+Join items with locale-aware separators and conjunctions:
+
+```ruby
+ICU::ListFormatting.format(['Alice', 'Bob', 'Jane'], locale: 'en', style: :and)
+# => "Alice, Bob, and Jane"
+
+ICU::ListFormatting.format(['Alice', 'Bob', 'Jane'], locale: 'fr', style: :and)
+# => "Alice, Bob et Jane"
+```
+
+Supported styles are `:standard` (the default, equivalent to `:and`), `:and`, `:or`, and `:unit` (ICU's units list type). Only ICU's wide width is exposed; styles and items must be symbols and strings respectively. List formatting requires ICU 67 or newer.
+
 ## Locale
 
 Examples:
