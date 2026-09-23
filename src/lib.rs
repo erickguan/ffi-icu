@@ -1,4 +1,3 @@
-mod bindings;
 mod calendar;
 mod icu;
 mod number;
@@ -124,14 +123,12 @@ impl CurrencyFormatter {
 }
 
 fn runtime_icu_version() -> Result<String, Error> {
-    Icu::load()
-        .map(|icu| icu.version().to_string())
-        .map_err(to_ruby_error)
+    Icu::load().map(|icu| icu.version()).map_err(to_ruby_error)
 }
 
 fn runtime_symbol_version() -> Result<String, Error> {
     Icu::load()
-        .map(|icu| icu.symbol_version().to_string())
+        .map(|icu| icu.symbol_version())
         .map_err(to_ruby_error)
 }
 

@@ -22,33 +22,33 @@ mod generated {
     include!("bindings/generated.rs");
 }
 
-pub(crate) use generated::{
+pub(super) use generated::{
     UBool, UCalendar, UCalendarDateFields, UCalendarType, UChar, UDate, UErrorCode, UNumberFormat,
     UNumberFormatStyle, UVersionInfo,
 };
 
-pub(crate) type UGetVersion = unsafe extern "C" fn(*mut u8);
-pub(crate) type UErrorName = unsafe extern "C" fn(UErrorCode) -> *const c_char;
+pub(super) type UGetVersion = unsafe extern "C" fn(*mut u8);
+pub(super) type UErrorName = unsafe extern "C" fn(UErrorCode) -> *const c_char;
 
-pub(crate) type UcalOpen = unsafe extern "C" fn(
+pub(super) type UcalOpen = unsafe extern "C" fn(
     *const UChar,
     i32,
     *const c_char,
     UCalendarType,
     *mut UErrorCode,
 ) -> *mut UCalendar;
-pub(crate) type UcalClose = unsafe extern "C" fn(*mut UCalendar);
-pub(crate) type UcalSetMillis = unsafe extern "C" fn(*mut UCalendar, UDate, *mut UErrorCode);
-pub(crate) type UcalGetMillis = unsafe extern "C" fn(*const UCalendar, *mut UErrorCode) -> UDate;
-pub(crate) type UcalSetDate = unsafe extern "C" fn(*mut UCalendar, i32, i32, i32, *mut UErrorCode);
-pub(crate) type UcalSetDateTime =
+pub(super) type UcalClose = unsafe extern "C" fn(*mut UCalendar);
+pub(super) type UcalSetMillis = unsafe extern "C" fn(*mut UCalendar, UDate, *mut UErrorCode);
+pub(super) type UcalGetMillis = unsafe extern "C" fn(*const UCalendar, *mut UErrorCode) -> UDate;
+pub(super) type UcalSetDate = unsafe extern "C" fn(*mut UCalendar, i32, i32, i32, *mut UErrorCode);
+pub(super) type UcalSetDateTime =
     unsafe extern "C" fn(*mut UCalendar, i32, i32, i32, i32, i32, i32, *mut UErrorCode);
-pub(crate) type UcalGet =
+pub(super) type UcalGet =
     unsafe extern "C" fn(*const UCalendar, UCalendarDateFields, *mut UErrorCode) -> i32;
-pub(crate) type UcalInDaylightTime =
+pub(super) type UcalInDaylightTime =
     unsafe extern "C" fn(*const UCalendar, *mut UErrorCode) -> UBool;
 
-pub(crate) type UnumOpen = unsafe extern "C" fn(
+pub(super) type UnumOpen = unsafe extern "C" fn(
     UNumberFormatStyle,
     *const UChar,
     i32,
@@ -56,8 +56,8 @@ pub(crate) type UnumOpen = unsafe extern "C" fn(
     *mut c_void,
     *mut UErrorCode,
 ) -> *mut UNumberFormat;
-pub(crate) type UnumClose = unsafe extern "C" fn(*mut UNumberFormat);
-pub(crate) type UnumFormatDouble = unsafe extern "C" fn(
+pub(super) type UnumClose = unsafe extern "C" fn(*mut UNumberFormat);
+pub(super) type UnumFormatDouble = unsafe extern "C" fn(
     *const UNumberFormat,
     f64,
     *mut UChar,
@@ -65,7 +65,7 @@ pub(crate) type UnumFormatDouble = unsafe extern "C" fn(
     *mut c_void,
     *mut UErrorCode,
 ) -> i32;
-pub(crate) type UnumFormatDoubleCurrency = unsafe extern "C" fn(
+pub(super) type UnumFormatDoubleCurrency = unsafe extern "C" fn(
     *const UNumberFormat,
     f64,
     *mut UChar,

@@ -6,11 +6,13 @@ Compares reusable number and currency formatters from:
 - `ffi-icu`
 - `twitter_cldr`
 
-Each process performs three warmup rounds before measurement. The runner starts
-separate Ruby processes with YJIT disabled and enabled.
+Each process performs three warmup rounds before measuring throughput and Ruby
+heap allocations per formatter call. The runner starts separate Ruby processes
+with YJIT disabled and enabled, and writes both measurements to the result file
+for each mode.
 
 ```sh
-gem install twitter_cldr
+bundle install
 benchmark/run.sh
 ```
 

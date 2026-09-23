@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'benchmark'
+require 'benchmark/memory'
 
 ROOT = File.expand_path('..', __dir__)
 FFI_ICU_ROOT = File.expand_path(ENV.fetch('FFI_ICU_PATH', '../ffi-icu'), ROOT)
@@ -98,5 +99,13 @@ benchmarks.each do |group, cases|
       iterations_per_second,
       iterations_per_second / fastest
     )
+  end
+
+  puts "\nMemory per call"
+  Benchmark.memory do |memory|
+    cases.each do |benchmark_case|
+      memory.report(benchmark_case.label, &benchmark_case.call)
+    end
+    memory.compare!
   end
 end

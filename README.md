@@ -8,7 +8,9 @@ A Magnus proof of concept for selected ICU4C features:
 
 The extension loads ICU dynamically with `libloading`. It detects unversioned
 symbols or major-suffixed symbols such as `ucal_open_78`, so the gem does not
-link to one ICU major version at build time.
+link to one ICU major version at build time. Raw ICU handles, function pointers,
+symbol resolution, and all `unsafe` calls are confined to the internal ICU
+module; the calendar, number, and Magnus layers use safe Rust interfaces.
 
 ## Build and test
 
@@ -75,8 +77,8 @@ users do not run bindgen.
 ## Benchmarks
 
 The formatter benchmark compares `offi-icu`, `ffi-icu`, and `twitter_cldr`
-after three warmup rounds. It runs once with YJIT disabled and once with YJIT
-enabled:
+after three warmup rounds. It records throughput and Ruby heap allocations,
+running once with YJIT disabled and once with YJIT enabled:
 
 ```sh
 benchmark/run.sh
