@@ -1,0 +1,7 @@
+/target/
+/lib/offi_icu/*.so
+/lib/offi_icu/*.bundle
+/lib/offi_icu/*.dll
+/pkg/
+/tmp/
+Gemfile.lock

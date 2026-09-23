@@ -1,0 +1,23 @@
+[package]
+name = "offi-icu"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+description = "Proof-of-concept Magnus extension with runtime-loaded ICU4C calendar bindings"
+repository = "https://github.com/erickguan/offi-icu"
+build = "build.rs"
+
+[lib]
+name = "offi_icu"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+libloading = "0.8"
+magnus = "0.8.2"
+thiserror = "2"
+
+[build-dependencies]
+bindgen = "0.72"
+pkg-config = "0.3"
+
+[dev-dependencies]
