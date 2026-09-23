@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir[
     'Cargo.lock',
     'Cargo.toml',
+    'benchmark/**/*',
     'wrapper.h',
     'ext/**/*',
     'lib/**/*.rb',

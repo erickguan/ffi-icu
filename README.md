@@ -71,3 +71,15 @@ scripts/generate-bindings.sh
 
 The generated bindings stay isolated in `src/bindings/generated.rs`; normal
 users do not run bindgen.
+
+## Benchmarks
+
+The formatter benchmark compares `offi-icu`, `ffi-icu`, and `twitter_cldr`
+after three warmup rounds. It runs once with YJIT disabled and once with YJIT
+enabled:
+
+```sh
+benchmark/run.sh
+```
+
+See `benchmark/README.md` for iteration and path configuration.

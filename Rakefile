@@ -28,4 +28,9 @@ Rake::TestTask.new(:test => :compile) do |test|
   test.pattern = 'test/**/*_test.rb'
 end
 
+desc 'Run formatter benchmarks with YJIT disabled and enabled'
+task :benchmark do
+  sh File.join(__dir__, 'benchmark', 'run.sh')
+end
+
 task default: :test

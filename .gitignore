@@ -1,4 +1,5 @@
 /target/
+/benchmark/results/*.txt
 /lib/offi_icu/*.so
 /lib/offi_icu/*.bundle
 /lib/offi_icu/*.dll
