@@ -7,7 +7,8 @@ module ICU
 
     def self.from_string(str, capacity = nil)
       str   = str.encode('UTF-8') if str.respond_to?(:encode)
-      chars = str.encode('UTF-16LE').unpack('v*')
+      chars = str.unpack('U*')
+      chars = str.encode('UTF-16LE').unpack('v*') if chars.any? { |char| char > 0xFFFF }
 
       if capacity
         raise(ArgumentError, "capacity is too small for string of #{chars.size} UChars") if capacity < chars.size
@@ -38,8 +39,12 @@ module ICU
     def string(length = nil)
       length ||= size / TYPE_SIZE
 
-      wstring = read_array_of_uint16(length).pack('v*')
-      wstring.force_encoding('UTF-16LE').encode('UTF-8')
+      chars = read_array_of_uint16(length)
+      if chars.any? { |char| char.between?(0xD800, 0xDFFF) }
+        chars.pack('v*').force_encoding('UTF-16LE').encode('UTF-8')
+      else
+        chars.pack('U*')
+      end
     end
 
     def length_in_uchars

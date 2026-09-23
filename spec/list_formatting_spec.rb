@@ -6,9 +6,9 @@ module ICU
         skip('Only works on ICU >= 67') unless functions.all? { |function| Lib.respond_to?(function) }
       end
 
-      it 'formats two-item and three-item standard lists' do
+      it 'formats two-item and three-item and lists' do
         expect(ListFormatting.format(['Alice', 'Bob'], locale: 'en')).to(eq('Alice and Bob'))
-        expect(ListFormatting.format(['Alice', 'Bob', 'Jane'], locale: 'en', style: :standard)).
+        expect(ListFormatting.format(['Alice', 'Bob', 'Jane'], locale: 'en', style: :and)).
           to(eq('Alice, Bob, and Jane'))
       end
 
@@ -43,8 +43,8 @@ module ICU
       end
 
       it 'rejects unknown styles' do
-        expect { ListFormatting.format(['Alice', 'Bob'], locale: 'en', style: :unknown) }.
-          to(raise_error(ArgumentError, 'Unknown style unknown'))
+        expect { ListFormatting.format(['Alice', 'Bob'], locale: 'en', style: :standard) }.
+          to(raise_error(ArgumentError, 'Unknown style standard'))
       end
 
       it 'requires symbol styles' do
