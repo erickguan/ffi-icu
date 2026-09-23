@@ -2,16 +2,15 @@
 
 module ICU
   module ListFormatting
-    VALID_STYLES = [:standard, :and, :or, :unit].freeze
+    VALID_STYLES = [:and, :or, :unit].freeze
 
     STYLES_TO_TYPES = {
-      standard: :and,
       and: :and,
       or: :or,
       unit: :units
     }.freeze
 
-    def self.format(items, locale:, style: :standard)
+    def self.format(items, locale:, style: :and)
       raise(ArgumentError, "Unknown style #{style}") unless VALID_STYLES.include?(style)
       raise(ArgumentError, 'items must be strings') unless items.all?(String)
 
@@ -23,12 +22,9 @@ module ICU
         raise('ICU::ListFormatting requires ICU >= 67')
       end
 
-      formatter = FFI::AutoPointer.new(
-        Lib.check_error do |error|
-          Lib.ulistfmt_openForType(locale, STYLES_TO_TYPES.fetch(style), :wide, error)
-        end,
-        Lib.method(:ulistfmt_close)
-      )
+      formatter = Lib.check_error do |error|
+        Lib.ulistfmt_openForType(locale, STYLES_TO_TYPES.fetch(style), :wide, error)
+      end
 
       begin
         value_uchars = items.map(&UCharPointer.method(:from_string))
@@ -49,7 +45,7 @@ module ICU
           )
         end
       ensure
-        formatter.free
+        Lib.ulistfmt_close(formatter)
       end
     end
   end
