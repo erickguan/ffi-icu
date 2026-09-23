@@ -66,6 +66,8 @@ pub enum Error {
     Icu { code: i32, name: String },
     #[error("ICU returned a null calendar without an error status")]
     NullCalendar,
+    #[error("ICU returned a null number formatter without an error status")]
+    NullNumberFormatter,
     #[error("string contains an interior NUL byte")]
     InteriorNul,
 }
@@ -90,6 +92,10 @@ pub(crate) struct Inner {
     pub ucal_set_date_time: UcalSetDateTime,
     pub ucal_get: UcalGet,
     pub ucal_in_daylight_time: UcalInDaylightTime,
+    pub unum_open: UnumOpen,
+    pub unum_close: UnumClose,
+    pub unum_format_double: UnumFormatDouble,
+    pub unum_format_double_currency: UnumFormatDoubleCurrency,
 }
 
 impl Icu {
@@ -135,6 +141,12 @@ impl Icu {
             ucal_get: unsafe { resolve(symbols, symbol_version, "ucal_get")? },
             ucal_in_daylight_time: unsafe {
                 resolve(symbols, symbol_version, "ucal_inDaylightTime")?
+            },
+            unum_open: unsafe { resolve(symbols, symbol_version, "unum_open")? },
+            unum_close: unsafe { resolve(symbols, symbol_version, "unum_close")? },
+            unum_format_double: unsafe { resolve(symbols, symbol_version, "unum_formatDouble")? },
+            unum_format_double_currency: unsafe {
+                resolve(symbols, symbol_version, "unum_formatDoubleCurrency")?
             },
             _uc: uc,
             _i18n: calendar_library,

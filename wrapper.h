@@ -2,3 +2,4 @@
 #include <unicode/utypes.h>
 #include <unicode/uversion.h>
 #include <unicode/ucal.h>
+#include <unicode/unum.h>

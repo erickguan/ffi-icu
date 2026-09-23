@@ -7,7 +7,7 @@ require 'rbconfig'
 EXTENSION_DIR = File.join(__dir__, 'lib', 'offi_icu')
 EXTENSION = File.join(EXTENSION_DIR, "offi_icu.#{RbConfig::CONFIG.fetch('DLEXT')}")
 
-file EXTENSION => Dir['src/**/*.rs', 'Cargo.toml', 'build.rs', 'wrapper.h'] do
+file EXTENSION => Dir['src/**/*.rs', 'Cargo.toml'] do
   sh 'cargo', 'build'
   FileUtils.mkdir_p(EXTENSION_DIR)
 

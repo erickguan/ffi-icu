@@ -16,11 +16,12 @@ Gem::Specification.new do |spec|
   spec.files = Dir[
     'Cargo.lock',
     'Cargo.toml',
-    'build.rs',
     'wrapper.h',
     'ext/**/*',
     'lib/**/*.rb',
+    'scripts/**/*',
     'src/**/*.rs',
+    'vendor/icu/**/*',
     'README.md'
   ]
   spec.extensions = ['ext/offi_icu/extconf.rb']

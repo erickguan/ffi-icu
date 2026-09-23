@@ -19,11 +19,12 @@ mod generated {
         non_snake_case,
         non_upper_case_globals
     )]
-    include!(concat!(env!("OUT_DIR"), "/icu_calendar_bindings.rs"));
+    include!("bindings/generated.rs");
 }
 
 pub(crate) use generated::{
-    UBool, UCalendar, UCalendarDateFields, UCalendarType, UChar, UDate, UErrorCode, UVersionInfo,
+    UBool, UCalendar, UCalendarDateFields, UCalendarType, UChar, UDate, UErrorCode, UNumberFormat,
+    UNumberFormatStyle, UVersionInfo,
 };
 
 pub(crate) type UGetVersion = unsafe extern "C" fn(*mut u8);
@@ -47,5 +48,33 @@ pub(crate) type UcalGet =
 pub(crate) type UcalInDaylightTime =
     unsafe extern "C" fn(*const UCalendar, *mut UErrorCode) -> UBool;
 
-// Assert the opaque handle remains pointer-shaped in generated bindings.
+pub(crate) type UnumOpen = unsafe extern "C" fn(
+    UNumberFormatStyle,
+    *const UChar,
+    i32,
+    *const c_char,
+    *mut c_void,
+    *mut UErrorCode,
+) -> *mut UNumberFormat;
+pub(crate) type UnumClose = unsafe extern "C" fn(*mut UNumberFormat);
+pub(crate) type UnumFormatDouble = unsafe extern "C" fn(
+    *const UNumberFormat,
+    f64,
+    *mut UChar,
+    i32,
+    *mut c_void,
+    *mut UErrorCode,
+) -> i32;
+pub(crate) type UnumFormatDoubleCurrency = unsafe extern "C" fn(
+    *const UNumberFormat,
+    f64,
+    *mut UChar,
+    *mut UChar,
+    i32,
+    *mut c_void,
+    *mut UErrorCode,
+) -> i32;
+
+// Assert the opaque handles remain pointer-shaped in generated bindings.
 const _: fn(UCalendar) -> *mut c_void = |value| value;
+const _: fn(UNumberFormat) -> *mut c_void = |value| value;

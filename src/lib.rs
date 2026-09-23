@@ -1,10 +1,12 @@
 mod bindings;
 mod calendar;
 mod icu;
+mod number;
 
 use calendar::{Calendar as NativeCalendar, CalendarField};
 use icu::Icu;
 use magnus::{Error, Ruby, function, method, prelude::*};
+use number::{CurrencyStyle, NumberFormatter as NativeNumberFormatter};
 
 #[magnus::wrap(class = "ICU::Calendar", free_immediately)]
 struct Calendar {
@@ -78,6 +80,49 @@ impl Calendar {
     }
 }
 
+#[magnus::wrap(class = "ICU::NumberFormatter", free_immediately)]
+struct NumberFormatter {
+    native: NativeNumberFormatter,
+}
+
+impl NumberFormatter {
+    fn new(locale: String) -> Result<Self, Error> {
+        Ok(Self {
+            native: NativeNumberFormatter::decimal(&locale).map_err(to_ruby_error)?,
+        })
+    }
+
+    fn format(&self, number: f64) -> Result<String, Error> {
+        self.native.format(number).map_err(to_ruby_error)
+    }
+}
+
+#[magnus::wrap(class = "ICU::CurrencyFormatter", free_immediately)]
+struct CurrencyFormatter {
+    native: NativeNumberFormatter,
+}
+
+impl CurrencyFormatter {
+    fn new(locale: String, style: String) -> Result<Self, Error> {
+        let style = CurrencyStyle::from_name(&style).ok_or_else(|| {
+            let ruby = Ruby::get().expect("Ruby API is available while handling a Ruby call");
+            Error::new(
+                ruby.exception_arg_error(),
+                format!("unknown currency style: {style}"),
+            )
+        })?;
+        Ok(Self {
+            native: NativeNumberFormatter::currency(&locale, style).map_err(to_ruby_error)?,
+        })
+    }
+
+    fn format(&self, number: f64, currency: String) -> Result<String, Error> {
+        self.native
+            .format_currency(number, &currency)
+            .map_err(to_ruby_error)
+    }
+}
+
 fn runtime_icu_version() -> Result<String, Error> {
     Icu::load()
         .map(|icu| icu.version().to_string())
@@ -113,6 +158,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     calendar.define_method("zone_offset", method!(Calendar::zone_offset, 0))?;
     calendar.define_method("dst_offset", method!(Calendar::dst_offset, 0))?;
     calendar.define_method("in_daylight_time?", method!(Calendar::in_daylight_time, 0))?;
+
+    let number_formatter = icu.define_class("NumberFormatter", ruby.class_object())?;
+    number_formatter.define_singleton_method("new", function!(NumberFormatter::new, 1))?;
+    number_formatter.define_method("format", method!(NumberFormatter::format, 1))?;
+
+    let currency_formatter = icu.define_class("CurrencyFormatter", ruby.class_object())?;
+    currency_formatter.define_singleton_method("new", function!(CurrencyFormatter::new, 2))?;
+    currency_formatter.define_method("format", method!(CurrencyFormatter::format, 2))?;
 
     Ok(())
 }
