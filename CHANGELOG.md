@@ -3,6 +3,7 @@
 ### Added
 
 - Add locale-aware list formatting with `ICU::ListFormatting`.
+- Add the `:dialect_names` locale display context.
 
 ### Changed
 
