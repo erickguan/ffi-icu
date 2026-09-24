@@ -27,7 +27,7 @@ module ICU
       end
 
       begin
-        value_uchars = items.map(&UCharPointer.method(:from_string))
+        value_uchars = items.map { |item| UCharPointer.from_string(item) }
         value_uchars_array = FFI::MemoryPointer.new(:pointer, value_uchars.size)
         value_uchars_array.put_array_of_pointer(0, value_uchars)
         value_lengths_array = FFI::MemoryPointer.new(:int32_t, value_uchars.size)
