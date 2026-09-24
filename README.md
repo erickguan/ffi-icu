@@ -12,6 +12,9 @@ link to one ICU major version at build time. Raw ICU handles, function pointers,
 symbol resolution, and all `unsafe` calls are confined to the internal ICU
 module; the calendar, number, and Magnus layers use safe Rust interfaces.
 
+This tests concept whether I could build an ffi layer with icu4c enabled.
+Some Rust upstreamt might not want to do this and there is also icu4x.
+
 ## Build and test
 
 Normal gem builds do not require separately installed ICU development headers
