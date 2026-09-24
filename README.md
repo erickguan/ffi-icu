@@ -199,7 +199,13 @@ ICU::ListFormatting.format(['Alice', 'Bob', 'Jane'], locale: 'fr', style: :and)
 # => "Alice, Bob et Jane"
 ```
 
-Supported styles are `:and` (the default), `:or`, and `:unit` (ICU's units list type). Only ICU's wide width is exposed; styles and items must be symbols and strings respectively. List formatting requires ICU 67 or newer.
+Supported styles are:
+
+- `:and`: the default
+- `:or`
+- `:unit`: ICU's units list type
+
+Only ICU's wide width is exposed. Styles must be symbols, and items must be strings. The Ruby/FFI layer converts Ruby strings to ICU's UTF-16 `UChar` values before calling ICU. List formatting requires ICU 67 or newer.
 
 ## Locale
 
