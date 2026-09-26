@@ -1,5 +1,56 @@
 module ICU
   describe Lib do
+    describe '.search_paths' do
+      around do |example|
+        search_paths_defined = described_class.instance_variable_defined?(:@search_paths)
+        original_icu_lib = ENV.delete('FFI_ICU_LIB')
+        original_paths = described_class.instance_variable_get(:@search_paths) if search_paths_defined
+        described_class.remove_instance_variable(:@search_paths) if search_paths_defined
+        example.run
+      ensure
+        if described_class.instance_variable_defined?(:@search_paths)
+          described_class.remove_instance_variable(:@search_paths)
+        end
+        described_class.instance_variable_set(:@search_paths, original_paths) if search_paths_defined
+        ENV['FFI_ICU_LIB'] = original_icu_lib if original_icu_lib
+      end
+
+      let(:multiarch_paths) do
+        [
+          '/usr/lib/i386-linux-gnu',
+          '/usr/lib/x86_64-linux-gnu'
+        ]
+      end
+
+      before do
+        stub_const('FFI::Platform::IS_WINDOWS', false)
+        stub_const('FFI::Platform::ARCH', 'x86_64')
+        allow(Dir).to(receive(:[]).with('/usr/lib/*-linux-gnu').and_return(multiarch_paths))
+      end
+
+      it 'prioritizes the native Debian multiarch directory' do
+        expected_paths = [
+          '/usr/lib/x86_64-linux-gnu',
+          '/usr/lib/i386-linux-gnu'
+        ]
+
+        expect(described_class.search_paths.last(2)).to(eq(expected_paths))
+      end
+
+      context 'when no native Debian multiarch directory is available' do
+        let(:multiarch_paths) do
+          [
+            '/usr/lib/aarch64-linux-gnu',
+            '/usr/lib/i386-linux-gnu'
+          ]
+        end
+
+        it 'keeps the existing paths as fallbacks' do
+          expect(described_class.search_paths.last(2)).to(eq(multiarch_paths))
+        end
+      end
+    end
+
     describe 'error checking' do
       let(:return_value) { double }
 
