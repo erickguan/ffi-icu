@@ -19,11 +19,16 @@ module ICU
                         elsif FFI::Platform::IS_WINDOWS
                           ENV['PATH'].split(File::PATH_SEPARATOR)
                         else
+                          multiarch_paths = Dir['/usr/lib/*-linux-gnu']
+                          multiarch_paths.sort_by! do |path|
+                            File.basename(path).start_with?("#{FFI::Platform::ARCH}-") ? 0 : 1
+                          end
+
                           [
                             '/usr/local/{lib64,lib}',
                             '/opt/local/{lib64,lib}',
                             '/usr/{lib64,lib}'
-                          ] + Dir['/usr/lib/*-linux-gnu'] # for Debian Multiarch http://wiki.debian.org/Multiarch
+                          ] + multiarch_paths # for Debian Multiarch http://wiki.debian.org/Multiarch
                         end
     end
 
