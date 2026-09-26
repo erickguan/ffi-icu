@@ -8,6 +8,8 @@
 
 ### Fixed
 
+- Prefer native-architecture Debian multiarch library directories.
+
 ### Removed
 
 ## [v0.6.1](https://github.com/erickguan/ffi-icu/compare/v0.6.0...v0.6.1)
