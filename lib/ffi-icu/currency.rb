@@ -59,7 +59,7 @@ module ICU
 
     # Narrow (shortest unambiguous) symbol. Requires ICU >= 61.
     def narrow_symbol(locale)
-      raise(Error, 'narrow_symbol requires ICU >= 61') if Lib.version.to_a.first < 61
+      raise(RuntimeError, 'narrow_symbol requires ICU >= 61') if Lib.version.to_a.first < 61
 
       get_name(locale, :narrow_symbol_name)
     end
@@ -72,7 +72,7 @@ module ICU
     # Plural form of the currency name.
     # plural_count: "zero", "one", "two", "few", "many", "other"
     def plural_name(locale, plural_count = 'other')
-      raise(Error, 'plural_name requires ICU >= 4.2') unless Lib.respond_to?(:ucurr_getPluralName)
+      raise(RuntimeError, 'plural_name requires ICU >= 4.2') unless Lib.respond_to?(:ucurr_getPluralName)
 
       is_choice = FFI::MemoryPointer.new(:uint8)
       len       = FFI::MemoryPointer.new(:int32_t)
@@ -95,7 +95,7 @@ module ICU
 
     # ISO 4217 numeric code, e.g. 840 for USD. Requires ICU >= 49.
     def numeric_code
-      raise(Error, 'numeric_code requires ICU >= 49') unless Lib.respond_to?(:ucurr_getNumericCode)
+      raise(RuntimeError, 'numeric_code requires ICU >= 49') unless Lib.respond_to?(:ucurr_getNumericCode)
 
       Lib.ucurr_getNumericCode(currency_uchar)
     end

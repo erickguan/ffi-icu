@@ -60,7 +60,7 @@ module ICU
       it 'raises on old ICU' do
         skip('Only tests the error path on ICU < 61') if Lib.version.to_a.first >= 61
 
-        expect { described_class.new('USD').narrow_symbol('en_US') }.to raise_error(ICU::Error, /ICU >= 61/)
+        expect { described_class.new('USD').narrow_symbol('en_US') }.to raise_error(RuntimeError, /ICU >= 61/)
       end
     end
 
