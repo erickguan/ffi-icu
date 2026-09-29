@@ -3,10 +3,13 @@
 ### Added
 
 - Add `ICU::Currency` API.
+- Add the `:dialect_names` locale display context.
 
 ### Changed
 
 ### Fixed
+
+- Prefer native-architecture Debian multiarch library directories.
 
 ### Removed
 

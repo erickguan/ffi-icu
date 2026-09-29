@@ -45,6 +45,7 @@ module ICU
     attr_reader :id
 
     DISPLAY_CONTEXT = {
+      dialect_names: 1, # UDISPCTX_DIALECT_NAMES = (UDISPCTX_TYPE_DIALECT_HANDLING<<8) + 1
       length_full: 512, # UDISPCTX_LENGTH_FULL  = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 0
       length_short: 513 # UDISPCTX_LENGTH_SHORT = (UDISPCTX_TYPE_DISPLAY_LENGTH<<8) + 1
     }.freeze
