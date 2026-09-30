@@ -13,6 +13,13 @@ module ICU
         expect(normalizer.normalize('Henry IV').unpack('U*')).to(eq([72, 101, 110, 114, 121, 32, 73, 86]))
         expect(normalizer.normalize('Henry Ⅳ').unpack('U*')).to(eq([72, 101, 110, 114, 121, 32, 8547]))
       end
+
+      it 'handles supplementary characters, empty input, and expanded output' do
+        expect(normalizer.normalize('😀')).to(eq('😀'))
+        expect(normalizer.normalize('')).to(eq(''))
+        expect(normalizer.normalize('Å')).to(eq("A\u030A"))
+        expect(normalizer.normalize('Å')).not_to(include("\0"))
+      end
     end
 
     describe 'NFC: nfc compose' do
@@ -27,6 +34,19 @@ module ICU
         expect(normalizer.normalize('Äﬃn').unpack('U*')).to(eq([196, 64_259, 110]))
         expect(normalizer.normalize('Henry IV').unpack('U*')).to(eq([72, 101, 110, 114, 121, 32, 73, 86]))
         expect(normalizer.normalize('Henry Ⅳ').unpack('U*')).to(eq([72, 101, 110, 114, 121, 32, 8547]))
+      end
+
+      it 'composes combining marks without a trailing NUL' do
+        result = normalizer.normalize("A\u030A")
+
+        expect(result).to(eq('Å'))
+        expect(result).not_to(include("\0"))
+      end
+
+      it 'checks normalization predicates for supplementary characters' do
+        expect(normalizer.normalized?('😀')).to(be(true))
+        expect(normalizer.is_normalized?('😀')).to(be(true))
+        expect(normalizer.normailzed?('😀')).to(be(true))
       end
     end
 

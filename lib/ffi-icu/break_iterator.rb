@@ -20,16 +20,20 @@ module ICU
     end
 
     def text=(str)
-      @text = str
+      text_pointer = UCharPointer.from_string(str)
 
       Lib.check_error do |err|
-        Lib.ubrk_setText(@iterator, UCharPointer.from_string(str), str.size, err)
+        Lib.ubrk_setText(@iterator, text_pointer, text_pointer.length_in_uchars, err)
       end
+
+      @text = str
+      @text_pointer = text_pointer
     end
 
     def each
       return to_enum(:each) unless block_given?
 
+      # Positional methods expose ICU UTF-16 code-unit offsets.
       int = first
 
       while int != DONE
@@ -43,17 +47,32 @@ module ICU
     def each_substring
       return to_enum(:each_substring) unless block_given?
 
-      # each_char needed for 1.8, where String#[] works on bytes, not characters
       chars = text.each_char.to_a
-      low   = first
+      utf16_to_ruby = ruby_offsets_for(chars)
+
+      low = utf16_to_ruby[first]
 
       while (high = self.next) != DONE
+        high = utf16_to_ruby[high]
         yield(chars[low...high].join)
         low = high
       end
 
       self
     end
+
+    def ruby_offsets_for(chars)
+      offsets = [0]
+      utf16_offset = 0
+
+      chars.each_with_index do |char, ruby_index|
+        utf16_offset += char.ord > 0xFFFF ? 2 : 1
+        offsets[utf16_offset] = ruby_index + 1
+      end
+
+      offsets
+    end
+    private :ruby_offsets_for
 
     def substrings
       each_substring.to_a
@@ -64,7 +83,7 @@ module ICU
     end
 
     def previous
-      Lib.ubrk_next(@iterator)
+      Lib.ubrk_previous(@iterator)
     end
 
     def first

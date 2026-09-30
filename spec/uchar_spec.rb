@@ -24,9 +24,24 @@ module ICU
       expect(ptr.read_array_of_uint16(7)).to(eq([0x00e9, 0x6771, 0x4eac, 0xd83d, 0xde00, 0xd83d, 0xde80]))
     end
 
+    it 'reports the UTF-16 code-unit length' do
+      expect(described_class.from_string('abc').length_in_uchars).to(eq(3))
+      expect(described_class.from_string('😀').length_in_uchars).to(eq(2))
+      expect(described_class.from_string('a😀b').length_in_uchars).to(eq(4))
+    end
+
     it 'takes an optional capacity' do
       ptr = described_class.from_string('abc', 5)
       expect(ptr.size).to(eq(10))
+    end
+
+    it 'resizes using UChar capacity' do
+      ptr = described_class.from_string('abc')
+
+      resized = ptr.resized_to(4)
+
+      expect(resized.size).to(eq(8))
+      expect(resized.string(3)).to(eq('abc'))
     end
 
     describe 'converting to string' do

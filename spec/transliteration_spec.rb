@@ -16,6 +16,24 @@ module ICU
         expect(tl.transliterate(input)).to(eq(output))
       end
     end
+
+    it 'handles supplementary characters' do
+      expect(transliterator_for('Lower').transliterate('😀')).to(eq('😀'))
+    end
+
+    it 'applies custom rules containing supplementary characters' do
+      transliterator = transliterator_for('Any-Latin', '😀 > X;')
+
+      expect(transliterator.transliterate('😀')).to(eq('X'))
+    end
+
+    it 'reports malformed custom rules' do
+      error = nil
+      expect { transliterator_for('NFD', '[') }.
+        to(raise_error(ICU::Error) { |raised_error| error = raised_error })
+      expect(error.message).to(match(/\AU_[A-Z_]+/))
+      expect(error.message).to(include('line:', 'offset:'))
+    end
   end
 
   describe Transliteration do

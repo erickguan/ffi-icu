@@ -11,39 +11,38 @@ module ICU
     end
 
     def normalize(input)
-      input_length  = input.size
-      in_ptr        = UCharPointer.from_string(input)
+      input_pointer = UCharPointer.from_string(input)
+      input_length  = input_pointer.length_in_uchars
       needed_length = capacity = 0
       out_ptr       = UCharPointer.new(needed_length)
 
       retried = false
       begin
         Lib.check_error do |error|
-          needed_length = Lib.unorm2_normalize(@instance, in_ptr, input_length, out_ptr, capacity, error)
+          needed_length = Lib.unorm2_normalize(@instance, input_pointer, input_length, out_ptr, capacity, error)
         end
       rescue BufferOverflowError
         raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
-        capacity = needed_length
-        out_ptr = out_ptr.resized_to(needed_length)
+        capacity = needed_length + 1
+        out_ptr = out_ptr.resized_to(capacity)
 
         retried = true
         retry
       end
 
-      out_ptr.string
+      out_ptr.string(needed_length)
     end
 
-    def normailzed?(input)
-      input_length  = input.size
-      in_ptr        = UCharPointer.from_string(input)
+    def normalized?(input)
+      input_pointer = UCharPointer.from_string(input)
+      input_length  = input_pointer.length_in_uchars
 
       Lib.check_error do |error|
-        Lib.unorm2_isNormalized(@instance, in_ptr, input_length, error)
+        Lib.unorm2_isNormalized(@instance, input_pointer, input_length, error)
       end
-
-      result
     end
+    alias normailzed? normalized?
 
     def is_normalized?(input) # rubocop:disable Naming/PredicatePrefix
       Warning.warn('is_normalized? is deprecated and will be removed after v0.7. Please use normalized? instead.')
