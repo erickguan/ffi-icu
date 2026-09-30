@@ -357,10 +357,12 @@ module ICU
     #
 
     class UParseError < FFI::Struct
+      U_PARSE_CONTEXT_LEN = 16
+
       layout :line, :int32_t,
              :offset,       :int32_t,
-             :pre_context,  [:uint16, 16],
-             :post_context, [:uint16, 16]
+             :pre_context,  [:uint16, U_PARSE_CONTEXT_LEN],
+             :post_context, [:uint16, U_PARSE_CONTEXT_LEN]
 
       def to_s
         format('#<%<class>s:%<hash>x line: %<line>d offset: %<offset>d',
