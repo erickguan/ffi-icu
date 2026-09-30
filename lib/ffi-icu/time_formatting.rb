@@ -92,7 +92,7 @@ module ICU
 
         if time_zone_str
           time_zone = UCharPointer.from_string(time_zone_str)
-          tz_len = time_zone_str.size
+          tz_len = time_zone.length_in_uchars
         else
           Lib.check_error do |error|
             i_len = 150
@@ -143,7 +143,7 @@ module ICU
 
       def parse(str)
         str_u = UCharPointer.from_string(str)
-        str_l = str.size
+        str_l = str_u.length_in_uchars
         Lib.check_error do |error|
           ret = Lib.udat_parse(@f, str_u, str_l, nil, error)
           Time.at(ret / 1000.0)
@@ -229,7 +229,7 @@ module ICU
 
       def skeleton_format(skeleton_pattern_str, locale)
         skeleton_pattern_ptr = UCharPointer.from_string(skeleton_pattern_str)
-        skeleton_pattern_len = skeleton_pattern_str.size
+        skeleton_pattern_len = skeleton_pattern_ptr.length_in_uchars
 
         needed_length = 0
         pattern_ptr = UCharPointer.new(needed_length)
@@ -346,7 +346,7 @@ module ICU
 
       def set_date_format_impl(localized, pattern_str)
         pattern     = UCharPointer.from_string(pattern_str)
-        pattern_len = pattern_str.size
+        pattern_len = pattern.length_in_uchars
 
         Lib.check_error do |_error|
           Lib.udat_applyPattern(@f, localized, pattern, pattern_len)

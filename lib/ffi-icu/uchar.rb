@@ -28,7 +28,7 @@ module ICU
     end
 
     def resized_to(new_size)
-      raise('new_size must be larger than current size') if new_size < size
+      raise('new_size must be larger than current size') if new_size < length_in_uchars
 
       resized = self.class.new(new_size)
       resized.put_bytes(0, get_bytes(0, size))
