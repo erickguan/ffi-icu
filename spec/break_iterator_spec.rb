@@ -28,11 +28,24 @@ module ICU
     it 'returns the substrings of a non-ASCII string' do
       iterator = described_class.new(:word, 'th_TH')
       iterator.text = 'รู้อะไรไม่สู้รู้วิชา รู้รักษาตัวรอดเป็นยอดดี'
-
       expect(iterator.substrings).to(eq(
                                        ['รู้', 'อะไร', 'ไม่สู้', 'รู้', 'วิชา', ' ', 'รู้', 'รักษา', 'ตัว', 'รอด',
                                         'เป็น', 'ยอดดี']
                                      ))
+    end
+
+    it 'returns correct substrings when the text contains an emoji' do
+      iterator = described_class.new(:word, 'en_US')
+      iterator.text = 'a😀b c'
+      GC.start
+      Array.new(1000) { 'temporary allocation' }
+
+      expect(iterator.to_a).to(eq([0, 1, 3, 4, 5, 6]))
+      expect(iterator.substrings).to(eq(['a', '😀', 'b', ' ', 'c']))
+      expect(iterator.following(1)).to(eq(3))
+      expect(iterator.preceding(3)).to(eq(1))
+      expect(iterator).to(be_boundary(3))
+      expect(iterator).not_to(be_boundary(2))
     end
 
     it 'finds all word boundaries in a non-ASCII string' do
@@ -54,6 +67,7 @@ module ICU
       expect(iterator.first).to(eq(0))
       iterator.next
       expect(iterator.current).to(eq(5))
+      expect(iterator.previous).to(eq(0))
       expect(iterator.last).to(eq(27))
     end
 

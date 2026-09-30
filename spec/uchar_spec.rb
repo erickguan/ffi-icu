@@ -11,9 +11,30 @@ module ICU
       expect(ptr.read_array_of_uint16(3)).to(eq([0x61, 0x62, 0x63]))
     end
 
+    it 'stores UTF-16 code units for BMP and supplementary characters' do
+      ptr = described_class.from_string('é東京😀🚀')
+
+      expect(ptr.read_array_of_uint16(7)).to(eq([0x00e9, 0x6771, 0x4eac, 0xd83d, 0xde00, 0xd83d, 0xde80]))
+    end
+
+    it 'reports the UTF-16 code-unit length' do
+      expect(described_class.from_string('abc').length_in_uchars).to(eq(3))
+      expect(described_class.from_string('😀').length_in_uchars).to(eq(2))
+      expect(described_class.from_string('a😀b').length_in_uchars).to(eq(4))
+    end
+
     it 'takes an optional capacity' do
       ptr = described_class.from_string('abc', 5)
       expect(ptr.size).to(eq(10))
+    end
+
+    it 'resizes using UChar capacity' do
+      ptr = described_class.from_string('abc')
+
+      resized = ptr.resized_to(4)
+
+      expect(resized.size).to(eq(8))
+      expect(resized.string(3)).to(eq('abc'))
     end
 
     describe 'converting to string' do
@@ -26,6 +47,16 @@ module ICU
       it 'returns strings of the specified length' do
         expect(ptr.string(0)).to(eq(''))
         expect(ptr.string(2)).to(eq("x\0"))
+      end
+
+      it 'round-trips supplementary characters' do
+        value = '😀🚀'
+
+        expect(described_class.from_string(value).string).to(eq(value))
+      end
+
+      it 'round-trips an empty string' do
+        expect(described_class.from_string('').string).to(eq(''))
       end
     end
   end

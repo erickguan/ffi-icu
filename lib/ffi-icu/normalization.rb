@@ -3,28 +3,28 @@
 module ICU
   module Normalization
     def self.normalize(input, mode = :default)
-      input_length  = input.size
       needed_length = out_length = options = 0
-      in_ptr        = UCharPointer.from_string(input)
+      input_pointer = UCharPointer.from_string(input)
+      input_length  = input_pointer.length_in_uchars
       out_ptr       = UCharPointer.new(out_length)
 
       retried = false
 
       begin
         Lib.check_error do |error|
-          needed_length = Lib.unorm_normalize(in_ptr, input_length, mode, options, out_ptr, out_length, error)
+          needed_length = Lib.unorm_normalize(input_pointer, input_length, mode, options, out_ptr, out_length, error)
         end
       rescue BufferOverflowError
         raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
-        out_ptr       = out_ptr.resized_to(needed_length)
         out_length    = needed_length + 1
+        out_ptr       = out_ptr.resized_to(out_length)
 
         retried = true
         retry
       end
 
-      out_ptr.string
+      out_ptr.string(needed_length)
     end
   end
 end

@@ -72,21 +72,15 @@ module ICU
       end
 
       def compare(a, b)
-        Lib.ucol_strcoll(
-          @c,
-          UCharPointer.from_string(a), a.size,
-          UCharPointer.from_string(b), b.size
-        )
+        Lib.ucol_strcoll(@c, *collation_arguments(a, b))
       end
 
       def greater?(a, b)
-        Lib.ucol_greater(@c, UCharPointer.from_string(a), a.size,
-                         UCharPointer.from_string(b), b.size)
+        Lib.ucol_greater(@c, *collation_arguments(a, b))
       end
 
       def greater_or_equal?(a, b)
-        Lib.ucol_greaterOrEqual(@c, UCharPointer.from_string(a), a.size,
-                                UCharPointer.from_string(b), b.size)
+        Lib.ucol_greaterOrEqual(@c, *collation_arguments(a, b))
       end
 
       def equal?(*args)
@@ -96,8 +90,7 @@ module ICU
 
         a, b = args
 
-        Lib.ucol_equal(@c, UCharPointer.from_string(a), a.size,
-                       UCharPointer.from_string(b), b.size)
+        Lib.ucol_equal(@c, *collation_arguments(a, b))
       end
 
       def collate(sortable)
@@ -110,15 +103,16 @@ module ICU
         @rules ||= begin
           length = FFI::MemoryPointer.new(:int)
           ptr = Lib.ucol_getRules(@c, length)
-          ptr.read_array_of_uint16(length.read_int).pack('U*')
+          ptr.read_array_of_uint16(length.read_int).
+            pack('v*').force_encoding('UTF-16LE').encode('UTF-8')
         end
       end
 
       def collation_key(string)
         ptr = UCharPointer.from_string(string)
-        size = Lib.ucol_getSortKey(@c, ptr, string.size, nil, 0)
+        size = Lib.ucol_getSortKey(@c, ptr, ptr.length_in_uchars, nil, 0)
         buffer = FFI::MemoryPointer.new(:char, size)
-        Lib.ucol_getSortKey(@c, ptr, string.size, buffer, size)
+        Lib.ucol_getSortKey(@c, ptr, ptr.length_in_uchars, buffer, size)
         buffer.read_bytes(size - 1)
       end
 
@@ -133,6 +127,17 @@ module ICU
           Lib.ucol_setAttribute(@c, ATTRIBUTES[attribute], ATTRIBUTE_VALUES[value], error)
         end
       end
+
+      def collation_arguments(left, right)
+        left_text = UCharPointer.from_string(left)
+        right_text = UCharPointer.from_string(right)
+
+        [
+          left_text, left_text.length_in_uchars,
+          right_text, right_text.length_in_uchars
+        ]
+      end
+      private :collation_arguments
 
       # create friendly named methods for setting attributes
       ATTRIBUTES.each_key do |attribute|
