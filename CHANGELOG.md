@@ -4,6 +4,7 @@
 
 - Add `ICU::Currency` API.
 - Add the `:dialect_names` locale display context.
+- Add ICU MessageFormat validation and formatting for numbered arguments.
 
 ### Changed
 
