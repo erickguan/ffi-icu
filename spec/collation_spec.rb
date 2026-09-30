@@ -50,14 +50,42 @@ module ICU
         expect(collator.equal?('a', 'b')).to(be_falsy)
       end
 
+      it 'compares strings containing supplementary characters' do
+        comparison = collator.compare('a😀', 'a😀b')
+
+        expect(comparison).not_to(eq(0))
+        expect(collator.greater?('a😀b', 'a😀')).to(eq(comparison.negative?))
+        expect(collator.greater_or_equal?('a😀', 'a😀')).to(be(true))
+      end
+
+      it 'checks equality for strings containing supplementary characters' do
+        expect(collator.equal?('a😀', 'a😀')).to(be(true))
+        expect(collator.equal?('a😀', 'a😀b')).to(be(false))
+      end
+
       it 'returns rules' do
         expect(collator.rules).not_to(be_empty)
         # ö sorts before Ö
         expect(collator.rules).to(include('ö<<<Ö'))
       end
 
+      it 'decodes supplementary characters in rules' do
+        rules_pointer = FFI::MemoryPointer.new(:uint16, 2)
+        rules_pointer.write_array_of_uint16([0xD83D, 0xDE00])
+        allow(ICU::Lib).to receive(:ucol_getRules) do |_collator, length|
+          length.write_int(2)
+          rules_pointer
+        end
+
+        expect(collator.rules).to(eq('😀'))
+      end
+
       it 'returns usable collation keys' do
         collator.collation_key('abc').should(be < collator.collation_key('xyz'))
+      end
+
+      it 'returns collation keys for supplementary characters' do
+        expect(collator.collation_key('a😀')).not_to(eq(collator.collation_key('a😀b')))
       end
 
       context 'attributes' do

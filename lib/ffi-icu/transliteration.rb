@@ -26,15 +26,17 @@ module ICU
         rules_length = 0
 
         if rules
-          rules_length = rules.size + 1
           rules = UCharPointer.from_string(rules)
+          rules_length = rules.length_in_uchars
         end
+
+        id = UCharPointer.from_string(id)
 
         parse_error = Lib::UParseError.new
         begin
           Lib.check_error do |status|
-            ptr = Lib.utrans_openU(UCharPointer.from_string(id), id.size, direction, rules, rules_length,
-                                   @parse_error, status)
+            ptr = Lib.utrans_openU(id, id.length_in_uchars, direction, rules, rules_length,
+                                   parse_error, status)
             @tr = FFI::AutoPointer.new(ptr, Lib.method(:utrans_close))
           end
         rescue ICU::Error => e
@@ -45,9 +47,11 @@ module ICU
       def transliterate(from)
         # this is a bit unpleasant
 
-        unicode_size = from.unpack('U*').size
-        capacity     = unicode_size + 1
-        buf          = UCharPointer.from_string(from, capacity)
+        input = UCharPointer.from_string(from)
+        input_length_in_uchars = input.length_in_uchars
+        capacity               = input_length_in_uchars + 1
+        buf = UCharPointer.new(capacity)
+        buf.put_bytes(0, input.get_bytes(0, input.size))
         limit        = FFI::MemoryPointer.new(:int32)
         text_length  = FFI::MemoryPointer.new(:int32)
 
@@ -56,7 +60,7 @@ module ICU
         begin
           # resets to original size on retry
           [limit, text_length].each do |ptr|
-            ptr.put_int32(0, unicode_size)
+            ptr.put_int32(0, input_length_in_uchars)
           end
 
           Lib.check_error do |error|

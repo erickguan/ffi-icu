@@ -209,15 +209,16 @@ module ICU
 
     typedef VersionInfo, :version
 
+    attach_function :u_getVersion,      "u_getVersion#{suffix}",      [:version], :void
+    attach_function :u_versionToString, "u_versionToString#{suffix}", [:version, :pointer], :void
+    version ||= self.version.to_s
+
     attach_function :u_errorName,     "u_errorName#{suffix}",     [:int], :string
     attach_function :uenum_count,     "uenum_count#{suffix}",     [:pointer, :pointer], :int
     attach_function :uenum_close,     "uenum_close#{suffix}",     [:pointer], :void
     attach_function :uenum_next,      "uenum_next#{suffix}",      [:pointer, :pointer, :pointer], :string
     attach_function :u_charsToUChars, "u_charsToUChars#{suffix}", [:string, :pointer, :int32_t], :void
     attach_function :u_UCharsToChars, "u_UCharsToChars#{suffix}", [:pointer, :string, :int32_t], :void
-
-    attach_function :u_getVersion,      "u_getVersion#{suffix}",      [:version], :void
-    attach_function :u_versionToString, "u_versionToString#{suffix}", [:version, :pointer], :void
 
     #
     # Locale

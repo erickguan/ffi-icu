@@ -142,6 +142,28 @@ module ICU
         end
       end
 
+      it 'parses a date pattern containing a supplementary character' do
+        formatter = described_class.create(locale: 'en_US', zone: 'UTC', date: :pattern, time: :pattern)
+        formatter.set_date_format(false, "'😀' yyyy-MM-dd")
+
+        expect(formatter.parse('😀 2020-01-02')).to(eq(Time.utc(2020, 1, 2)))
+      end
+
+      it 'applies a date pattern containing a supplementary character' do
+        formatter = described_class.create(locale: 'en_US', zone: 'UTC', date: :pattern, time: :pattern)
+        formatter.set_date_format(false, "'😀' yyyy-MM-dd")
+
+        expect(formatter.format(Time.utc(2020, 1, 2))).to(eq('😀 2020-01-02'))
+      end
+
+      it 'applies a supplementary-character pattern with a valid time-zone identifier' do
+        formatter = described_class.create(locale: 'en_US', zone: 'America/Los_Angeles', date: :pattern,
+                                           time: :pattern)
+        formatter.set_date_format(false, "'😀' VV")
+
+        expect(formatter.format(Time.utc(2020, 1, 2))).to(eq('😀 America/Los_Angeles'))
+      end
+
       context 'hour cycle' do
         # en_AU normally is 12 hours, fr_FR is normally 23 hours
         ['en_AU', 'fr_FR', 'zh_CN'].each do |locale_name|
