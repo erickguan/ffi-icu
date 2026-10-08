@@ -11,6 +11,13 @@ module ICU
       expect(ptr.read_array_of_uint16(3)).to(eq([0x61, 0x62, 0x63]))
     end
 
+    it 'transcodes strings with a non-UTF-8 encoding' do
+      value = 'café'.encode(Encoding::ISO_8859_1)
+      ptr = described_class.from_string(value)
+
+      expect(ptr.utf8_string).to(eq('café'))
+    end
+
     it 'encodes non-BMP characters as UTF-16 code units' do
       ptr = described_class.from_utf8('😀')
 

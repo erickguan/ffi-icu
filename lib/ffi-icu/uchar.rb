@@ -6,21 +6,7 @@ module ICU
     TYPE_SIZE  = FFI.type_size(UCHAR_TYPE)
 
     def self.from_string(str, capacity = nil)
-      str   = str.encode('UTF-8') if str.respond_to?(:encode)
-      chars = str.unpack('U*')
-      chars = str.encode('UTF-16LE').unpack('v*') if chars.any? { |char| char > 0xFFFF }
-
-      if capacity
-        raise(ArgumentError, "capacity is too small for string of #{chars.size} UChars") if capacity < chars.size
-
-        ptr = new(capacity)
-      else
-        ptr = new(chars.size)
-      end
-
-      ptr.write_array_of_uint16(chars)
-
-      ptr
+      from_utf8(str, capacity)
     end
 
     def self.from_utf8(str, capacity = nil)
