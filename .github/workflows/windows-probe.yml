@@ -54,3 +54,46 @@ jobs:
 
       - name: Run full spec suite
         run: bundle exec rake spec
+
+  native-stress:
+    name: Native stress (Ruby ${{ matrix.ruby }}, ${{ matrix.ffi }})
+    runs-on: windows-2022
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.4', '4.0']
+        ffi: [precompiled, source]
+    env:
+      BUNDLE_FORCE_RUBY_PLATFORM: ${{ matrix.ffi == 'source' && 'true' || 'false' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+          cache-version: native-${{ matrix.ffi }}
+
+      - name: Install official ICU beside ruby.exe
+        shell: pwsh
+        run: |
+          $version = '78.3'
+          $zipName = "icu4c-$version-Win64-MSVC2022.zip"
+          $url = "https://github.com/unicode-org/icu/releases/download/release-$version/$zipName"
+          Invoke-WebRequest -Uri $url -OutFile $zipName
+          Expand-Archive -Path $zipName -DestinationPath C:\icu -Force
+          $rubyBin = (Get-Command ruby).Source | Split-Path
+          Copy-Item C:\icu\bin64\icu*.dll -Destination $rubyBin -Force
+
+      - name: Repeat isolated native probes
+        run: bundle exec ruby bin/windows-native-probe.rb driver
+
+      - name: Preserve per-process crash logs
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-probe-${{ matrix.ruby }}-${{ matrix.ffi }}
+          path: tmp/windows-native-probe/
