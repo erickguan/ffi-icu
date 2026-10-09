@@ -264,7 +264,7 @@ module ICU
 
       def number_formatter(skeleton)
         @number_formatters[skeleton] ||= begin
-          skeleton_uchar = UCharPointer.from_string(skeleton)
+          skeleton_uchar = UCharPointer.from_utf8(skeleton)
           FFI::AutoPointer.new(
             Lib.check_error do |error|
               Lib.unumf_openForSkeletonAndLocale(skeleton_uchar, skeleton_uchar.length_in_uchars,
@@ -291,7 +291,7 @@ module ICU
       end
 
       def format_list(values)
-        value_uchars = values.map(&UCharPointer.method(:from_string))
+        value_uchars = values.map(&UCharPointer.method(:from_utf8))
         value_uchars_array = FFI::MemoryPointer.new(:pointer, value_uchars.size)
         value_uchars_array.put_array_of_pointer(0, value_uchars)
         value_lengths_array = FFI::MemoryPointer.new(:int32_t, value_uchars.size)

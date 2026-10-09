@@ -20,7 +20,7 @@ module ICU
     end
 
     def text=(str)
-      text_pointer = UCharPointer.from_string(str)
+      text_pointer = UCharPointer.from_utf8(str)
 
       Lib.check_error do |err|
         Lib.ubrk_setText(@iterator, text_pointer, text_pointer.length_in_uchars, err)
@@ -66,7 +66,7 @@ module ICU
       utf16_offset = 0
 
       chars.each_with_index do |char, ruby_index|
-        utf16_offset += char.ord > 0xFFFF ? 2 : 1
+        utf16_offset += char.encode(Encoding::UTF_16LE).bytesize / UCharPointer::TYPE_SIZE
         offsets[utf16_offset] = ruby_index + 1
       end
 

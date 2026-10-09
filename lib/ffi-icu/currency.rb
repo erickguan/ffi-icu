@@ -13,7 +13,7 @@ module ICU
         length = Lib.check_error do |status|
           Lib.ucurr_forLocale(locale.to_s, ptr, 4, status)
         end
-        ptr.string(length)
+        ptr.utf8_string(length)
       end
 
       # Returns an array of ISO 4217 currency code strings.
@@ -107,7 +107,7 @@ module ICU
     private
 
     def currency_uchar
-      UCharPointer.from_string(@code, 4)
+      UCharPointer.from_utf8(@code, 4)
     end
 
     def get_name(locale, style)
