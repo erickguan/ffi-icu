@@ -43,11 +43,14 @@ jobs:
       - name: Report ICU selected by the loader
         shell: pwsh
         run: |
-          bundle exec ruby -Ilib -rffi-icu -e '
-            puts "[windows-matrix] Ruby=#{RUBY_DESCRIPTION}"
-            puts "[windows-matrix] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
-            puts ICU::Lib.ffi_libraries.map { |lib| "[windows-matrix] Loaded=#{lib.name}" }
-          '
+          @'
+          $stdout.sync = true
+          puts "[windows-matrix] Ruby=#{RUBY_DESCRIPTION}"
+          require 'ffi-icu'
+          puts "[windows-matrix] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+          puts ICU::Lib.ffi_libraries.map { |lib| "[windows-matrix] Loaded=#{lib.name}" }
+          '@ | Set-Content -Path "$env:RUNNER_TEMP\icu-probe.rb" -Encoding utf8
+          bundle exec ruby -Ilib "$env:RUNNER_TEMP\icu-probe.rb"
 
       - name: Run full spec suite
         run: bundle exec rake spec
