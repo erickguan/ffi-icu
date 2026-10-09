@@ -9,8 +9,8 @@ if mode == 'driver'
   root = File.expand_path('..', __dir__)
   logs = File.join(root, 'tmp', 'windows-native-probe')
   FileUtils.mkdir_p(logs)
-  cases = ['ruby-only', 'ffi-only', 'icu-minimal', 'bootstrap-load', 'bootstrap-suffix',
-           'bootstrap-mapped', 'bootstrap-attach', 'full-trace', 'full-trace-no-gc']
+  cases = ['load-none', 'load-uc', 'load-in', 'load-both', 'load-both-retained',
+           'load-both-version', 'fiddle-both', 'prefix-only', 'bootstrap-load', 'full-trace']
   failed = false
   cases.each do |probe|
     failures = 0
@@ -46,7 +46,39 @@ end
 require 'ffi'
 puts "[native-probe] FFI=#{Gem.loaded_specs.fetch('ffi').full_name}"
 
-if mode == 'ffi-only'
+if mode.start_with?('load-') || mode == 'fiddle-both'
+  directory = File.dirname(RbConfig.ruby)
+  libraries = case mode
+              when 'load-none' then []
+              when 'load-uc' then ['icuuc78.dll']
+              when 'load-in' then ['icuin78.dll']
+              else ['icuuc78.dll', 'icuin78.dll']
+              end
+  mod = Module.new { extend FFI::Library }
+  if mode == 'fiddle-both'
+    require 'fiddle'
+    handles = libraries.map { |name| Fiddle.dlopen(File.join(directory, name)) }
+  elsif !libraries.empty?
+    handles = mod.ffi_lib(*libraries.map { |name| File.join(directory, name) })
+  end
+  if mode == 'load-both-retained'
+    $probe_handles = handles
+  end
+  if mode == 'load-both-version'
+    version = nil
+    handles.find do |library|
+      match = library.name.match(/(\d\d)\.dll/)
+      version = match[1] if match
+    end
+    puts "[native-probe] version=#{version}"
+  end
+  puts '[native-probe] DLL loading complete; before enum exercise'
+  100.times do
+    mod.enum :layout_type, [:ltr, :rtl, :ttb, :btt, :unknown]
+    GC.start
+  end
+  puts "[native-probe] complete case=#{mode}"
+elsif mode == 'ffi-only'
   mod = Module.new do
     extend FFI::Library
     ffi_lib 'ucrtbase'
@@ -73,7 +105,7 @@ elsif mode == 'icu-minimal'
     raise 'error name mismatch' unless mod.u_errorName(0) == 'U_ZERO_ERROR'
     GC.start
   end
-elsif mode.start_with?('bootstrap')
+elsif mode.start_with?('bootstrap') || mode == 'prefix-only'
   source = File.read(File.join(__dir__, '..', 'lib', 'ffi-icu', 'lib.rb'))
   prefix = source.split('    version = load_icu', 2).first
   module ICU
@@ -83,9 +115,9 @@ elsif mode.start_with?('bootstrap')
   end
   eval(prefix + "\n  end\nend\n", TOPLEVEL_BINDING, 'lib/ffi-icu/lib.rb')
   puts '[native-probe] before load_icu'
-  version = ICU::Lib.load_icu
+  version = mode == 'prefix-only' ? '78' : ICU::Lib.load_icu
   puts "[native-probe] after load_icu version=#{version}"
-  unless mode == 'bootstrap-load'
+  unless ['bootstrap-load', 'prefix-only'].include?(mode)
     puts '[native-probe] before figure_suffix'
     suffix = ICU::Lib.figure_suffix(version)
     puts "[native-probe] after figure_suffix suffix=#{suffix}"
