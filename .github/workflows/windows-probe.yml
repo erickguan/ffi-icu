@@ -1,0 +1,51 @@
+name: Windows MSYS2 ICU probe
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows MSYS2 probe (Ruby ${{ matrix.ruby }})
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ['3.4', '4.0']
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Install ICU from RubyInstaller MSYS2 UCRT
+        shell: pwsh
+        run: ridk exec pacman -S --needed --noconfirm mingw-w64-ucrt-x86_64-icu
+
+      - name: Report MSYS2 ICU candidates and test loading
+        shell: pwsh
+        run: |
+          ridk exec ruby -e '
+            puts "[windows-msys2] Ruby=#{RUBY_DESCRIPTION}"
+            patterns = ENV.fetch("PATH").split(";").map do |path|
+              File.expand_path(File.join(path, "{lib,}icu{uc,in,dt}??.dll"))
+            end
+            puts Dir.glob(patterns).map { |path| "[windows-msys2] Candidate=#{path}" }
+          '
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ridk exec bundle exec ruby -Ilib -rffi-icu -e '
+            puts "[windows-msys2] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+            puts ICU::Lib.ffi_libraries.map { |lib| "[windows-msys2] Loaded=#{lib.name}" }
+          '
+
+      - name: Run full spec suite in the MSYS2 environment
+        if: ${{ !cancelled() }}
+        run: ridk exec bundle exec rake spec
