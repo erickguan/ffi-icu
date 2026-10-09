@@ -9,12 +9,14 @@ if mode == 'driver'
   root = File.expand_path('..', __dir__)
   logs = File.join(root, 'tmp', 'windows-native-probe')
   FileUtils.mkdir_p(logs)
-  cases = ['discover-paths', 'discover-expand', 'discover-glob-one', 'discover-glob-array',
-           'discover-brace-one', 'discover-brace-array', 'discover-find-both', 'bootstrap-load', 'full-trace']
+  cases = ['pure-glob-array', 'pure-glob-each', 'pure-glob-filtered', 'full-discovery-each',
+           'full-discovery-filtered', 'full-trace']
+  cases += ENV.fetch('PATH').split(File::PATH_SEPARATOR).each_index.map { |index| "pure-path-#{index}" }
   failed = false
   cases.each do |probe|
     failures = 0
-    30.times do |index|
+    repetitions = probe.start_with?('pure-path-') ? 3 : 30
+    repetitions.times do |index|
       output, status = Open3.capture2e(RbConfig.ruby, '-Ilib', __FILE__, probe, chdir: root)
       File.write(File.join(logs, "#{probe}-#{index + 1}.log"), output)
       failures += 1 unless status.success?
@@ -25,7 +27,7 @@ if mode == 'driver'
         puts output.lines.grep(/\[native-probe\]|\[BUG\]|Segmentation|LoadError|examples,|Failure\/Error/).last(18)
       end
     end
-    puts "[native-probe] RESULT case=#{probe} failures=#{failures}/30"
+    puts "[native-probe] RESULT case=#{probe} failures=#{failures}/#{repetitions}"
     failed ||= failures.positive?
   end
   exit(failed ? 1 : 0)
@@ -38,6 +40,27 @@ if mode == 'ruby-only'
     Array.new
     Hash.new
     Object.new
+    GC.start
+  end
+  puts "[native-probe] complete case=#{mode}"
+  exit
+end
+if mode.start_with?('pure-')
+  paths = ENV.fetch('PATH').split(File::PATH_SEPARATOR)
+  if mode.start_with?('pure-path-')
+    paths = [paths.fetch(mode.split('-').last.to_i)]
+    puts "[native-probe] directory=#{paths.first}"
+  end
+  patterns = paths.map { |path| File.expand_path(File.join(path, '{lib,}icuuc??.dll')) }
+  50.times do
+    if mode == 'pure-glob-filtered'
+      Dir.glob(patterns.select { |pattern| File.directory?(File.dirname(pattern)) })
+    elsif mode == 'pure-glob-each' || mode.start_with?('pure-path-')
+      patterns.each { |pattern| Dir.glob(pattern) }
+    else
+      Dir.glob(patterns)
+    end
+    Array.new(100) { Object.new }
     GC.start
   end
   puts "[native-probe] complete case=#{mode}"
@@ -163,6 +186,19 @@ elsif mode.start_with?('bootstrap') || mode == 'prefix-only'
   end
   puts "[native-probe] complete case=#{mode}"
 else
+  if mode.start_with?('full-discovery')
+    singleton = class << Dir; self; end
+    singleton.prepend(Module.new do
+      define_method(:glob) do |patterns, **options|
+        if patterns.is_a?(Array)
+          patterns = patterns.select { |pattern| File.directory?(File.dirname(pattern)) } if mode.end_with?('filtered')
+          mode.end_with?('each') ? patterns.flat_map { |pattern| super(pattern, **options) } : super(patterns, **options)
+        else
+          super(patterns, **options)
+        end
+      end
+    end)
+  end
   if mode.start_with?('full-trace')
     FFI::Library.prepend(Module.new do
       def attach_function(*args)
