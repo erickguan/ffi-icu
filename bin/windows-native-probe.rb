@@ -9,13 +9,12 @@ if mode == 'driver'
   root = File.expand_path('..', __dir__)
   logs = File.join(root, 'tmp', 'windows-native-probe')
   FileUtils.mkdir_p(logs)
-  cases = ['pure-glob-array', 'pure-glob-each', 'pure-glob-filtered', 'full-discovery-each',
-           'full-discovery-filtered', 'full-trace']
-  cases += ENV.fetch('PATH').split(File::PATH_SEPARATOR).each_index.map { |index| "pure-path-#{index}" }
+  cases = ['pure-glob-array', 'pure-glob-first', 'pure-entries', 'full-discovery-first',
+           'full-discovery-entries', 'suite-discovery-first', 'suite-discovery-entries', 'full-trace']
   failed = false
   cases.each do |probe|
     failures = 0
-    repetitions = probe.start_with?('pure-path-') ? 3 : 30
+    repetitions = 50
     repetitions.times do |index|
       output, status = Open3.capture2e(RbConfig.ruby, '-Ilib', __FILE__, probe, chdir: root)
       File.write(File.join(logs, "#{probe}-#{index + 1}.log"), output)
@@ -53,7 +52,19 @@ if mode.start_with?('pure-')
   end
   patterns = paths.map { |path| File.expand_path(File.join(path, '{lib,}icuuc??.dll')) }
   50.times do
-    if mode == 'pure-glob-filtered'
+    if mode == 'pure-glob-first'
+      patterns.each { |pattern| break unless Dir.glob(pattern).empty? }
+    elsif mode == 'pure-entries'
+      patterns.each do |pattern|
+        directory = File.dirname(pattern)
+        begin
+          names = Dir.children(directory)
+        rescue SystemCallError
+          next
+        end
+        break if names.any? { |name| File.fnmatch?(File.basename(pattern), name, File::FNM_EXTGLOB) }
+      end
+    elsif mode == 'pure-glob-filtered'
       Dir.glob(patterns.select { |pattern| File.directory?(File.dirname(pattern)) })
     elsif mode == 'pure-glob-each' || mode.start_with?('pure-path-')
       patterns.each { |pattern| Dir.glob(pattern) }
@@ -186,13 +197,33 @@ elsif mode.start_with?('bootstrap') || mode == 'prefix-only'
   end
   puts "[native-probe] complete case=#{mode}"
 else
-  if mode.start_with?('full-discovery')
+  if mode.include?('discovery')
     singleton = class << Dir; self; end
     singleton.prepend(Module.new do
       define_method(:glob) do |patterns, **options|
         if patterns.is_a?(Array)
           patterns = patterns.select { |pattern| File.directory?(File.dirname(pattern)) } if mode.end_with?('filtered')
-          mode.end_with?('each') ? patterns.flat_map { |pattern| super(pattern, **options) } : super(patterns, **options)
+          if mode.end_with?('first') || mode.end_with?('entries')
+            patterns.each do |pattern|
+              if mode.end_with?('entries')
+                directory = File.dirname(pattern)
+                begin
+                  names = Dir.children(directory)
+                rescue SystemCallError
+                  next
+                end
+                matches = names.select do |name|
+                  File.fnmatch?(File.basename(pattern), name, File::FNM_EXTGLOB)
+                end.sort.map { |name| File.join(directory, name) }
+              else
+                matches = super(pattern, **options)
+              end
+              return matches unless matches.empty?
+            end
+            []
+          else
+            mode.end_with?('each') ? patterns.flat_map { |pattern| super(pattern, **options) } : super(patterns, **options)
+          end
         else
           super(patterns, **options)
         end
