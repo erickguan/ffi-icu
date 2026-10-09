@@ -1,0 +1,53 @@
+name: Windows Ruby matrix probe
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows probe (${{ matrix.runner }}, Ruby ${{ matrix.ruby }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [windows-2022, windows-2025]
+        ruby: ['3.2', '3.3', '3.4', '4.0']
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Install official ICU beside ruby.exe
+        shell: pwsh
+        run: |
+          $version = '78.3'
+          $zipName = "icu4c-$version-Win64-MSVC2022.zip"
+          $url = "https://github.com/unicode-org/icu/releases/download/release-$version/$zipName"
+          Invoke-WebRequest -Uri $url -OutFile $zipName
+          Expand-Archive -Path $zipName -DestinationPath C:\icu -Force
+          $rubyBin = (Get-Command ruby).Source | Split-Path
+          Copy-Item C:\icu\bin64\icu*.dll -Destination $rubyBin -Force
+          Write-Output "[windows-matrix] Ruby directory: $rubyBin"
+          Get-ChildItem "$rubyBin\icu*.dll" | Select-Object Name, Length
+
+      - name: Report ICU selected by the loader
+        shell: pwsh
+        run: |
+          bundle exec ruby -Ilib -rffi-icu -e '
+            puts "[windows-matrix] Ruby=#{RUBY_DESCRIPTION}"
+            puts "[windows-matrix] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+            puts ICU::Lib.ffi_libraries.map { |lib| "[windows-matrix] Loaded=#{lib.name}" }
+          '
+
+      - name: Run full spec suite
+        run: bundle exec rake spec
