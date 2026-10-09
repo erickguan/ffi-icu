@@ -9,12 +9,11 @@ if mode == 'driver'
   root = File.expand_path('..', __dir__)
   logs = File.join(root, 'tmp', 'windows-native-probe')
   FileUtils.mkdir_p(logs)
-  cases = ['pure-glob-array', 'pure-glob-first', 'pure-entries', 'full-discovery-first',
-           'full-discovery-entries', 'suite-discovery-first', 'suite-discovery-entries', 'full-trace']
+  cases = ['full-original', 'full-fixed', 'suite-original', 'suite-fixed']
   failed = false
   cases.each do |probe|
     failures = 0
-    repetitions = 50
+    repetitions = 100
     repetitions.times do |index|
       output, status = Open3.capture2e(RbConfig.ruby, '-Ilib', __FILE__, probe, chdir: root)
       File.write(File.join(logs, "#{probe}-#{index + 1}.log"), output)
@@ -27,7 +26,7 @@ if mode == 'driver'
       end
     end
     puts "[native-probe] RESULT case=#{probe} failures=#{failures}/#{repetitions}"
-    failed ||= failures.positive?
+    failed ||= failures.positive? && probe.end_with?('fixed')
   end
   exit(failed ? 1 : 0)
 end
@@ -197,6 +196,19 @@ elsif mode.start_with?('bootstrap') || mode == 'prefix-only'
   end
   puts "[native-probe] complete case=#{mode}"
 else
+  if mode.end_with?('original')
+    source = File.read(File.join(__dir__, '..', 'lib', 'ffi-icu', 'lib.rb'))
+    replacement = <<~RUBY
+      def self.find_lib(lib)
+        Dir.glob(search_paths.map { |path| File.expand_path(File.join(path, lib)) }).first
+      end
+    RUBY
+    source = source.sub(/    def self.find_lib\(lib\).*?^    end/m, replacement)
+    override = File.join(__dir__, '..', 'tmp', 'original', 'ffi-icu')
+    FileUtils.mkdir_p(override)
+    File.write(File.join(override, 'lib.rb'), source)
+    $LOAD_PATH.unshift(File.expand_path('..', override))
+  end
   if mode.include?('discovery')
     singleton = class << Dir; self; end
     singleton.prepend(Module.new do
