@@ -33,18 +33,18 @@ jobs:
       - name: Report MSYS2 ICU candidates and test loading
         shell: pwsh
         run: |
-          ridk exec ruby -e '
-            puts "[windows-msys2] Ruby=#{RUBY_DESCRIPTION}"
-            patterns = ENV.fetch("PATH").split(";").map do |path|
-              File.expand_path(File.join(path, "{lib,}icu{uc,in,dt}??.dll"))
-            end
-            puts Dir.glob(patterns).map { |path| "[windows-msys2] Candidate=#{path}" }
-          '
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          ridk exec bundle exec ruby -Ilib -rffi-icu -e '
-            puts "[windows-msys2] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
-            puts ICU::Lib.ffi_libraries.map { |lib| "[windows-msys2] Loaded=#{lib.name}" }
-          '
+          @'
+          $stdout.sync = true
+          puts "[windows-msys2] Ruby=#{RUBY_DESCRIPTION}"
+          patterns = ENV.fetch('PATH').split(';').map do |path|
+            File.expand_path(File.join(path, '{lib,}icu{uc,in,dt}??.dll'))
+          end
+          puts Dir.glob(patterns).map { |path| "[windows-msys2] Candidate=#{path}" }
+          require 'ffi-icu'
+          puts "[windows-msys2] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+          puts ICU::Lib.ffi_libraries.map { |lib| "[windows-msys2] Loaded=#{lib.name}" }
+          '@ | Set-Content -Path "$env:RUNNER_TEMP\icu-probe.rb" -Encoding utf8
+          ridk exec bundle exec ruby -Ilib "$env:RUNNER_TEMP\icu-probe.rb"
 
       - name: Run full spec suite in the MSYS2 environment
         if: ${{ !cancelled() }}
