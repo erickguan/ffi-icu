@@ -50,21 +50,23 @@ jobs:
       - name: Report discovery candidates and test ICU loading
         shell: pwsh
         run: |
-          bundle exec ruby -Ilib -rffi -e '
-            puts "[windows-dll] Ruby=#{RUBY_DESCRIPTION}"
-            puts "[windows-dll] Override=#{ENV.fetch("FFI_ICU_LIB", "unset")}"
-            paths = ENV.key?("FFI_ICU_LIB") ? [ENV.fetch("FFI_ICU_LIB")] : ENV.fetch("PATH").split(";")
-            patterns = paths.map { |path| File.expand_path(File.join(path, "{lib,}icu{uc,in}??.dll")) }
-            puts Dir.glob(patterns).map { |path| "[windows-dll] Candidate=#{path}" }
-            begin
-              require "ffi-icu"
-              puts "[windows-dll] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
-              puts ICU::Lib.ffi_libraries.map { |lib| "[windows-dll] Loaded=#{lib.name}" }
-            rescue LoadError => error
-              warn "[windows-dll] LoadError=#{error.message}"
-              raise
-            end
-          '
+          @'
+          $stdout.sync = true
+          puts "[windows-dll] Ruby=#{RUBY_DESCRIPTION}"
+          puts "[windows-dll] Override=#{ENV.fetch('FFI_ICU_LIB', 'unset')}"
+          paths = ENV.key?('FFI_ICU_LIB') ? [ENV.fetch('FFI_ICU_LIB')] : ENV.fetch('PATH').split(';')
+          patterns = paths.map { |path| File.expand_path(File.join(path, '{lib,}icu{uc,in}??.dll')) }
+          puts Dir.glob(patterns).map { |path| "[windows-dll] Candidate=#{path}" }
+          begin
+            require 'ffi-icu'
+            puts "[windows-dll] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+            puts ICU::Lib.ffi_libraries.map { |lib| "[windows-dll] Loaded=#{lib.name}" }
+          rescue LoadError => error
+            warn "[windows-dll] LoadError=#{error.message}"
+            raise
+          end
+          '@ | Set-Content -Path "$env:RUNNER_TEMP\icu-probe.rb" -Encoding utf8
+          bundle exec ruby -Ilib "$env:RUNNER_TEMP\icu-probe.rb"
 
       - name: Run full spec suite after the loader probe
         if: ${{ !cancelled() }}
