@@ -9,8 +9,8 @@ if mode == 'driver'
   root = File.expand_path('..', __dir__)
   logs = File.join(root, 'tmp', 'windows-native-probe')
   FileUtils.mkdir_p(logs)
-  cases = ['load-none', 'load-uc', 'load-in', 'load-both', 'load-both-retained',
-           'load-both-version', 'fiddle-both', 'prefix-only', 'bootstrap-load', 'full-trace']
+  cases = ['discover-paths', 'discover-expand', 'discover-glob-one', 'discover-glob-array',
+           'discover-brace-one', 'discover-brace-array', 'discover-find-both', 'bootstrap-load', 'full-trace']
   failed = false
   cases.each do |probe|
     failures = 0
@@ -46,7 +46,33 @@ end
 require 'ffi'
 puts "[native-probe] FFI=#{Gem.loaded_specs.fetch('ffi').full_name}"
 
-if mode.start_with?('load-') || mode == 'fiddle-both'
+if mode.start_with?('discover-')
+  paths = ENV.fetch('PATH').split(File::PATH_SEPARATOR)
+  directory = File.dirname(RbConfig.ruby)
+  puts "[native-probe] paths=#{paths.length}"
+  patterns = paths.map { |path| File.expand_path(File.join(path, 'icuuc??.dll')) } unless mode == 'discover-paths'
+  case mode
+  when 'discover-glob-one'
+    Dir.glob(File.join(directory, 'icuuc??.dll'))
+  when 'discover-glob-array'
+    Dir.glob(patterns)
+  when 'discover-brace-one'
+    Dir.glob(File.join(directory, '{lib,}icuuc??.dll'))
+  when 'discover-brace-array'
+    Dir.glob(paths.map { |path| File.expand_path(File.join(path, '{lib,}icuuc??.dll')) })
+  when 'discover-find-both'
+    ['{lib,}icuuc??.dll', '{lib,}icuin??.dll'].each do |name|
+      Dir.glob(paths.map { |path| File.expand_path(File.join(path, name)) }).first
+    end
+  end
+  mod = Module.new { extend FFI::Library }
+  puts '[native-probe] discovery complete; before enum exercise'
+  100.times do
+    mod.enum :layout_type, [:ltr, :rtl, :ttb, :btt, :unknown]
+    GC.start
+  end
+  puts "[native-probe] complete case=#{mode}"
+elsif mode.start_with?('load-') || mode == 'fiddle-both'
   directory = File.dirname(RbConfig.ruby)
   libraries = case mode
               when 'load-none' then []
