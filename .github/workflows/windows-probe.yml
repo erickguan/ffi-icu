@@ -1,0 +1,71 @@
+name: Windows DLL search probe
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    name: Windows DLL probe (${{ matrix.placement }})
+    strategy:
+      fail-fast: false
+      matrix:
+        placement: [application, path, override]
+    runs-on: windows-2022
+    timeout-minutes: 20
+    env:
+      ICU_PLACEMENT: ${{ matrix.placement }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby and install dependencies
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '4.0'
+          bundler-cache: true
+
+      - name: Install official ICU in the probe location
+        shell: pwsh
+        run: |
+          $version = '78.3'
+          $zipName = "icu4c-$version-Win64-MSVC2022.zip"
+          $url = "https://github.com/unicode-org/icu/releases/download/release-$version/$zipName"
+          Invoke-WebRequest -Uri $url -OutFile $zipName
+          Expand-Archive -Path $zipName -DestinationPath C:\icu -Force
+          $rubyBin = (Get-Command ruby).Source | Split-Path
+          Write-Output "[windows-dll] Placement: $env:ICU_PLACEMENT; Ruby directory: $rubyBin"
+          Write-Output '[windows-dll] Existing ICU DLLs beside ruby.exe:'
+          Get-ChildItem "$rubyBin\*icu*.dll" | Select-Object Name, Length
+          Get-ChildItem C:\icu\bin64\icu*.dll | Select-Object Name, Length
+          switch ($env:ICU_PLACEMENT) {
+            'application' { Copy-Item C:\icu\bin64\icu*.dll -Destination $rubyBin -Force }
+            'path' { 'C:\icu\bin64' | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8 }
+            'override' { 'FFI_ICU_LIB=C:\icu\bin64' | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8 }
+          }
+
+      - name: Report discovery candidates and test ICU loading
+        shell: pwsh
+        run: |
+          bundle exec ruby -Ilib -rffi -e '
+            puts "[windows-dll] Ruby=#{RUBY_DESCRIPTION}"
+            puts "[windows-dll] Override=#{ENV.fetch("FFI_ICU_LIB", "unset")}"
+            paths = ENV.key?("FFI_ICU_LIB") ? [ENV.fetch("FFI_ICU_LIB")] : ENV.fetch("PATH").split(";")
+            patterns = paths.map { |path| File.expand_path(File.join(path, "{lib,}icu{uc,in}??.dll")) }
+            puts Dir.glob(patterns).map { |path| "[windows-dll] Candidate=#{path}" }
+            begin
+              require "ffi-icu"
+              puts "[windows-dll] ICU=#{ICU::Lib.version} CLDR=#{ICU::Lib.cldr_version}"
+              puts ICU::Lib.ffi_libraries.map { |lib| "[windows-dll] Loaded=#{lib.name}" }
+            rescue LoadError => error
+              warn "[windows-dll] LoadError=#{error.message}"
+              raise
+            end
+          '
+
+      - name: Run full spec suite after the loader probe
+        if: ${{ !cancelled() }}
+        run: bundle exec rake spec
