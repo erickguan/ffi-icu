@@ -91,7 +91,7 @@ module ICU
         pattern_ptr = FFI::MemoryPointer.new(4)
 
         if time_zone_str
-          time_zone = UCharPointer.from_string(time_zone_str)
+          time_zone = UCharPointer.from_utf8(time_zone_str)
           tz_len = time_zone.length_in_uchars
         else
           Lib.check_error do |error|
@@ -142,7 +142,7 @@ module ICU
       end
 
       def parse(str)
-        str_u = UCharPointer.from_string(str)
+        str_u = UCharPointer.from_utf8(str)
         str_l = str_u.length_in_uchars
         Lib.check_error do |error|
           ret = Lib.udat_parse(@f, str_u, str_l, nil, error)
@@ -170,7 +170,7 @@ module ICU
             end
           end
 
-          out_ptr.string
+          out_ptr.utf8_string
         rescue BufferOverflowError
           raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
@@ -209,7 +209,7 @@ module ICU
             needed_length = Lib.udat_toPattern(@f, localized, out_ptr, needed_length, error)
           end
 
-          out_ptr.string
+          out_ptr.utf8_string
         rescue BufferOverflowError
           raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
@@ -228,7 +228,7 @@ module ICU
       end
 
       def skeleton_format(skeleton_pattern_str, locale)
-        skeleton_pattern_ptr = UCharPointer.from_string(skeleton_pattern_str)
+        skeleton_pattern_ptr = UCharPointer.from_utf8(skeleton_pattern_str)
         skeleton_pattern_len = skeleton_pattern_ptr.length_in_uchars
 
         needed_length = 0
@@ -272,7 +272,7 @@ module ICU
         return unless @hour_cycle
 
         # Get the current pattern and convert to a skeleton
-        skeleton_str = pattern_to_skeleton_uchar(current_pattern_as_uchar).string
+        skeleton_str = pattern_to_skeleton_uchar(current_pattern_as_uchar).utf8_string
 
         # Manipulate the skeleton to make it work with the correct hour cycle.
         skeleton_str.gsub!(/[hHkKjJ]/, HOUR_CYCLE_SYMS[@hour_cycle])
@@ -286,7 +286,7 @@ module ICU
         end
 
         # Convert the skeleton back to a pattern
-        new_pattern_str = skeleton_to_pattern_uchar(UCharPointer.from_string(skeleton_str)).string
+        new_pattern_str = skeleton_to_pattern_uchar(UCharPointer.from_utf8(skeleton_str)).utf8_string
 
         # We also need to manipulate the _pattern_, a little bit, because (according to Firefox source):
         #
@@ -345,7 +345,7 @@ module ICU
       end
 
       def set_date_format_impl(localized, pattern_str)
-        pattern     = UCharPointer.from_string(pattern_str)
+        pattern     = UCharPointer.from_utf8(pattern_str)
         pattern_len = pattern.length_in_uchars
 
         Lib.check_error do |_error|

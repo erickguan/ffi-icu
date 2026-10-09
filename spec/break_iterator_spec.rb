@@ -48,6 +48,16 @@ module ICU
       expect(iterator).not_to(be_boundary(2))
     end
 
+    it 'preserves substrings and their encoding for GB18030 input' do
+      iterator = described_class.new(:character, 'en')
+      text = "a\u0080😀b".encode(Encoding::GB18030)
+      iterator.text = text
+
+      expect(iterator.to_a).to(eq([0, 1, 2, 4, 5]))
+      expect(iterator.substrings).to(eq(text.each_char.to_a))
+      expect(iterator.substrings.map(&:encoding)).to(all(eq(Encoding::GB18030)))
+    end
+
     it 'finds all word boundaries in a non-ASCII string' do
       iterator = described_class.new(:word, 'th_TH')
       iterator.text = 'การทดลอง'

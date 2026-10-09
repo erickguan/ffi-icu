@@ -109,7 +109,7 @@ module ICU
       end
 
       def collation_key(string)
-        ptr = UCharPointer.from_string(string)
+        ptr = UCharPointer.from_utf8(string)
         size = Lib.ucol_getSortKey(@c, ptr, ptr.length_in_uchars, nil, 0)
         buffer = FFI::MemoryPointer.new(:char, size)
         Lib.ucol_getSortKey(@c, ptr, ptr.length_in_uchars, buffer, size)
@@ -129,8 +129,8 @@ module ICU
       end
 
       def collation_arguments(left, right)
-        left_text = UCharPointer.from_string(left)
-        right_text = UCharPointer.from_string(right)
+        left_text = UCharPointer.from_utf8(left)
+        right_text = UCharPointer.from_utf8(right)
 
         [
           left_text, left_text.length_in_uchars,

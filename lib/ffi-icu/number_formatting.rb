@@ -97,7 +97,7 @@ module ICU
                               end
             end
           end
-          out_ptr.string(needed_length)
+          out_ptr.utf8_string(needed_length)
         rescue BufferOverflowError
           raise(BufferOverflowError, "needed: #{needed_length}") if retried
 
@@ -136,10 +136,10 @@ module ICU
 
         begin
           Lib.check_error do |error|
-            needed_length = Lib.unum_format_currency(@f, number, UCharPointer.from_string(currency, 4), out_ptr,
+            needed_length = Lib.unum_format_currency(@f, number, UCharPointer.from_utf8(currency, 4), out_ptr,
                                                      needed_length, nil, error)
           end
-          out_ptr.string
+          out_ptr.utf8_string
         rescue BufferOverflowError
           raise(BufferOverflowError, "needed: #{needed_length}") if retried
 

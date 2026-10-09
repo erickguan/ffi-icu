@@ -4,7 +4,7 @@ module ICU
   module Normalization
     def self.normalize(input, mode = :default)
       needed_length = out_length = options = 0
-      input_pointer = UCharPointer.from_string(input)
+      input_pointer = UCharPointer.from_utf8(input)
       input_length  = input_pointer.length_in_uchars
       out_ptr       = UCharPointer.new(out_length)
 
@@ -24,7 +24,7 @@ module ICU
         retry
       end
 
-      out_ptr.string(needed_length)
+      out_ptr.utf8_string(needed_length)
     end
   end
 end

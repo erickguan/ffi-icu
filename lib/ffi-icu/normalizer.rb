@@ -11,7 +11,7 @@ module ICU
     end
 
     def normalize(input)
-      input_pointer = UCharPointer.from_string(input)
+      input_pointer = UCharPointer.from_utf8(input)
       input_length  = input_pointer.length_in_uchars
       needed_length = capacity = 0
       out_ptr       = UCharPointer.new(needed_length)
@@ -31,11 +31,11 @@ module ICU
         retry
       end
 
-      out_ptr.string(needed_length)
+      out_ptr.utf8_string(needed_length)
     end
 
     def normalized?(input)
-      input_pointer = UCharPointer.from_string(input)
+      input_pointer = UCharPointer.from_utf8(input)
       input_length  = input_pointer.length_in_uchars
 
       Lib.check_error do |error|

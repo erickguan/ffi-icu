@@ -32,7 +32,7 @@ module ICU
 
       def self.read_uchar_buffer(length, &)
         buf, len = read_uchar_buffer_as_ptr_impl(length, &)
-        buf.string(len)
+        buf.utf8_string(len)
       end
 
       def self.read_uchar_buffer_as_ptr(length, &)

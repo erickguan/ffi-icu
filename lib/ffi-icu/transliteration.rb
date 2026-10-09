@@ -26,11 +26,11 @@ module ICU
         rules_length = 0
 
         if rules
-          rules = UCharPointer.from_string(rules)
+          rules = UCharPointer.from_utf8(rules)
           rules_length = rules.length_in_uchars
         end
 
-        id = UCharPointer.from_string(id)
+        id = UCharPointer.from_utf8(id)
 
         parse_error = Lib::UParseError.new
         begin
@@ -47,7 +47,7 @@ module ICU
       def transliterate(from)
         # this is a bit unpleasant
 
-        input = UCharPointer.from_string(from)
+        input = UCharPointer.from_utf8(from)
         input_length_in_uchars = input.length_in_uchars
         capacity               = input_length_in_uchars + 1
         buf = UCharPointer.new(capacity)
@@ -77,13 +77,13 @@ module ICU
           # create a new buffer with more capacity instead of resizing,
           # since the old buffer now has result data
           buf.free
-          buf = UCharPointer.from_string(from, capacity)
+          buf = UCharPointer.from_utf8(from, capacity)
 
           retried = true
           retry
         end
 
-        buf.string(text_length.get_int32(0))
+        buf.utf8_string(text_length.get_int32(0))
       end
     end
   end
