@@ -33,11 +33,9 @@ module ICU
     end
 
     def self.find_lib(lib)
-      search_paths.each do |path|
-        match = Dir.glob(File.expand_path(File.join(path, lib))).first
-        return match if match
-      end
-      nil
+      search_paths.lazy.filter_map do |path|
+        Dir.glob(File.expand_path(File.join(path, lib))).first
+      end.first
     end
 
     def self.load_icu

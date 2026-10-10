@@ -12,6 +12,7 @@
 ### Fixed
 
 - Prefer native-architecture Debian multiarch library directories.
+- Stop ICU library discovery at the first matching directory to avoid intermittent Windows crashes during PATH scanning.
 
 ### Removed
 
