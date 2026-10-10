@@ -1,4 +1,14 @@
-## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.6.1...master)
+## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.7.0...master)
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [v0.7.0](https://github.com/erickguan/ffi-icu/compare/v0.6.1...v0.7.0)
 
 ### Added
 
@@ -11,6 +21,7 @@
 
 ### Fixed
 
+- Handle UTF-16 lengths consistently across ICU APIs, including strings containing supplementary Unicode characters.
 - Prefer native-architecture Debian multiarch library directories.
 - Stop ICU library discovery at the first matching directory to avoid intermittent Windows crashes during PATH scanning.
 
