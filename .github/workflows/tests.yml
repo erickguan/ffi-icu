@@ -83,4 +83,4 @@ jobs:
           Copy-Item C:\icu\bin64\icu*.dll -Destination $rubyBin -Force
 
       - name: Run tests
-        run: bundle exec rake spec
+        run: bundle exec rake test

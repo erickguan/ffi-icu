@@ -34,8 +34,8 @@ module ICU
       create(pattern, locale:).format(arguments)
     end
 
-    # rubocop:disable-next Naming/PredicateMethod
-    def self.validate(pattern, locale:)
+    # Raises on invalid patterns; use valid? for a predicate.
+    def self.validate(pattern, locale:) # rubocop:disable Naming/PredicateMethod
       create(pattern, locale:)
       true
     end

@@ -4,8 +4,6 @@ inherit_mode:
     - Exclude
 
 plugins:
-  - rubocop-rspec
-  - rubocop-rspec_rails
   - rubocop-minitest
   - rubocop-packaging
 
@@ -72,8 +70,8 @@ Metrics/ClassLength:
 Metrics/BlockLength:
   Max: 50
   Exclude:
-    # allows longer block for RSpec
-    - spec/**/*.rb
+    # Generated tests exercise every locale and hour cycle.
+    - test/**/*.rb
 
 Metrics/AbcSize:
   Max: 110
@@ -90,45 +88,11 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 250
   Exclude:
-    # allows longer block for RSpec
-    - spec/**/*.rb
+    - test/**/*.rb
     - lib/ffi-icu/lib.rb
 
 Metrics/PerceivedComplexity:
   Max: 50
-
-RSpec/ExampleLength:
-  Max: 50
-
-RSpec/MultipleExpectations:
-  Max: 30
-
-RSpec/NestedGroups:
-  Max: 5
-
-RSpec/SpecFilePathFormat:
-  Enabled: false
-
-RSpec/ContextWording:
-  Enabled: false
-
-RSpec/NamedSubject:
-  Enabled: false
-
-RSpec/MessageSpies:
-  Enabled: false
-
-RSpec/NoExpectationExample:
-  Enabled: false
-
-RSpec/MultipleDescribes:
-  Enabled: false
-
-RSpec/DescribeClass:
-  Enabled: false
-
-RSpec/PredicateMatcher:
-  Enabled: false
 
 Naming/MethodParameterName:
   Enabled: false
@@ -137,5 +101,5 @@ Naming/FileName:
   Exclude:
     - lib/ffi-icu.rb
 
-RSpec/LeakyLocalVariable:
-  Enabled: false
+Minitest/MultipleAssertions:
+  Max: 30
