@@ -1,45 +1,124 @@
-# Formatter benchmarks
+# Benchmarks
 
-Benchmarks number and currency formatting throughput in `ffi-icu` only.
+Compares `ffi-icu` with other Ruby libraries using Ruby's standard
+[`benchmark`](https://github.com/ruby/benchmark) library:
+
+- **Character detection** — `ffi-icu` against [`rchardet`](https://rubygems.org/gems/rchardet)
+- **Number and currency formatting** — `ffi-icu` against [`icu4x`](https://rubygems.org/gems/icu4x) and [`twitter_cldr`](https://rubygems.org/gems/twitter_cldr)
+- **Transliteration** — `ffi-icu` against `twitter_cldr`. The `icu4x` 0.11.2 Ruby binding has no transliteration API, so no timing is available for it.
+- **Locale display names** — `ffi-icu` against `icu4x` and `twitter_cldr`
+
+Each group runs `Benchmark.bmbm`, which makes a rehearsal pass and then a
+measured pass.
 
 ## Run
 
+The benchmarks have their own Gemfile to keep their dependencies separate.
+
 ```sh
+cd benchmark
 bundle install
-ruby benchmark/formatters.rb
+./run.sh
 ```
 
-Example output:
+`icu4x` requires Ruby 3.3 or newer.
+
+Run one suite at a time:
+
+```sh
+cd benchmark
+bundle exec ruby detect.rb
+bundle exec ruby formatters.rb
+bundle exec ruby transliteration.rb
+bundle exec ruby locale.rb
+```
+
+## Recorded output
+
+The following output comes from a run of `./benchmark/run.sh` with the default
+iteration counts on WSL2 Linux, x86_64, with an AMD Ryzen 9 7950X and
+45.94 GiB of RAM visible to WSL. The CPU model comes from `lscpu`; memory comes
+from `/proc/meminfo`.
+
+Versions: Ruby 4.0.5, `ffi-icu` 0.7.0, ICU 78.2, `rchardet` 1.10.2,
+`icu4x` 0.11.2, and `twitter_cldr` 6.14.0.
+
+Measured passes and relative timings from that run (rehearsal output omitted):
 
 ```text
-Ruby: ruby 4.0.5 (...) +PRISM [x86_64-linux]
-ffi-icu: 0.7.0
-ICU: 78.2 (78.2.0.0)
-Warmup: 5000 iterations
-Measurement: 30000 iterations
+Character detection (class helper)
+               user     system      total        real
+ffi-icu    0.003286   0.000003   0.003289 (  0.003287)
+rchardet   0.026833   0.000000   0.026833 (  0.026835)
+Relative real time (lower is better):
+  ffi-icu        1.00x
+  rchardet       8.16x
 
-number formatting   0.1096s    273,723 iterations/s
-currency formatting 0.1684s    178,147 iterations/s
+Character detection (reusable detector)
+               user     system      total        real
+ffi-icu    0.003275   0.000000   0.003275 (  0.003275)
+rchardet   0.027931   0.000000   0.027931 (  0.027933)
+Relative real time (lower is better):
+  ffi-icu        1.00x
+  rchardet       8.53x
+
+Number formatting
+                   user     system      total        real
+ffi-icu        0.002031   0.000000   0.002031 (  0.002029)
+icu4x          0.000117   0.000000   0.000117 (  0.000116)
+twitter_cldr   0.019097   0.000000   0.019097 (  0.019098)
+Relative real time (lower is better):
+  ffi-icu       17.50x
+  icu4x          1.00x
+  twitter_cldr 164.79x
+
+Currency formatting
+                   user     system      total        real
+ffi-icu        0.002970   0.000000   0.002970 (  0.002969)
+icu4x          0.000125   0.000034   0.000159 (  0.000157)
+twitter_cldr   0.019952   0.000039   0.019991 (  0.019992)
+Relative real time (lower is better):
+  ffi-icu       18.96x
+  icu4x          1.00x
+  twitter_cldr 127.64x
+
+Transliteration (Greek to Latin)
+                   user     system      total        real
+ffi-icu        0.006334   0.000041   0.006375 (  0.006373)
+twitter_cldr   0.015077   0.000232   0.015309 (  0.015308)
+Relative real time (lower is better):
+  ffi-icu        1.00x
+  twitter_cldr   2.40x
+
+Locale display names (language names in English)
+                   user     system      total        real
+ffi-icu        0.012283   0.000000   0.012283 (  0.012284)
+icu4x          0.000661   0.000000   0.000661 (  0.000660)
+twitter_cldr   0.014420   0.000000   0.014420 (  0.014421)
+Relative real time (lower is better):
+  ffi-icu       18.60x
+  icu4x          1.00x
+  twitter_cldr  21.84x
 ```
 
-The whole benchmark runs in around 300ms — sub-second, but long enough to be
-meaningful feedback after a change.
+`1.00x` is the fastest library in that group. Higher numbers are slower.
 
 ## Configuration
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `ITERATIONS` | `30_000` | Measurement iterations per case |
-| `WARMUP_ITERATIONS` | `5_000` | Warmup iterations before measuring |
+| `DETECT_ITERATIONS` | `5` | Character-detection iterations per library |
+| `FORMATTER_ITERATIONS` | `500` | Number/currency iterations per library |
+| `TRANSLITERATION_ITERATIONS` | `120` | Transliteration iterations per library |
+| `LOCALE_ITERATIONS` | `6000` | Locale-display iterations per library |
+| `DETECT_TEXT_PATH` | `benchmark/fixtures/detect.txt` | Input file for detection |
 
-```sh
-ITERATIONS=100_000 WARMUP_ITERATIONS=20_000 ruby benchmark/formatters.rb
-```
+## Reading the results
 
-## What it measures
+`Benchmark.bmbm` reports `user`, `system`, `total`, and `real` seconds. The
+same iteration count is used within a group, so the real-time columns are
+directly comparable there. Iteration counts differ between groups, so compare
+only within a group.
 
-- `number formatting` — `ICU::NumberFormatting.create('en-US').format(1_234_567.89)`
-- `currency formatting` — `ICU::NumberFormatting.create('en-US', :currency).format(1_234_567.89, 'USD')`
-
-Each case is sanity-checked against expected output before timing, and the
-default iteration count keeps the run sub-second (~300ms).
+Results are machine-specific. Compare libraries within one run, not across
+machines or Ruby versions.
