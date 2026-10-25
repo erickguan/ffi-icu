@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+gem 'ffi-icu', path: '..'
+
+gem 'benchmark', '~> 0.5'
+gem 'icu4x', '~> 0.11'
+gem 'icu4x-data-recommended', '~> 0.11'
+gem 'rchardet', '~> 1.10'
+gem 'twitter_cldr', '~> 6.14'

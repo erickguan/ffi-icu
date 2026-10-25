@@ -245,4 +245,8 @@ dari = ICU::Locale.new('fa-AF')
 dari.display_name_with_context('en', [:dialect_names]) #=> "Dari"
 ```
 
+## Benchmarks
+
+Benchmarks live in [`benchmark/`](benchmark/README.md) with a separate Gemfile.
+
 [icu]: https://github.com/unicode-org/icu
