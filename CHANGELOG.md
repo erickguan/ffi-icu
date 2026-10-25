@@ -4,6 +4,8 @@
 
 ### Changed
 
+- Migrate the internal test suite from RSpec to Minitest 6.
+
 ### Fixed
 
 ### Removed
