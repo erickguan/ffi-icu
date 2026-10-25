@@ -9,7 +9,9 @@ Compares `ffi-icu` with other Ruby libraries using Ruby's standard
 - **Locale display names** — `ffi-icu` against `icu4x` and `twitter_cldr`
 
 Each group runs `Benchmark.bmbm`, which makes a rehearsal pass and then a
-measured pass.
+measured pass. Each report block uses `Integer#times` because `bmbm` has no
+iteration-count parameter; its argument controls label width. See the
+[iteration API research](iteration-research.md) for sources and measurement details.
 
 ## Run
 
@@ -36,12 +38,17 @@ bundle exec ruby locale.rb
 ## Recorded output
 
 The following output comes from a run of `./benchmark/run.sh` with the default
-iteration counts on WSL2 Linux, x86_64, with an AMD Ryzen 9 7950X and
-45.94 GiB of RAM visible to WSL. The CPU model comes from `lscpu`; memory comes
-from `/proc/meminfo`.
+iteration counts.
 
-Versions: Ruby 4.0.5, `ffi-icu` 0.7.0, ICU 78.2, `rchardet` 1.10.2,
-`icu4x` 0.11.2, and `twitter_cldr` 6.14.0.
+- Operating system: WSL2 Linux, x86_64.
+- Processor: AMD Ryzen 9 7950X, as reported by `lscpu`.
+- Memory: 45.94 GiB of RAM visible to WSL, from `/proc/meminfo`.
+- Ruby: 4.0.5.
+- `ffi-icu`: 0.7.0.
+- ICU: 78.2.
+- `rchardet`: 1.10.2.
+- `icu4x`: 0.11.2.
+- `twitter_cldr`: 6.14.0.
 
 Measured passes and relative timings from that run (rehearsal output omitted):
 
