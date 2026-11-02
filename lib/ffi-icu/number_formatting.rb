@@ -10,9 +10,6 @@ module ICU
       case type
       when :currency
         CurrencyFormatter.new(locale, options.delete(:style)).set_attributes(@default_options.merge(options))
-      when :pattern_decimal, :pattern_rule_based
-        raise(ArgumentError, "The #{type} style needs a custom pattern or rules, which ffi-icu does not support; " \
-                             'ICU::NumberFormatting.create_with_skeleton covers most formats')
       else
         NumberFormatter.new(locale, type).set_attributes(@default_options.merge(options))
       end
@@ -59,6 +56,11 @@ module ICU
       private
 
       def make_formatter(type, locale)
+        if type == :pattern_rule_based
+          raise(ArgumentError, 'The pattern_rule_based style needs custom rules, which ffi-icu does not support; ' \
+                               'ICU::NumberFormatting.create_with_skeleton covers most other formats')
+        end
+
         ptr = Lib.check_error do |error|
           Lib.unum_open(type, FFI::MemoryPointer.new(4), 0, locale, FFI::MemoryPointer.new(4), error)
         end
@@ -177,12 +179,12 @@ module ICU
       end
 
       def format(number)
-        decimal = number.is_a?(BigDecimal) ? number.to_s('F') : number.to_s
+        decimal = number.to_s
         result = FFI::AutoPointer.new(
           Lib.check_error { |error| Lib.unumf_openResult(error) },
           Lib.method(:unumf_closeResult)
         )
-        Lib.check_error { |error| Lib.unumf_formatDecimal(@f, decimal, decimal.size, result, error) }
+        Lib.check_error { |error| Lib.unumf_formatDecimal(@f, decimal, decimal.bytesize, result, error) }
         Lib::Util.read_uchar_buffer(0) do |buffer, error|
           Lib.unumf_resultToString(result, buffer, buffer.length_in_uchars, error)
         end

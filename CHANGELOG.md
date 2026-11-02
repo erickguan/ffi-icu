@@ -7,10 +7,9 @@
 ### Changed
 
 - Migrate the internal test suite from RSpec to Minitest 6.
+- Raise an `ArgumentError` for the `:pattern_rule_based` style of `ICU::NumberFormatting`, which ffi-icu cannot pass rules to, instead of a misleading `U_MEMORY_ALLOCATION_ERROR` ([#62](https://github.com/erickguan/ffi-icu/issues/62)).
 
 ### Fixed
-
-- Raise an `ArgumentError` pointing to skeletons for the `:pattern_decimal` and `:pattern_rule_based` styles of `ICU::NumberFormatting.create`, which failed with `U_MEMORY_ALLOCATION_ERROR` for lack of a pattern ([#62](https://github.com/erickguan/ffi-icu/issues/62)).
 
 ### Removed
 

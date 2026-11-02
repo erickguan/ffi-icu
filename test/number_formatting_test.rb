@@ -95,12 +95,10 @@ module ICU
       assert_raises(Error) { NumberFormatting.create_with_skeleton('en', 'not-a-stem') }
     end
 
-    def test_rejects_pattern_styles_that_need_a_pattern
-      [:pattern_decimal, :pattern_rule_based].each do |style|
-        error = assert_raises(ArgumentError) { NumberFormatting.create('en', style) }
+    def test_rejects_the_rule_based_style_that_needs_custom_rules
+      error = assert_raises(ArgumentError) { NumberFormatting.create('en', :pattern_rule_based) }
 
-        assert_match(/create_with_skeleton/, error.message)
-      end
+      assert_match(/create_with_skeleton/, error.message)
     end
 
     def test_formats_a_bignum

@@ -263,8 +263,7 @@ module ICU
       end
 
       def format_number(value, skeleton)
-        @number_formatters[skeleton] ||= NumberFormatting::SkeletonFormatter.new(@locale, skeleton)
-        @number_formatters[skeleton].format(value)
+        (@number_formatters[skeleton] ||= NumberFormatting::SkeletonFormatter.new(@locale, skeleton)).format(value)
       end
 
       def format_list(values)
