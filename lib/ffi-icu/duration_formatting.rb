@@ -262,32 +262,9 @@ module ICU
         result.string
       end
 
-      def number_formatter(skeleton)
-        @number_formatters[skeleton] ||= begin
-          skeleton_uchar = UCharPointer.from_utf8(skeleton)
-          FFI::AutoPointer.new(
-            Lib.check_error do |error|
-              Lib.unumf_openForSkeletonAndLocale(skeleton_uchar, skeleton_uchar.length_in_uchars,
-                                                 @locale, error)
-            end,
-            Lib.method(:unumf_close)
-          )
-        end
-      end
-
       def format_number(value, skeleton)
-        formatter = number_formatter(skeleton)
-        result = FFI::AutoPointer.new(
-          Lib.check_error { |error| Lib.unumf_openResult(error) },
-          Lib.method(:unumf_closeResult)
-        )
-        value_str = value.to_s
-        Lib.check_error do |error|
-          Lib.unumf_formatDecimal(formatter, value_str, value_str.size, result, error)
-        end
-        Lib::Util.read_uchar_buffer(0) do |buf, error|
-          Lib.unumf_resultToString(result, buf, buf.length_in_uchars, error)
-        end
+        @number_formatters[skeleton] ||= NumberFormatting::SkeletonFormatter.new(@locale, skeleton)
+        @number_formatters[skeleton].format(value)
       end
 
       def format_list(values)

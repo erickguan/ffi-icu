@@ -134,6 +134,18 @@ currency_formatter = ICU::NumberFormatting.create('en-US', :currency)
 currency_formatter.format(1_234.56, 'USD') # => "$1,234.56"
 ```
 
+For anything the presets above do not cover, pass an
+[ICU number skeleton](https://unicode-org.github.io/icu/userguide/format_parse/numbers/skeletons.html)
+(ICU >= 62):
+
+```ruby
+ICU::NumberFormatting.format_with_skeleton('en', 1_234, 'compact-short') # => "1.2K"
+ICU::NumberFormatting.format_with_skeleton('en', 0.1234, 'percent scale/100 .0') # => "12.3%"
+
+formatter = ICU::NumberFormatting.create_with_skeleton('en', 'precision-integer')
+formatter.format(999.6) # => "1,000"
+```
+
 ### Currency Metadata
 
 Look up ISO 4217 codes, localized names, symbols, and decimal digits:
