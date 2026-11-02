@@ -2,13 +2,19 @@
 
 ### Added
 
+- Add the `:currency_accounting`, `:cash_currency`, `:decimal_compact_short`, `:decimal_compact_long` and `:currency_standard` styles to `ICU::NumberFormatting.create`.
+
 ### Changed
 
 - Migrate the internal test suite from RSpec to Minitest 6.
 
 ### Fixed
 
+- Map `ICU::NumberFormatting` styles to ICU's actual `UNumberFormatStyle` values: `:default` produced currency output and `:ignore` compact output.
+
 ### Removed
+
+- Remove the `:format_style_count` style, deprecated by ICU because its value changes between versions.
 
 ## [v0.7.0](https://github.com/erickguan/ffi-icu/compare/v0.6.1...v0.7.0)
 

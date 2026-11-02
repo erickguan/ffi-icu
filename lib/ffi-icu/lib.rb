@@ -497,22 +497,27 @@ module ICU
     attach_function :ubrk_following,      "ubrk_following#{suffix}",      [:pointer, :int32_t], :int32_t
     attach_function :ubrk_isBoundary,     "ubrk_isBoundary#{suffix}",     [:pointer, :int32_t], :int32_t
 
+    # UNUM_FORMAT_STYLE_COUNT is deprecated: "The numeric value may change over time, see ICU ticket #12420."
     enum :number_format_style, [
-      :pattern_decimal,
-      :decimal,
-      :currency,
-      :percent,
-      :scientific,
-      :spellout,
-      :ordinal,
-      :duration,
-      :numbering_system,
-      :pattern_rule_based,
-      :currency_iso,
-      :currency_plural,
-      :format_style_count,
-      :default,
-      :ignore
+      :pattern_decimal, 0,
+      :decimal, 1,
+      :currency, 2,
+      :percent, 3,
+      :scientific, 4,
+      :spellout, 5,
+      :ordinal, 6,
+      :duration, 7,
+      :numbering_system, 8,
+      :pattern_rule_based, 9,
+      :currency_iso, 10,
+      :currency_plural, 11,
+      :currency_accounting, 12,
+      :cash_currency, 13,
+      :decimal_compact_short, 14,
+      :decimal_compact_long, 15,
+      :currency_standard, 16,
+      :default, 1, # UNUM_DEFAULT = UNUM_DECIMAL
+      :ignore, 0 # UNUM_IGNORE = UNUM_PATTERN_DECIMAL
     ]
     enum :number_format_attribute, [
       :parse_int_only, :grouping_used, :decimal_always_show, :max_integer_digits, :min_integer_digits, :integer_digits,
