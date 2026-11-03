@@ -106,5 +106,20 @@ module ICU
 
       assert_equal '1,000,000,000,000,000,000,000,000,000,000,000,000,000', str
     end
+
+    def test_maps_style_aliases_to_their_icu_values
+      assert_equal NumberFormatting.create('en', :decimal).format(1_234.5),
+                   NumberFormatting.create('en', :default).format(1_234.5)
+      assert_equal NumberFormatting.create('en', :pattern_decimal).format(1_234.5),
+                   NumberFormatting.create('en', :ignore).format(1_234.5)
+    end
+
+    def test_formats_compact_and_accounting_styles
+      skip('Compact styles require ICU >= 56') if Lib.version.to_a.first < 56
+
+      assert_equal '1.2K', NumberFormatting.create('en', :decimal_compact_short).format(1_234)
+      assert_equal '1.2 thousand', NumberFormatting.create('en', :decimal_compact_long).format(1_234)
+      assert_equal '($1,234.50)', NumberFormatting.create('en-US', :currency_accounting).format(-1_234.5)
+    end
   end
 end
