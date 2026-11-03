@@ -15,6 +15,10 @@ module ICU
       end
     end
 
+    def self.create_with_skeleton(locale, skeleton)
+      SkeletonFormatter.new(locale, skeleton)
+    end
+
     def self.clear_default_options
       @default_options.clear
     end
@@ -35,6 +39,10 @@ module ICU
       create(locale, :currency, options).format(number, currency)
     end
 
+    def self.format_with_skeleton(locale, number, skeleton)
+      create_with_skeleton(locale, skeleton).format(number)
+    end
+
     def self.spell(locale, number, options = {})
       create(locale, :spellout, options).format(number)
     end
@@ -48,6 +56,11 @@ module ICU
       private
 
       def make_formatter(type, locale)
+        if type == :pattern_rule_based
+          raise(ArgumentError, 'The pattern_rule_based style needs custom rules, which ffi-icu does not support; ' \
+                               'ICU::NumberFormatting.create_with_skeleton covers most other formats')
+        end
+
         ptr = Lib.check_error do |error|
           Lib.unum_open(type, FFI::MemoryPointer.new(4), 0, locale, FFI::MemoryPointer.new(4), error)
         end
@@ -146,6 +159,34 @@ module ICU
           out_ptr = out_ptr.resized_to(needed_length)
           retried = true
           retry
+        end
+      end
+    end
+
+    class SkeletonFormatter
+      def initialize(locale, skeleton)
+        unless Lib.respond_to?(:unumf_openForSkeletonAndLocale)
+          raise('ICU::NumberFormatting::SkeletonFormatter requires ICU >= 62')
+        end
+
+        skeleton_uchar = UCharPointer.from_utf8(skeleton)
+        @f = FFI::AutoPointer.new(
+          Lib.check_error do |error|
+            Lib.unumf_openForSkeletonAndLocale(skeleton_uchar, skeleton_uchar.length_in_uchars, locale, error)
+          end,
+          Lib.method(:unumf_close)
+        )
+      end
+
+      def format(number)
+        decimal = number.to_s
+        result = FFI::AutoPointer.new(
+          Lib.check_error { |error| Lib.unumf_openResult(error) },
+          Lib.method(:unumf_closeResult)
+        )
+        Lib.check_error { |error| Lib.unumf_formatDecimal(@f, decimal, decimal.bytesize, result, error) }
+        Lib::Util.read_uchar_buffer(0) do |buffer, error|
+          Lib.unumf_resultToString(result, buffer, buffer.length_in_uchars, error)
         end
       end
     end

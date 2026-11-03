@@ -75,6 +75,32 @@ module ICU
       end
     end
 
+    def test_formats_with_a_skeleton
+      assert_equal "1\u{202F}234,50\u{A0}€",
+                   NumberFormatting.format_with_skeleton('fr', 1_234.5, 'currency/EUR precision-currency-standard')
+      assert_equal '1.2K', NumberFormatting.format_with_skeleton('en', 1_234, 'compact-short')
+      assert_equal '12.35%', NumberFormatting.format_with_skeleton('en', BigDecimal('12.3456'), 'percent .00')
+      assert_equal '1,000,000,000,000,000,000,000',
+                   NumberFormatting.format_with_skeleton('en', 10**21, 'group-auto')
+    end
+
+    def test_is_able_to_re_use_skeleton_formatter_objects
+      formatter = NumberFormatting.create_with_skeleton('en', 'precision-integer')
+
+      assert_equal '1,000', formatter.format(999.6)
+      assert_equal '-3', formatter.format(-3.1)
+    end
+
+    def test_rejects_an_invalid_skeleton
+      assert_raises(Error) { NumberFormatting.create_with_skeleton('en', 'not-a-stem') }
+    end
+
+    def test_rejects_the_rule_based_style_that_needs_custom_rules
+      error = assert_raises(ArgumentError) { NumberFormatting.create('en', :pattern_rule_based) }
+
+      assert_match(/create_with_skeleton/, error.message)
+    end
+
     def test_formats_a_bignum
       str = NumberFormatting.format_number('en', 1_000_000_000_000_000_000_000_000_000_000_000_000_000)
 
