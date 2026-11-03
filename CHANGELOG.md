@@ -2,9 +2,12 @@
 
 ### Added
 
+- Add skeleton-based number formatting with `ICU::NumberFormatting.create_with_skeleton` and `.format_with_skeleton` (ICU >= 62).
+
 ### Changed
 
 - Migrate the internal test suite from RSpec to Minitest 6.
+- Raise an `ArgumentError` for the `:pattern_rule_based` style of `ICU::NumberFormatting`, which ffi-icu cannot pass rules to, instead of a misleading `U_MEMORY_ALLOCATION_ERROR` ([#62](https://github.com/erickguan/ffi-icu/issues/62)).
 
 ### Fixed
 
