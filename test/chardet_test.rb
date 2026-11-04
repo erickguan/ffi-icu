@@ -11,23 +11,23 @@ module ICU
       def test_recognizes_utf8
         match = @detector.detect('æåø')
 
-        assert_equal 'UTF-8', match.name
-        assert_kind_of String, match.language
+        assert_equal('UTF-8', match.name)
+        assert_kind_of(String, match.language)
       end
 
       def test_has_a_list_of_detectable_charsets
         charsets = @detector.detectable_charsets
 
-        assert_kind_of Array, charsets
-        refute_empty charsets
-        assert_kind_of String, charsets.first
+        assert_kind_of(Array, charsets)
+        assert(!charsets.empty?)
+        assert_kind_of(String, charsets.first)
       end
 
       def test_disables_and_enables_the_input_filter
-        refute_predicate @detector, :input_filter_enabled?
+        assert(!@detector.input_filter_enabled?)
         @detector.input_filter_enabled = true
 
-        assert_predicate @detector, :input_filter_enabled?
+        assert_predicate(@detector, :input_filter_enabled?)
       end
 
       def test_sets_declared_encoding
@@ -42,12 +42,12 @@ module ICU
           @detector.declared_encoding = 'UTF-8'
         end
 
-        assert_equal [['UTF-8', 5]], calls
-        assert_equal 'UTF-8', @detector.detect('æåø').name
+        assert_equal([['UTF-8', 5]], calls)
+        assert_equal('UTF-8', @detector.detect('æåø').name)
       end
 
       def test_detects_several_matching_encodings
-        assert_kind_of Array, @detector.detect_all('foo bar')
+        assert_kind_of(Array, @detector.detect_all('foo bar'))
       end
 
       def test_supports_null_bytes
@@ -55,8 +55,8 @@ module ICU
         string = 'foo'.encode('UTF-16').force_encoding('binary')
         match = @detector.detect(string)
 
-        assert_equal 'UTF-16BE', match.name
-        assert_kind_of String, match.language
+        assert_equal('UTF-16BE', match.name)
+        assert_kind_of(String, match.language)
       end
     end
   end

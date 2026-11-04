@@ -19,13 +19,13 @@ module ICU
     def test_prioritizes_the_native_debian_multiarch_directory
       paths = search_paths_with_multiarch(['/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu'])
 
-      assert_equal ['/usr/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu'], paths.last(2)
+      assert_equal(['/usr/lib/x86_64-linux-gnu', '/usr/lib/i386-linux-gnu'], paths.last(2))
     end
 
     def test_keeps_the_existing_paths_as_fallbacks_when_no_native_multiarch_directory_is_available
       multiarch_paths = ['/usr/lib/aarch64-linux-gnu', '/usr/lib/i386-linux-gnu']
 
-      assert_equal multiarch_paths, search_paths_with_multiarch(multiarch_paths).last(2)
+      assert_equal(multiarch_paths, search_paths_with_multiarch(multiarch_paths).last(2))
     end
 
     private
@@ -34,7 +34,7 @@ module ICU
       with_constant(FFI::Platform, :IS_WINDOWS, false) do
         with_constant(FFI::Platform, :ARCH, 'x86_64') do
           stub = lambda do |pattern|
-            assert_equal '/usr/lib/*-linux-gnu', pattern
+            assert_equal('/usr/lib/*-linux-gnu', pattern)
             multiarch_paths.dup
           end
 
@@ -66,7 +66,7 @@ module ICU
 
     def test_returns_the_block_result_upon_success
       assert_same(@return_value, Lib.check_error { |_status| @return_value })
-      assert_same @return_value, (Lib.check_error do |status|
+      assert_same(@return_value, Lib.check_error do |status|
         status.write_int(0)
         @return_value
       end)
@@ -91,7 +91,7 @@ module ICU
       end
 
       assert_match(/U_.*_WARNING/, err)
-      assert_same @return_value, result
+      assert_same(@return_value, result)
     end
 
     def test_returns_the_block_result_without_printing_when_warnings_are_disabled
@@ -104,8 +104,8 @@ module ICU
         end
       end
 
-      assert_empty err
-      assert_same @return_value, result
+      assert_empty(err)
+      assert_same(@return_value, result)
     end
   end
 
@@ -113,21 +113,21 @@ module ICU
     def test_cldr_version_is_a_version_info
       skip('Requires ICU >= 4.2') if Gem::Version.new(Lib.version.to_s) < Gem::Version.new('4.2')
 
-      assert_kind_of Lib::VersionInfo, Lib.cldr_version
+      assert_kind_of(Lib::VersionInfo, Lib.cldr_version)
     end
 
     def test_cldr_version_is_populated
       skip('Requires ICU >= 4.2') if Gem::Version.new(Lib.version.to_s) < Gem::Version.new('4.2')
 
-      refute_equal [0, 0, 0, 0], Lib.cldr_version.to_a
+      assert_operator(Lib.cldr_version.to_a, :!=, [0, 0, 0, 0])
     end
 
     def test_icu_version_is_a_version_info
-      assert_kind_of Lib::VersionInfo, Lib.version
+      assert_kind_of(Lib::VersionInfo, Lib.version)
     end
 
     def test_icu_version_is_populated
-      refute_equal [0, 0, 0, 0], Lib.version.to_a
+      assert_operator(Lib.version.to_a, :!=, [0, 0, 0, 0])
     end
   end
 
@@ -145,8 +145,8 @@ module ICU
 
       found, globbed = find_lib(@first_pattern => [library])
 
-      assert_equal library, found
-      assert_equal [@first_pattern], globbed
+      assert_equal(library, found)
+      assert_equal([@first_pattern], globbed)
     end
 
     def test_returns_the_first_matching_file_within_the_first_matching_directory
@@ -155,8 +155,8 @@ module ICU
 
       found, globbed = find_lib(@first_pattern => [first_match, second_match])
 
-      assert_equal first_match, found
-      assert_equal [@first_pattern], globbed
+      assert_equal(first_match, found)
+      assert_equal([@first_pattern], globbed)
     end
 
     def test_continues_to_the_next_directory_when_no_library_matches
@@ -164,14 +164,14 @@ module ICU
 
       found, globbed = find_lib(@first_pattern => [], @second_pattern => [library])
 
-      assert_equal library, found
-      assert_equal [@first_pattern, @second_pattern], globbed
+      assert_equal(library, found)
+      assert_equal([@first_pattern, @second_pattern], globbed)
     end
 
     def test_returns_nil_when_no_directory_contains_a_matching_library
       found, = find_lib(@first_pattern => [], @second_pattern => [])
 
-      assert_nil found
+      assert_nil(found)
     end
 
     private

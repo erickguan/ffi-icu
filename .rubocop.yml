@@ -101,5 +101,59 @@ Naming/FileName:
   Exclude:
     - lib/ffi-icu.rb
 
+# Require parentheses on assertions while leaving other method calls unchanged.
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  Include:
+    - test/**/*.rb
+  AllowedPatterns:
+    - '\A(?!assert(?:_|\z))'
+
+Minitest/AssertOperator:
+  Enabled: true
+
+# Prefer assert over refute.
+Minitest/RefuteEmpty:
+  Enabled: false
+
+Minitest/RefuteEqual:
+  Enabled: false
+
+Minitest/RefuteFalse:
+  Enabled: false
+
+Minitest/RefuteInDelta:
+  Enabled: false
+
+Minitest/RefuteIncludes:
+  Enabled: false
+
+Minitest/RefuteInstanceOf:
+  Enabled: false
+
+Minitest/RefuteKindOf:
+  Enabled: false
+
+Minitest/RefuteMatch:
+  Enabled: false
+
+Minitest/RefuteNil:
+  Enabled: false
+
+Minitest/RefuteOperator:
+  Enabled: false
+
+Minitest/RefutePathExists:
+  Enabled: false
+
+Minitest/RefutePredicate:
+  Enabled: false
+
+Minitest/RefuteRespondTo:
+  Enabled: false
+
+Minitest/RefuteSame:
+  Enabled: false
+
 Minitest/MultipleAssertions:
   Max: 30

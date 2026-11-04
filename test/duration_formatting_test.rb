@@ -28,36 +28,36 @@ module ICU
       result = DurationFormatting.format({ hours: 0, minutes: 1, seconds: 30 }, locale: 'C', style: :long)
 
       assert_match(/1.*minute.*30.*second/i, result)
-      refute_match(/hour/i, result)
+      assert(!/hour/i.match?(result))
     end
 
     def test_trims_off_leading_missing_values
       result = DurationFormatting.format({ minutes: 1, seconds: 30 }, locale: 'C', style: :long)
 
       assert_match(/1.*minute.*30.*second/i, result)
-      refute_match(/hour/i, result)
+      assert(!/hour/i.match?(result))
     end
 
     def test_trims_off_non_leading_zero_values
       result = DurationFormatting.format({ hours: 1, minutes: 0, seconds: 10 }, locale: 'C', style: :long)
 
       assert_match(/1.*hour.*10.*second/i, result)
-      refute_match(/minute/i, result)
+      assert(!/minute/i.match?(result))
     end
 
     def test_trims_off_non_leading_missing_values
       result = DurationFormatting.format({ hours: 1, seconds: 10 }, locale: 'C', style: :long)
 
       assert_match(/1.*hour.*10.*second/i, result)
-      refute_match(/minute/i, result)
+      assert(!/minute/i.match?(result))
     end
 
     def test_uses_comma_based_number_formatting_as_appropriate_for_locale
       result = DurationFormatting.format({ seconds: 90_123 }, locale: 'en-AU', style: :long)
 
       assert_match(/90,123.*second/i, result)
-      refute_match(/hour/i, result)
-      refute_match(/minute/i, result)
+      assert(!/hour/i.match?(result))
+      assert(!/minute/i.match?(result))
     end
 
     def test_localizes_unit_names
@@ -76,9 +76,9 @@ module ICU
       result = DurationFormatting.format({ hours: 1, minutes: 2, seconds: 3 }, locale: 'en-AU', style: :short)
 
       assert_match(/hr.*min.*sec/i, result)
-      refute_match(/hour/i, result)
-      refute_match(/minute/i, result)
-      refute_match(/second/i, result)
+      assert(!/hour/i.match?(result))
+      assert(!/minute/i.match?(result))
+      assert(!/second/i.match?(result))
     end
 
     def test_can_format_narrow
@@ -91,14 +91,14 @@ module ICU
                          end
 
       assert_match(expected_pattern, result)
-      refute_match(/hr/i, result)
-      refute_match(/sec/i, result)
+      assert(!/hr/i.match?(result))
+      assert(!/sec/i.match?(result))
     end
 
     def test_can_format_digital
       result = DurationFormatting.format({ hours: 1, minutes: 2, seconds: 3 }, locale: 'en-AU', style: :digital)
 
-      assert_equal '1:02:03', result
+      assert_equal('1:02:03', result)
     end
 
     def test_can_format_the_full_sequence_of_time_units_in_order
@@ -123,14 +123,14 @@ module ICU
       duration = { minutes: 10, seconds: 5, milliseconds: 325, microseconds: 53, nanoseconds: 236 }
       result = DurationFormatting.format(duration, locale: 'en-AU', style: :digital)
 
-      assert_equal '10:05.325053236', result
+      assert_equal('10:05.325053236', result)
     end
 
     def test_includes_trailing_zeros_as_appropriate_for_the_last_unit_in_digital_format
       duration = { minutes: 10, seconds: 5, milliseconds: 325, microseconds: 400 }
       result = DurationFormatting.format(duration, locale: 'en-AU', style: :digital)
 
-      assert_equal '10:05.325400', result
+      assert_equal('10:05.325400', result)
     end
 
     def test_joins_h_mm_ss_and_other_units_in_digital_format

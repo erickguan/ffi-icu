@@ -1,4 +1,14 @@
-## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.7.0...master)
+## [Unreleased](https://github.com/erickguan/ffi-icu/compare/v0.8.0...master)
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [v0.8.0](https://github.com/erickguan/ffi-icu/compare/v0.7.0...v0.8.0)
 
 ### Added
 

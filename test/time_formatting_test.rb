@@ -31,23 +31,23 @@ module ICU
       expected = icu_major >= 73 ? "d. MMMM y 'v' H:mm:ss ZZZZ" : 'd. MMMM y H:mm:ss ZZZZ'
       formatter = cs_formatter
 
-      assert_equal expected, formatter.date_format(true)
-      assert_equal expected, formatter.date_format(false)
+      assert_equal(expected, formatter.date_format(true))
+      assert_equal(expected, formatter.date_format(false))
     end
 
     def test_for_lang_cs_cz_zone_europe_prague
       formatter = cs_formatter
       at = icu_major >= 73 ? ' v ' : ' '
 
-      assert_equal "12. listopadu 2008#{at}15:21:16 GMT+01:00", formatter.format(T0)
-      assert_equal "25. října 2008#{at}1:15:17 GMT+02:00", formatter.format(T1)
-      assert_equal "25. října 2008#{at}2:16:18 GMT+02:00", formatter.format(T2)
-      assert_equal "25. října 2008#{at}3:17:19 GMT+02:00", formatter.format(T3)
-      assert_equal "25. října 2008#{at}4:18:20 GMT+02:00", formatter.format(T4)
-      assert_equal "29. března 2008#{at}1:35:21 GMT+01:00", formatter.format(T5)
-      assert_equal "29. března 2008#{at}2:36:22 GMT+01:00", formatter.format(T6)
-      assert_equal "29. března 2008#{at}3:37:23 GMT+01:00", formatter.format(T7)
-      assert_equal "29. března 2008#{at}4:38:24 GMT+01:00", formatter.format(T8)
+      assert_equal("12. listopadu 2008#{at}15:21:16 GMT+01:00", formatter.format(T0))
+      assert_equal("25. října 2008#{at}1:15:17 GMT+02:00", formatter.format(T1))
+      assert_equal("25. října 2008#{at}2:16:18 GMT+02:00", formatter.format(T2))
+      assert_equal("25. října 2008#{at}3:17:19 GMT+02:00", formatter.format(T3))
+      assert_equal("25. října 2008#{at}4:18:20 GMT+02:00", formatter.format(T4))
+      assert_equal("29. března 2008#{at}1:35:21 GMT+01:00", formatter.format(T5))
+      assert_equal("29. března 2008#{at}2:36:22 GMT+01:00", formatter.format(T6))
+      assert_equal("29. března 2008#{at}3:37:23 GMT+01:00", formatter.format(T7))
+      assert_equal("29. března 2008#{at}4:38:24 GMT+01:00", formatter.format(T8))
     end
 
     # lang=en_US zone=Europe/Moscow
@@ -73,23 +73,23 @@ module ICU
                  end
       formatter = en_formatter
 
-      assert_equal expected, formatter.date_format(true)
-      assert_equal expected, formatter.date_format(false)
+      assert_equal(expected, formatter.date_format(true))
+      assert_equal(expected, formatter.date_format(false))
     end
 
     def test_lang_en_us_zone_europe_moscow
       formatter = en_formatter
       space = icu_major >= 73 ? "\u202F" : ' '
 
-      assert_equal "11/12/08, 5:21:16#{space}PM #{en_tz}", formatter.format(T0)
-      assert_equal "10/25/08, 3:15:17#{space}AM #{en_tz}", formatter.format(T1)
-      assert_equal "10/25/08, 4:16:18#{space}AM #{en_tz}", formatter.format(T2)
-      assert_equal "10/25/08, 5:17:19#{space}AM #{en_tz}", formatter.format(T3)
-      assert_equal "10/25/08, 6:18:20#{space}AM #{en_tz}", formatter.format(T4)
-      assert_equal "3/29/08, 3:35:21#{space}AM #{en_tz}", formatter.format(T5)
-      assert_equal "3/29/08, 4:36:22#{space}AM #{en_tz}", formatter.format(T6)
-      assert_equal "3/29/08, 5:37:23#{space}AM #{en_tz}", formatter.format(T7)
-      assert_equal "3/29/08, 6:38:24#{space}AM #{en_tz}", formatter.format(T8)
+      assert_equal("11/12/08, 5:21:16#{space}PM #{en_tz}", formatter.format(T0))
+      assert_equal("10/25/08, 3:15:17#{space}AM #{en_tz}", formatter.format(T1))
+      assert_equal("10/25/08, 4:16:18#{space}AM #{en_tz}", formatter.format(T2))
+      assert_equal("10/25/08, 5:17:19#{space}AM #{en_tz}", formatter.format(T3))
+      assert_equal("10/25/08, 6:18:20#{space}AM #{en_tz}", formatter.format(T4))
+      assert_equal("3/29/08, 3:35:21#{space}AM #{en_tz}", formatter.format(T5))
+      assert_equal("3/29/08, 4:36:22#{space}AM #{en_tz}", formatter.format(T6))
+      assert_equal("3/29/08, 5:37:23#{space}AM #{en_tz}", formatter.format(T7))
+      assert_equal("3/29/08, 6:38:24#{space}AM #{en_tz}", formatter.format(T8))
     end
 
     # lang=de_DE zone=Africa/Dakar
@@ -106,23 +106,23 @@ module ICU
       expected = "dd.MM.yy#{ge_sep} HH:mm:ss z"
       formatter = de_formatter
 
-      assert_equal expected, formatter.date_format(true)
-      assert_equal expected, formatter.date_format(false)
+      assert_equal(expected, formatter.date_format(true))
+      assert_equal(expected, formatter.date_format(false))
     end
 
     def test_lang_de_de_zone_africa_dakar
       formatter = de_formatter
       suffix = icu_major >= 73 ? 'GMT+0' : 'GMT'
 
-      assert_equal "12.11.08#{ge_sep} 14:21:16 #{suffix}", formatter.format(T0)
-      assert_equal "24.10.08#{ge_sep} 23:15:17 #{suffix}", formatter.format(T1)
-      assert_equal "25.10.08#{ge_sep} 00:16:18 #{suffix}", formatter.format(T2)
-      assert_equal "25.10.08#{ge_sep} 01:17:19 #{suffix}", formatter.format(T3)
-      assert_equal "25.10.08#{ge_sep} 02:18:20 #{suffix}", formatter.format(T4)
-      assert_equal "29.03.08#{ge_sep} 00:35:21 #{suffix}", formatter.format(T5)
-      assert_equal "29.03.08#{ge_sep} 01:36:22 #{suffix}", formatter.format(T6)
-      assert_equal "29.03.08#{ge_sep} 02:37:23 #{suffix}", formatter.format(T7)
-      assert_equal "29.03.08#{ge_sep} 03:38:24 #{suffix}", formatter.format(T8)
+      assert_equal("12.11.08#{ge_sep} 14:21:16 #{suffix}", formatter.format(T0))
+      assert_equal("24.10.08#{ge_sep} 23:15:17 #{suffix}", formatter.format(T1))
+      assert_equal("25.10.08#{ge_sep} 00:16:18 #{suffix}", formatter.format(T2))
+      assert_equal("25.10.08#{ge_sep} 01:17:19 #{suffix}", formatter.format(T3))
+      assert_equal("25.10.08#{ge_sep} 02:18:20 #{suffix}", formatter.format(T4))
+      assert_equal("29.03.08#{ge_sep} 00:35:21 #{suffix}", formatter.format(T5))
+      assert_equal("29.03.08#{ge_sep} 01:36:22 #{suffix}", formatter.format(T6))
+      assert_equal("29.03.08#{ge_sep} 02:37:23 #{suffix}", formatter.format(T7))
+      assert_equal("29.03.08#{ge_sep} 03:38:24 #{suffix}", formatter.format(T8))
     end
 
     # skeleton pattern
@@ -130,14 +130,14 @@ module ICU
     def test_skeleton_pattern_check_format
       formatter = TimeFormatting.create(locale: 'fr_FR', date: :pattern, time: :pattern, skeleton: 'MMMy')
 
-      assert_equal 'nov. 2008', formatter.format(T0)
-      assert_equal 'oct. 2008', formatter.format(T1)
+      assert_equal('nov. 2008', formatter.format(T0))
+      assert_equal('oct. 2008', formatter.format(T1))
     end
 
     def test_skeleton_pattern_check_date_format
       formatter = TimeFormatting.create(locale: 'fr_FR', date: :pattern, time: :pattern, skeleton: 'MMMy')
 
-      assert_equal 'MMM y', formatter.date_format(true)
+      assert_equal('MMM y', formatter.date_format(true))
     end
 
     # supplementary characters in patterns
@@ -146,14 +146,14 @@ module ICU
       formatter = TimeFormatting.create(locale: 'en_US', zone: 'UTC', date: :pattern, time: :pattern)
       formatter.set_date_format(false, "'😀' yyyy-MM-dd")
 
-      assert_equal Time.utc(2020, 1, 2), formatter.parse('😀 2020-01-02')
+      assert_equal(Time.utc(2020, 1, 2), formatter.parse('😀 2020-01-02'))
     end
 
     def test_applies_a_date_pattern_containing_a_supplementary_character
       formatter = TimeFormatting.create(locale: 'en_US', zone: 'UTC', date: :pattern, time: :pattern)
       formatter.set_date_format(false, "'😀' yyyy-MM-dd")
 
-      assert_equal '😀 2020-01-02', formatter.format(Time.utc(2020, 1, 2))
+      assert_equal('😀 2020-01-02', formatter.format(Time.utc(2020, 1, 2)))
     end
 
     def test_applies_a_supplementary_character_pattern_with_a_valid_time_zone_identifier
@@ -161,7 +161,7 @@ module ICU
                                         time: :pattern)
       formatter.set_date_format(false, "'😀' VV")
 
-      assert_equal '😀 America/Los_Angeles', formatter.format(Time.utc(2020, 1, 2))
+      assert_equal('😀 America/Los_Angeles', formatter.format(Time.utc(2020, 1, 2)))
     end
   end
 
@@ -192,7 +192,7 @@ module ICU
                                        hour_cycle: 'h23')
 
         assert_match(/0:05/i, str)
-        refute_match(/(am|pm)/i, str)
+        assert(!/(am|pm)/i.match?(str))
       end
 
       define_method("test_#{locale_name}_works_with_hour_cycle_h24") do
@@ -201,7 +201,7 @@ module ICU
                                        hour_cycle: 'h24')
 
         assert_match(/24:05/i, str)
-        refute_match(/(am|pm)/i, str)
+        assert(!/(am|pm)/i.match?(str))
       end
 
       define_method("test_#{locale_name}_does_not_include_am_pm_if_time_is_not_requested") do
@@ -209,7 +209,7 @@ module ICU
         str = TimeFormatting.format(t, time: :none, date: :short, locale: locale_name, zone: 'UTC',
                                        hour_cycle: 'h12')
 
-        refute_match(/(am|pm|下午|上午)/i, str)
+        assert(!/(am|pm|下午|上午)/i.match?(str))
       end
 
       # @hours keyword
@@ -247,7 +247,7 @@ module ICU
                                        hour_cycle: :locale)
 
         assert_match(/0:05/i, str)
-        refute_match(/(am|pm)/i, str)
+        assert(!/(am|pm)/i.match?(str))
       end
 
       define_method("test_#{locale_name}_works_with_hours_h24_keyword") do
@@ -259,7 +259,7 @@ module ICU
                                        hour_cycle: :locale)
 
         assert_match(/24:05/i, str)
-        refute_match(/(am|pm)/i, str)
+        assert(!/(am|pm)/i.match?(str))
       end
     end
 
@@ -284,7 +284,7 @@ module ICU
       str = TimeFormatting.format(t, time: :short, date: :none, locale: 'fr_FR', zone: 'UTC', hour_cycle: :locale)
 
       assert_match(/0:05/i, str)
-      refute_match(/(am|pm)/i, str)
+      assert(!/(am|pm)/i.match?(str))
     end
   end
 end
