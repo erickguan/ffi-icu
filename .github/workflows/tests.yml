@@ -20,9 +20,10 @@ jobs:
         runner:
           - ubuntu-22.04
           - ubuntu-24.04
+          - ubuntu-26.04
         include:
           # test latest ruby
-          - runner: ubuntu-24.04
+          - runner: ubuntu-26.04
             ruby-version: head
 
           # test other platforms
