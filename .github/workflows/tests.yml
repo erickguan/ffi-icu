@@ -31,8 +31,11 @@ jobs:
             ruby-version: '4.0'
             allow-failures: true # windows builds are not in active use, but test to unblock contributions
 
-          - runner: macos-14
+          - runner: macos-26
             ruby-version: '3.4'
+
+          - runner: macos-26
+            ruby-version: '4.0'
 
           - runner: macos-15
             ruby-version: '3.4'
