@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@v6.1.0
 
       # required to run `rake release`.
       - name: Setup Ruby and install dependencies
-        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        uses: ruby/setup-ruby@v1.338.0
         with:
           # setup-ruby implicitly uses .ruby-version
           bundler-cache: true
@@ -25,9 +25,9 @@ jobs:
       # Run `rake release` to create git tag and push to repository based on `lib/version.rb`.
       # Then publish the new gem via trusted publishing
       # Read more on https://guides.rubygems.org/trusted-publishing/releasing-gems/
-      - uses: rubygems/release-gem@7f9650160c1a4e7989fdc9855807bdbd421d8b6b # v1.4.1
+      - uses: rubygems/release-gem@v1.4.2
 
       - name: Attest gem build provenance
-        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        uses: actions/attest@v4.2.2
         with:
           subject-path: '${{ github.workspace }}/pkg/*.gem'
