@@ -4,29 +4,29 @@
 version: 'v0.0.3'
 workflows:
     '.github/workflows/linting.yml':
-        - 'actions/checkout@v6.1.0'
-        - 'ruby/setup-ruby@v1.338.0'
+        - 'actions/checkout@v7'
+        - 'ruby/setup-ruby@v1'
     '.github/workflows/release.yml':
-        - 'actions/attest@v4.2.2'
-        - 'actions/checkout@v6.1.0'
-        - 'ruby/setup-ruby@v1.338.0'
-        - 'rubygems/release-gem@v1.4.2'
+        - 'actions/attest@v4'
+        - 'actions/checkout@v7'
+        - 'ruby/setup-ruby@v1'
+        - 'rubygems/release-gem@v1'
     '.github/workflows/tests.yml':
-        - 'actions/checkout@v6.1.0'
-        - 'ruby/setup-ruby@v1.338.0'
+        - 'actions/checkout@v7'
+        - 'ruby/setup-ruby@v1'
 dependencies:
-    'actions/attest@v4.2.2':
-        ref: 'v4.2.2'
+    'actions/attest@v4':
+        ref: 'v4'
         commit: 'sha1-1e69f48acb82d1966a394da916b4c1698aa569d6'
         owner_id: 44036562
         repo_id: 760701061
-    'actions/checkout@v6.1.0':
-        ref: 'v6.1.0'
-        commit: 'sha1-d23441a48e516b6c34aea4fa41551a30e30af803'
+    'actions/checkout@v7':
+        ref: 'v7'
+        commit: 'sha1-3d3c42e5aac5ba805825da76410c181273ba90b1'
         owner_id: 44036562
         repo_id: 197814629
-    'ruby/setup-ruby@v1.338.0':
-        ref: 'v1.338.0'
+    'ruby/setup-ruby@v1':
+        ref: 'v1'
         commit: 'sha1-b3aaceaef7e0ee231b499e7b5f49c03fc1d32199'
         owner_id: 210414
         repo_id: 231208785
@@ -35,8 +35,8 @@ dependencies:
         commit: 'sha1-dc5a8d8553e6ee01fc26761a49e99e733d17954a'
         owner_id: 208761
         repo_id: 631633510
-    'rubygems/release-gem@v1.4.2':
-        ref: 'v1.4.2'
+    'rubygems/release-gem@v1':
+        ref: 'v1'
         commit: 'sha1-5c53f5308233b7c0f47411f0471b3faae6fa57b2'
         owner_id: 208761
         repo_id: 731435765

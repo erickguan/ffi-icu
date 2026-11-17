@@ -49,10 +49,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6.1.0
+        uses: actions/checkout@v7 # v7.0.1
 
       - name: Set up Ruby and install dependencies
-        uses: ruby/setup-ruby@v1.338.0
+        uses: ruby/setup-ruby@v1 # v1.338.0
         with:
           ruby-version: ${{ matrix.ruby-version }}
           bundler-cache: true
